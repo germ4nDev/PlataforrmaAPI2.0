@@ -21,9 +21,12 @@ app.use( express.json() );
 app.use( express.static('public') );
 
 /*
-*   PTLTickets
-*   PTLRequerimientosTK
-*   PTLSeguimientosTK
+*   PTLUsuariosEmpresas
+*   PTLSuscriptorAplicaciones
+*   PTLSuscriptorPaquetes
+
+*   PTLIdiomas
+*   PTLTectosID
 */
 
 // Rutas
@@ -35,16 +38,16 @@ app.use('/api/paquetes-aplicaciones', require('./routes/paquetes-aplicaciones') 
 app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
 app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
-app.use('/api/usuarios-empresas', require('./routes/usuarios-empresas') );
+// app.use('/api/usuarios-empresas', require('./routes/usuarios-empresas') );
 app.use('/api/usuarios', require('./routes/usuarios') );
 app.use('/api/suscriptores', require('./routes/suscriptores') );
-app.use('/api/suscriptor-aplicaciones', require('./routes/suscriptor-paquetes') );
-app.use('/api/empresas-st', require('./routes/empresas-st') );
-app.use('/api/usuarios-st', require('./routes/usuarios-st') );
-app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
+// app.use('/api/suscriptor-aplicaciones', require('./routes/suscriptor-paquetes') );
+app.use('/api/empresas-sc', require('./routes/empresas-sc') );
+app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
+// app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
 app.use('/api/tickets', require('./routes/tickets') );
-app.use('/api/requerimientos', require('./routes/requerimientos') );
-app.use('/api/seguimientos', require('./routes/seguimientos') );
+app.use('/api/requerimientos-tk', require('./routes/requerimientos') );
+app.use('/api/seguimientos-tk', require('./routes/seguimientos') );
 
 app.use('/api/logs-actividades', require('./routes/logs-actividades') );
 app.use('/api/logs-actualizaciones', require('./routes/logs-actualizaciones') );

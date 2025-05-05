@@ -3,10 +3,10 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLUsuariosSC = require('../models/usuarios-sc')(sequelize);
+const PTLUsuariosSC = require('../models/usuario-sc')(sequelize);
 
-// Obtener todos los usuasrios ST
-const getUsuariosST = async (req, res) => {
+// Obtener todos los usuasrios SC
+const getUsuariosSC = async (req, res) => {
   try {
     const usuarios = await PTLUsuariosSC.findAll();
     return res.status(201).json({
@@ -18,7 +18,7 @@ const getUsuariosST = async (req, res) => {
   }
 };
 
-const getUsuariosSTById = async (req, res) => {
+const getUsuariosSCById = async (req, res) => {
   try {
     const { usuarioId } = req.body;
     const usuario = await PTLUsuariosSC.findById(usuarioId);
@@ -37,8 +37,8 @@ const getUsuariosSTById = async (req, res) => {
   }
 };
 
-// Crear un nuevo usuairo ST
-const createUsuarioST = async (req, res = response) => {
+// Crear un nuevo usuairo SC
+const createUsuarioSC = async (req, res = response) => {
   try {
     const usuario = req.body;
     const nuevo = await PTLUsuariosSC.create(usuario);
@@ -48,12 +48,12 @@ const createUsuarioST = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo usuario ST
-const updateUsuarioST = async (req, res = response) => {
+// Actualizar un nuevo usuario SC
+const updateUsuarioSC = async (req, res = response) => {
   try {
-    const { usuarioSTId } = req.body;
+    const { usuarioSCId } = req.body;
     const Ususario = req.body;
-    const usuarioDB = await PTLUsuariosSC.find(usuarioSTId);
+    const usuarioDB = await PTLUsuariosSC.find(usuarioSCId);
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
@@ -70,18 +70,18 @@ const updateUsuarioST = async (req, res = response) => {
   }
 };
 
-// Borrar un usuasrio ST
-const deleteUsuarioST = async (req, res = response) => {
+// Borrar un usuasrio SC
+const deleteUsuarioSC = async (req, res = response) => {
   try {
-    const { usuarioSTId } = req.body;
-    const usuarioDB = await PTLUsuariosSC.findOne(usuarioSTId);
+    const { usuarioSCId } = req.body;
+    const usuarioDB = await PTLUsuariosSC.findOne(usuarioSCId);
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
     }
-    const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ usuarioSTId });
+    const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ usuarioSCId });
     return res.status(201).json({
       ok: true,
       usuario: usuarioEliminado,
@@ -92,9 +92,9 @@ const deleteUsuarioST = async (req, res = response) => {
 };
 
 module.exports = {
-  getUsuariosST,
-  getUsuariosSTById,
-  createUsuarioST,
-  updateUsuarioST,
-  deleteUsuarioST,
+  getUsuariosSC,
+  getUsuariosSCById,
+  createUsuarioSC,
+  updateUsuarioSC,
+  deleteUsuarioSC,
 };
