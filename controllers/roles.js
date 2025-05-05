@@ -1,17 +1,18 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLRolesAP = require('../models/role')(sequelize);
 
-// Obtener todos los rols
+// Obtener todos los role
 const getRolesAP = async (req, res) => {
   try {
-    const rols = await PTLRolesAP.findAll();
+    const role = await PTLRolesAP.findAll();
     return res.status(201).json({
       ok: true,
-      rols: rols,
+      role: role,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener RolesAP' });
@@ -33,7 +34,7 @@ const getRoleAPById = async (req, res) => {
       role: role,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener rols' });
+    res.status(500).json({ error: 'Error al obtener role' });
   }
 };
 

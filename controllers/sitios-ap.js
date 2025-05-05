@@ -1,5 +1,5 @@
 /*
-    Author: German Valencia
+    Author: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -18,83 +18,83 @@ const getSitios = async (req, res) => {
   }
 };
 
-const getUsuariosRolesById = async (req, res) => {
+const getSitioById = async (req, res) => {
   try {
-    const { usuarioRolId } = req.body;
-    const role = await PTLUsuarioRoleAP.findById(usuarioRolId);
-    if (!role) {
+    const { sitioId } = req.body;
+    const sitio = await PTLSitiosAP.findById(sitioId);
+    if (!sitio) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuarioRole por ese id",
+        msg: "No existe un sitio por ese id",
       });
     }
     return res.status(201).json({
       ok: true,
-      usuarioRole: role,
+      sitios: role,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    res.status(500).json({ error: 'Error al obtener el sitio' });
   }
 };
 
-// Crear un nuevo rol
-const createUsuarioRole = async (req, res = response) => {
+// Crear un nuevo sitio
+const createSitio = async (req, res = response) => {
   try {
-    const { usuarioId, rolId } = req.body;
-    const nuevo = await PTLUsuarioRoleAP.create({ usuarioId, rolId });
+    const { sitioId } = req.body;
+    const nuevo = await PTLSitiosAP.create({ sitioId });
     res.status(201).json(nuevo);
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el usuario role' });
+    res.status(500).json({ error: 'Error al crear el sitio' });
   }
 };
 
-// Actualizar un nuevo rol
-const updateUsuarioRole = async (req, res = response) => {
+// Actualizar un nuevo sitio
+const updateSitio = async (req, res = response) => {
   try {
-    const { usuarioRolId, usuarioId, rolId } = req.body;
-    const UsusarioRole = req.body;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.find(usuarioRolId);
-    if (!usuarioRoleDB) {
+    const { sitioId } = req.body;
+    const sitio = req.body;
+    const sitioBD = await PTLSitiosAP.find(sitioId);
+    if (!sitioBD) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un sitio por ese id",
       });
     }
-    const usuarioRoleDBActualizado = await PTLUsuarioRoleAP.findByIdAndUpdate({ usuarioRolId, UsusarioRole });
+    const sitioBDActualizado = await PTLSitiosAP.findByIdAndUpdate({ sitioId, sitio });
     return res.status(201).json({
       ok: true,
-      usuarioRole: usuarioRoleDBActualizado,
+      sitios: sitioBDActualizado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el usuario role' });
+    res.status(500).json({ error: 'Error al actualizar el sitio' });
   }
 };
 
-// Borrar un nuevo rol
-const deleteUsuarioRole = async (req, res = response) => {
+// Borrar un nuevo sitio
+const deleteSitio = async (req, res = response) => {
   try {
-    const { usuarioRolId } = req.body;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne(usuarioRolId);
-    if (!usuarioRoleDB) {
+    const { sitioId } = req.body;
+    const sitioDB = await PTLSitiosAP.findOne(sitioId);
+    if (!sitioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un sitio por ese id",
       });
     }
-    const usuarioRoleDBEliminado = await PTLUsuarioRoleAP.findByIdAndDelete({ usuarioRolId });
+    const sitioDBEliminado = await PTLSitiosAP.findByIdAndDelete({ sitioId });
     return res.status(201).json({
       ok: true,
-      usuarioRole: usuarioRoleDBEliminado,
+      sitios: sitioDBEliminado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar usuario role' });
+    res.status(500).json({ error: 'Error al eliminar el sitio' });
   }
 };
 
 module.exports = {
-  getUsuariosRoles,
-  getUsuariosRolesById,
-  createUsuarioRole,
-  updateUsuarioRole,
-  deleteUsuarioRole,
+  getSitios,
+  getSitioById,
+  createSitio,
+  updateSitio,
+  deleteSitio,
 };
