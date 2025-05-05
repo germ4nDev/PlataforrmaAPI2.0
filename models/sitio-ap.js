@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
@@ -18,12 +19,12 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoSitio: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
       urlSitio: {
         type: DataTypes.STRING,
+        allowNull: false
+      },
+      estadoSitio: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
       },
       aplicacionId: {

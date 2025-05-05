@@ -1,6 +1,7 @@
 /*
     index.js
     Author: German Valencia
+    Actualización: John Castañeda
 */
 require('dotenv').config();
 const path = require('path');
@@ -52,6 +53,9 @@ app.use('/api/seguimientos-tk', require('./routes/seguimientos') );
 app.use('/api/logs-actividades', require('./routes/logs-actividades') );
 app.use('/api/logs-actualizaciones', require('./routes/logs-actualizaciones') );
 app.use('/api/logs-transacciones', require('./routes/logs-transacciones') );
+app.use('/api/sitios-ap', require('./routes/sitios-ap') );
+app.use('/api/contenidos-el', require('./routes/contenidos-el') );
+app.use('/api/enlaces-st', require('./routes/enlaces-st') );
 // app.use('/api/pla-adjuntos', require('./routes/pla_adjuntos') );
 
 app.get('*', (req, res) => {
