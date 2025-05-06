@@ -12,7 +12,7 @@ const {
     createAplicacion,
     updateAplicacion,
     deleteAplicacion,
-} = require("../controllers/apicaciones");
+} = require("../controllers/aplicaciones");
 
 const router = Router();
 
