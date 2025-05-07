@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLRolesAP', {
-      rolId: {
+      roleId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -15,15 +16,15 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
-      nombreRol: {
+      nombreRole: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionRol: {
+      descripcionRole: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoRol: {
+      estadoRole: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       }

@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/roles
 */
 const { Router } = require("express");
@@ -7,23 +8,23 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getRolesAP,
-    getRoleAPById,
-    createRoleAP,
-    updateRoleAP,
-    deleteRoleAP,
+    getRoles,
+    getRoleById,
+    createRole,
+    updateRole,
+    deleteRole,
 } = require("../controllers/roles");
 
 const router = Router();
 
-router.get("/", getRolesAP);
+router.get("/", getRoles);
 
-router.post( "/",  validarJWT, createRoleAP);
+router.get("/:id", validarJWT, getRoleById);
 
-router.put("/:id", validarJWT, updateRoleAP);
+router.post( "/",  validarJWT, createRole);
 
-router.delete("/:id", validarJWT, deleteRoleAP);
+router.put("/:id", validarJWT, updateRole);
 
-router.get("/:id", validarJWT, getRoleAPById);
+router.delete("/:id", validarJWT, deleteRole);
 
 module.exports = router;
