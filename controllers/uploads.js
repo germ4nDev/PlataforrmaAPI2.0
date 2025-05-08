@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const path = require("path");
 const fs = require("fs");
@@ -26,7 +27,7 @@ const fileUpload = (req, res = response) => {
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
       ok: false,
-      msg: "No es de suscriptores, aplicaciones, usuarios, documentosss, adjuntos, sitios, firmas (tipo)",
+      msg: "No es de suscriptores, aplicaciones, usuarios, documentos, adjuntos, sitios, firmas (tipo)",
     });
   }
 
@@ -57,6 +58,7 @@ const fileUpload = (req, res = response) => {
     "ppt",
     "pptx",
     "zip",
+    "txt"
   ];
   if (!extensionesValidas.includes(extensionArchivo)) {
     return res.status(400).json({

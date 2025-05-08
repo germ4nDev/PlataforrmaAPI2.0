@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuariosSC = require('../models/usuario-sc')(sequelize);
 
-// Obtener todos los usuasrios SC
+// Obtener todos los usuarios SC
 const getUsuariosSC = async (req, res) => {
   try {
     const usuarios = await PTLUsuariosSC.findAll();
@@ -25,7 +26,7 @@ const getUsuariosSCById = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     return res.status(201).json({
@@ -48,7 +49,7 @@ const createUsuarioSC = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo usuario SC
+// Actualizar un usuario SC
 const updateUsuarioSC = async (req, res = response) => {
   try {
     const { usuarioSCId } = req.body;
@@ -57,7 +58,7 @@ const updateUsuarioSC = async (req, res = response) => {
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     const usuarioActualizado = await PTLUsuariosSC.findByIdAndUpdate({ usuarioId, Ususario });
@@ -70,7 +71,7 @@ const updateUsuarioSC = async (req, res = response) => {
   }
 };
 
-// Borrar un usuasrio SC
+// Borrar un usuario SC
 const deleteUsuarioSC = async (req, res = response) => {
   try {
     const { usuarioSCId } = req.body;
@@ -78,7 +79,7 @@ const deleteUsuarioSC = async (req, res = response) => {
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ usuarioSCId });

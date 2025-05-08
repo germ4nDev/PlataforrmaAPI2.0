@@ -29,6 +29,7 @@ module.exports = (sequelize) => {
       },
       aplicacionId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
       puertoSitio: {

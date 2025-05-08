@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/seguimientos
 */
 const { Router } = require("express");
@@ -12,7 +13,7 @@ const {
     createSeguimientoRQ,
     updateSeguimientoRQ,
     deleteSeguimientoRQ,
-} = require("../controllers/seguimientos");
+} = require("../controllers/seguimientos-rq");
 
 const router = Router();
 

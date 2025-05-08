@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
@@ -14,7 +15,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      anclaTexto: {
+      ancla: {
         type: DataTypes.STRING,
         allowNull: false
       },

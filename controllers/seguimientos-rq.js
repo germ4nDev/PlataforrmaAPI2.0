@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLSeguimientosRQ = require('../models/seguimiento')(sequelize);
+const PTLSeguimientosRQ = require('../models/seguimiento-rq')(sequelize);
 
 // Obtener todos los seguimientos
 const getSeguimientosRQ = async (req, res) => {
@@ -25,7 +26,7 @@ const getSeguimientoRQById = async (req, res) => {
     if (!seguimiento) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un seguimiento por ese id",
+        msg: "No existe un seguimiento con ese id",
       });
     }
     return res.status(201).json({
@@ -48,7 +49,7 @@ const createSeguimientoRQ = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo seguimiento
+// Actualizar un seguimiento
 const updateSeguimientoRQ = async (req, res = response) => {
   try {
     const { seguimientoId } = req.body;
@@ -57,7 +58,7 @@ const updateSeguimientoRQ = async (req, res = response) => {
     if (!seguimientoOg) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un seguimiento por ese id",
+        msg: "No existe un seguimiento con ese id",
       });
     }
     const seguimientoActualizado = await PTLSeguimientosRQ.findByIdAndUpdate({ seguimientoId, seguimiento });
@@ -70,7 +71,7 @@ const updateSeguimientoRQ = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo seguimiento
+// Borrar un seguimiento
 const deleteSeguimientoRQ = async (req, res = response) => {
   try {
     const { seguimientoId } = req.body;
@@ -78,7 +79,7 @@ const deleteSeguimientoRQ = async (req, res = response) => {
     if (!seguimiento) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un seguimiento por ese id",
+        msg: "No existe un seguimiento con ese id",
       });
     }
     const seguimientoEliminado = await PTLSeguimientosRQ.findByIdAndDelete({ seguimientoId });

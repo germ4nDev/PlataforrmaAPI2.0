@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLUsuarioRoleAP', {
+    return sequelize.define('PTLUsuarioRoles', {
       usuarioRoleId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,19 +13,21 @@ module.exports = (sequelize) => {
       },
       usuarioId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
       roleId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
       estadoRole: {
-        type: DataTypes.BLOB,
+        type: DataTypes.BOOLEAN,
         default: false,
         allowNull: false
       }
     }, {
-      tableName: 'PTLUsuarioRoleAP',
+      tableName: 'PTLUsuarioRoles',
       timestamps: false
     });
   };

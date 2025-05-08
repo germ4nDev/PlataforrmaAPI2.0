@@ -12,7 +12,7 @@ const {
     createTicketAP,
     updateTicketAP,
     deleteTicketAP,
-} = require("../controllers/tickets");
+} = require("../controllers/tickets-ap");
 
 const router = Router();
 

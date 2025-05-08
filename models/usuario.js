@@ -1,14 +1,19 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLUsuariosAP', {
+    return sequelize.define('PTLUsuarios', {
       usuarioId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+      },
+      fotoUsuario: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       identificacionUsuario: {
         type: DataTypes.STRING,
@@ -18,15 +23,11 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      correoUsuario: {
+      descripcionUsuario: {
         type: DataTypes.STRING,
         allowNull: false
       },
       correoUsuario: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      userName: {
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -34,20 +35,16 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionUsuario: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      fotoUsuario: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       estadoUsuario: {
         type: DataTypes.BOOLEAN,
         default: false
+      },
+      userName: {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     }, {
-      tableName: 'PTLUsuarioAP',
+      tableName: 'PTLUsuarios',
       timestamps: false
     });
   };

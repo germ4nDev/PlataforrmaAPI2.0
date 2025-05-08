@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
+    Actualizacion: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLLogActividadesAP', {
+    return sequelize.define('PTLLogActualizacionesAP', {
       logId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -15,26 +16,32 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
+      versionId: {
+        type: DataTypes.INTEGER,
+        default: 0,
+        allowNull: false
+      },
       suscriptorId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      usuarioId: {
+      suscriptorVersionId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      fecha: {
+      usuarioActualizacion: {
+        type: DataTypes.INTEGER,
+        default: 0,
+        allowNull: false
+      },
+      fechaLogActualizacion: {
         type: DataTypes.DATE,
         allowNull: false
       },
-      descripcionLog: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
     }, {
-      tableName: 'PTLLogActividadesAP',
+      tableName: 'PTLLogActualizacionesAP',
       timestamps: false
     });
   };

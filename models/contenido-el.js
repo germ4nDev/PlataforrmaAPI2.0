@@ -12,9 +12,14 @@ module.exports = (sequelize) => {
       },
       enlaceId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
       nombreContenido: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      descripcionContenido: {
         type: DataTypes.STRING,
         allowNull: false
       },

@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/logs-actividades
 */
 const { Router } = require("express");
@@ -10,7 +11,7 @@ const {
     geLogsActividades,
     geLogActividadById,
     createLogActividad,
-} = require("../controllers/logs-actividades");
+} = require("../controllers/logs-actividades-ap");
 
 const router = Router();
 

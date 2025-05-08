@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/requerimientos
 */
 const { Router } = require("express");
@@ -12,7 +13,7 @@ const {
     createRequerimientoTK,
     updateRequerimientoTK,
     deleteRequerimientoTK,
-} = require("../controllers/requerimientos");
+} = require("../controllers/requerimientos-tk");
 
 const router = Router();
 

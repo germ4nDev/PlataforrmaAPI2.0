@@ -1,42 +1,35 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLLogTransaccionesAP', {
-      logId: {
+    return sequelize.define('PTLSeguimientosRQ', {
+      seguimientoId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
+      requerimientoId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      fecha: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      descripcionLog: {
+      nombreSeguimiento: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      codigoError: {
+      descripcionSeguimiento: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      mensajeError: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      usuarioGenerador: {
-        type: DataTypes.STRING,
+      estadoSeguimiento: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
       }
     }, {
-      tableName: 'PTLLogTransaccionesAP',
+      tableName: 'PTLSeguimientosRQ',
       timestamps: false
     });
   };

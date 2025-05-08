@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/logs-actualizaviones
 */
 const { Router } = require("express");
@@ -10,7 +11,7 @@ const {
     getLogsActualizaciones,
     getLogActualizacionById,
     createLogActualizacion,
-} = require("../controllers/logs-actualizaciones");
+} = require("../controllers/logs-actualizaciones-ap");
 
 const router = Router();
 

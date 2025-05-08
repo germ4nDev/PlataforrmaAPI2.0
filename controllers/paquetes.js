@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -25,7 +26,7 @@ const getPaqueteById = async (req, res) => {
     if (!paquete) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: "No existe un paquete con ese id",
       });
     }
     return res.status(201).json({
@@ -33,7 +34,7 @@ const getPaqueteById = async (req, res) => {
       paquete: paquete,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    res.status(500).json({ error: 'Error al obtener los paquetes' });
   }
 };
 
@@ -57,7 +58,7 @@ const updatePaquete = async (req, res = response) => {
     if (!paqueteOg) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: "No existe un paquete con ese id",
       });
     }
     const paqueteActualizado = await PTLPaquetes.findByIdAndUpdate({ paqueteId, paquete });
@@ -70,7 +71,7 @@ const updatePaquete = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo paquete
+// Borrar un paquete
 const deletePaquete = async (req, res = response) => {
   try {
     const { paqueteId } = req.body;
@@ -78,7 +79,7 @@ const deletePaquete = async (req, res = response) => {
     if (!paquete) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: "No existe un paquete con ese id",
       });
     }
     const paqueteEliminado = await PTLPaquetes.findByIdAndDelete({ paqueteId });

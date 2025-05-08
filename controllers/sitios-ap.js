@@ -25,7 +25,7 @@ const getSitioById = async (req, res) => {
     if (!sitio) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un sitio por ese id",
+        msg: "No existe un sitio con ese id",
       });
     }
     return res.status(201).json({
@@ -48,7 +48,7 @@ const createSitio = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo sitio
+// Actualizar un sitio
 const updateSitio = async (req, res = response) => {
   try {
     const { sitioId } = req.body;
@@ -57,7 +57,7 @@ const updateSitio = async (req, res = response) => {
     if (!sitioBD) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un sitio por ese id",
+        msg: "No existe un sitio con ese id",
       });
     }
     const sitioBDActualizado = await PTLSitiosAP.findByIdAndUpdate({ sitioId, sitio });
@@ -70,7 +70,7 @@ const updateSitio = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo sitio
+// Borrar un sitio
 const deleteSitio = async (req, res = response) => {
   try {
     const { sitioId } = req.body;
@@ -78,7 +78,7 @@ const deleteSitio = async (req, res = response) => {
     if (!sitioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un sitio por ese id",
+        msg: "No existe un sitio con ese id",
       });
     }
     const sitioDBEliminado = await PTLSitiosAP.findByIdAndDelete({ sitioId });

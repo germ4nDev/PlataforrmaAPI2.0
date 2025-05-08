@@ -1,34 +1,35 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLSeguimientosRQ', {
-      seguimientoId: {
+    return sequelize.define('PTLRequerimientosTK', {
+      requerimientoId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      requerimientoId: {
+      ticketId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      nombreSeguimiento: {
+      nombreRequerimiento: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionSeguimiento: {
+      descripcionRequerimiento: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoSeguimiento: {
+      estadoRequerimiento: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       }
     }, {
-      tableName: 'PTLSeguimientosRQ',
+      tableName: 'PTLRequerimientosTK',
       timestamps: false
     });
   };

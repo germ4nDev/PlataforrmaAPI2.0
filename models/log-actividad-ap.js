@@ -1,37 +1,41 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLTicketsAP', {
-      ticketId: {
+    return sequelize.define('PTLLogActividadesAP', {
+      logId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
       aplicacionId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
-      usuarioSenderId: {
+      suscriptorId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
-      nombreTicket: {
+      usuarioId: {
+        type: DataTypes.INTEGER,
+        default: 0,
+        allowNull: false
+      },
+      fechaLogActividad: {
+        type: DataTypes.DATE,
+        allowNull: false
+      },
+      descripcionLog: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionTicket: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      estadoTicket: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      }
     }, {
-      tableName: 'PTLTicketsAP',
+      tableName: 'PTLLogActividadesAP',
       timestamps: false
     });
   };

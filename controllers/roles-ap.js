@@ -4,10 +4,10 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLRolesAP = require('../models/role')(sequelize);
+const PTLRolesAP = require('../models/role-ap')(sequelize);
 
 // Obtener todos los role
-const getRolesAP = async (req, res) => {
+const getRoles = async (req, res) => {
   try {
     const role = await PTLRolesAP.findAll();
     return res.status(201).json({
@@ -19,14 +19,14 @@ const getRolesAP = async (req, res) => {
   }
 };
 
-const getRoleAPById = async (req, res) => {
+const getRoleById = async (req, res) => {
   try {
     const { roleId } = req.body;
     const role = await PTLRolesAP.findById(roleId);
     if (!role) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un role por ese id",
+        msg: "No existe un role con ese id",
       });
     }
     return res.status(201).json({
@@ -39,7 +39,7 @@ const getRoleAPById = async (req, res) => {
 };
 
 // Crear un nuevo role
-const createRoleAP = async (req, res = response) => {
+const createRole = async (req, res = response) => {
   try {
     const role = req.body;
     const nuevo = await PTLRolesAP.create(role);
@@ -49,8 +49,8 @@ const createRoleAP = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo role
-const updateRoleAP = async (req, res = response) => {
+// Actualizar un role
+const updateRole = async (req, res = response) => {
   try {
     const { roleId } = req.body;
     const role = req.body;
@@ -58,7 +58,7 @@ const updateRoleAP = async (req, res = response) => {
     if (!roleOg) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un role por ese id",
+        msg: "No existe un role con ese id",
       });
     }
     const roleActualizado = await PTLRolesAP.findByIdAndUpdate({ roleId, role });
@@ -71,15 +71,15 @@ const updateRoleAP = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo role
-const deleteRoleAP = async (req, res = response) => {
+// Borrar un role
+const deleteRole = async (req, res = response) => {
   try {
     const { roleId } = req.body;
     const role = await PTLRolesAP.findOne(roleId);
     if (!role) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un role por ese id",
+        msg: "No existe un role con ese id",
       });
     }
     const roleEliminado = await PTLRolesAP.findByIdAndDelete({ roleId });
@@ -93,9 +93,9 @@ const deleteRoleAP = async (req, res = response) => {
 };
 
 module.exports = {
-  getRolesAP,
-  getRoleAPById,
-  createRoleAP,
-  updateRoleAP,
-  deleteRoleAP,
+  getRoles,
+  getRoleById,
+  createRole,
+  updateRole,
+  deleteRole,
 };

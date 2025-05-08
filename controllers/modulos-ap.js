@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -25,7 +26,7 @@ const getModuloById = async (req, res) => {
     if (!modulo) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un modulo por ese id",
+        msg: "No existe un modulo con ese id",
       });
     }
     return res.status(201).json({
@@ -57,7 +58,7 @@ const updateModulo = async (req, res = response) => {
     if (!moduloOg) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un modulo por ese id",
+        msg: "No existe un modulo con ese id",
       });
     }
     const moduloActualizado = await PTModulosAP.findByIdAndUpdate({ moduloId, modulo });
@@ -78,7 +79,7 @@ const deleteModulo = async (req, res = response) => {
     if (!modulo) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un modulo por ese id",
+        msg: "No existe un modulo con ese id",
       });
     }
     const moduloEliminado = await PTModulosAP.findByIdAndDelete({ moduloId });

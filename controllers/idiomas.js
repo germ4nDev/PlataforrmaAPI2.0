@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLIdiomas = require('../models/idioma')(sequelize);
 
-// Obtener todos los roles
+// Obtener todos los idiomas
 const getIdiomas = async (req, res) => {
   try {
     const idiomas = await PTLIdiomas.findAll();
@@ -25,7 +26,7 @@ const getIdiomaById = async (req, res) => {
     if (!idioma) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un idioma por el id",
+        msg: "No existe un idioma con ese id",
       });
     }
     return res.status(201).json({
@@ -37,7 +38,7 @@ const getIdiomaById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo idioma
 const createIdioma = async (req, res = response) => {
   try {
     const idioma = req.body;
@@ -48,7 +49,7 @@ const createIdioma = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar un idioma
 const updateIdioma = async (req, res = response) => {
   try {
     const { idiomaId } = req.body;
@@ -57,7 +58,7 @@ const updateIdioma = async (req, res = response) => {
     if (!IdiomaDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una idioma por ese id",
+        msg: "No existe un idioma con ese id",
       });
     }
     const idiomaActualizado = await PTLIdiomas.findByIdAndUpdate({ idiomaId, idioma });
@@ -70,7 +71,7 @@ const updateIdioma = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar un idioma
 const deleteIdioma = async (req, res = response) => {
   try {
     const { idiomaId } = req.body;
@@ -78,7 +79,7 @@ const deleteIdioma = async (req, res = response) => {
     if (!idiomaDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una idioma por el id",
+        msg: "No existe un idioma con ese id",
       });
     }
     const idiomaEliminado = await PTLIdiomas.findByIdAndDelete({ idiomaId });
