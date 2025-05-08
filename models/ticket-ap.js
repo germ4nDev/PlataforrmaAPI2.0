@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLLogActualizacionesAP', {
-      logId: {
+    return sequelize.define('PTLTicketsAP', {
+      ticketId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -15,26 +16,24 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
-      suscriptorId: {
-        type: DataTypes.INTEGER,
-        default: 0,
-        allowNull: false
-      },
-      versionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
-        allowNull: false
-      },
-      fecha: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      descripcionLog: {
+      nombreTicket: {
         type: DataTypes.STRING,
         allowNull: false
       },
+      descripcionTicket: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      estadoTicket: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      usuarioSenderId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      }
     }, {
-      tableName: 'PTLLogActualizacionesAP',
+      tableName: 'PTLTicketsAP',
       timestamps: false
     });
   };

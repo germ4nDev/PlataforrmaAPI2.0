@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -37,7 +38,7 @@ const getSuscriptoresById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo suscriptor
 const createSuscriptor = async (req, res = response) => {
   try {
     const suscriptor = req.body;
@@ -48,7 +49,7 @@ const createSuscriptor = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar un suscriptor
 const updateSuscriptor = async (req, res = response) => {
   try {
     const { suscriptorId } = req.body;
@@ -70,7 +71,7 @@ const updateSuscriptor = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar un suscriptor
 const deleteSuscriptor = async (req, res = response) => {
   try {
     const { suscriptorId } = req.body;

@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -14,7 +15,7 @@ const getConexionesBD = async (req, res) => {
       conexiones: conexiones,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener ConezionesBD' });
+    res.status(500).json({ error: 'Error al obtener las ConexionesBD' });
   }
 };
 
@@ -25,7 +26,7 @@ const getConexionById = async (req, res) => {
     if (!conexion) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un conexion por el id",
+        msg: "No existe una conexion con ese id",
       });
     }
     return res.status(201).json({
@@ -37,7 +38,7 @@ const getConexionById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear una nueva Conexion
 const createConexion = async (req, res = response) => {
   try {
     const conexion = req.body;
@@ -48,7 +49,7 @@ const createConexion = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar una nueva conexion
 const updateConexion = async (req, res = response) => {
   try {
     const { conexionId } = req.body;
@@ -57,7 +58,7 @@ const updateConexion = async (req, res = response) => {
     if (!ConexionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una conexion por ese id",
+        msg: "No existe una conexion con ese id",
       });
     }
     const conexionDBActualizado = await PTLConexionesBD.findByIdAndUpdate({ conexionId, conexion });
@@ -70,7 +71,7 @@ const updateConexion = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar una nueva conexion
 const deleteConexion = async (req, res = response) => {
   try {
     const { conexionId } = req.body;
@@ -78,7 +79,7 @@ const deleteConexion = async (req, res = response) => {
     if (!conexionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una conexion por el id",
+        msg: "No existe una conexion con ese id",
       });
     }
     const conexionDBEliminado = await PTLConexionesBD.findByIdAndDelete({ conexionId });

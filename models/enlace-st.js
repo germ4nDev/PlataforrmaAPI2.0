@@ -12,6 +12,7 @@ module.exports = (sequelize) => {
       },
       sitioId: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
       nombreEnlace: {

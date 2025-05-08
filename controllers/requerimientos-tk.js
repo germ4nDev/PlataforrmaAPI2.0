@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLRequerimientosTK = require('../models/requerimiento')(sequelize);
+const PTLRequerimientosTK = require('../models/requerimiento-tk')(sequelize);
 
 // Obtener todos los requerimientos
 const getRequerimientosTK = async (req, res) => {
@@ -25,7 +26,7 @@ const getRequerimientoTKById = async (req, res) => {
     if (!requerimiento) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un requerimiento por ese id",
+        msg: "No existe un requerimiento con ese id",
       });
     }
     return res.status(201).json({
@@ -48,7 +49,7 @@ const createRequerimientoTK = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo requerimiento
+// Actualizar un requerimiento
 const updateRequerimientoTK = async (req, res = response) => {
   try {
     const { requerimientoId } = req.body;
@@ -57,7 +58,7 @@ const updateRequerimientoTK = async (req, res = response) => {
     if (!requerimientoOg) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un requerimiento por ese id",
+        msg: "No existe un requerimiento con ese id",
       });
     }
     const requerimientoActualizado = await PTLRequerimientosTK.findByIdAndUpdate({ requerimientoId, requerimiento });
@@ -70,7 +71,7 @@ const updateRequerimientoTK = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo requerimiento
+// Borrar un requerimiento
 const deleteRequerimientoTK = async (req, res = response) => {
   try {
     const { requerimientoId } = req.body;
@@ -78,7 +79,7 @@ const deleteRequerimientoTK = async (req, res = response) => {
     if (!requerimiento) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un requerimiento por ese id",
+        msg: "No existe un requerimiento con ese id",
       });
     }
     const requerimientoEliminado = await PTLRequerimientosTK.findByIdAndDelete({ requerimientoId });

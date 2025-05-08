@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuarios = require('../models/usuario')(sequelize);
 
-// Obtener todos los roles
+// Obtener todos los usuarios
 const getUsuarios = async (req, res) => {
   try {
     const usuarios = await PTLUsuarios.findAll();
@@ -14,7 +15,7 @@ const getUsuarios = async (req, res) => {
       usuarios: usuarios,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Usuarios' });
+    res.status(500).json({ error: 'Error al obtener los Usuarios' });
   }
 };
 
@@ -25,7 +26,7 @@ const getUsuariosById = async (req, res) => {
     if (!usuario) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     return res.status(201).json({
@@ -37,7 +38,7 @@ const getUsuariosById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo usuario
 const createUsuario = async (req, res = response) => {
   try {
     const usuario = req.body;
@@ -48,7 +49,7 @@ const createUsuario = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar un usuario
 const updateUsuario = async (req, res = response) => {
   try {
     const { usuarioId } = req.body;
@@ -57,7 +58,7 @@ const updateUsuario = async (req, res = response) => {
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     const usuarioActualizado = await PTLUsuarios.findByIdAndUpdate({ usuarioId, Ususario });
@@ -70,7 +71,7 @@ const updateUsuario = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar un usuario
 const deleteUsuario = async (req, res = response) => {
   try {
     const { usuarioId } = req.body;
@@ -78,7 +79,7 @@ const deleteUsuario = async (req, res = response) => {
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario con ese id",
       });
     }
     const usuarioEliminado = await PTLUsuarios.findByIdAndDelete({ usuarioId });

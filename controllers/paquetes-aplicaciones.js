@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLPaqueteAplicaciones = require('../models/paquete-aplicacion')(sequelize);
 
-// Obtener todos los roles
+// Obtener todos los PaquetesAplicaciones
 const getPaquetesAplicaciones = async (req, res) => {
   try {
     const paquetesApps = await PTLPaqueteAplicaciones.findAll();
@@ -14,7 +15,7 @@ const getPaquetesAplicaciones = async (req, res) => {
       paquetesApps: paquetesApps,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener PaquetesAplicaciones' });
+    res.status(500).json({ error: 'Error al obtener los PaquetesAplicaciones' });
   }
 };
 
@@ -25,7 +26,7 @@ const getPaquetesAplicacionesById = async (req, res) => {
     if (!paquetesApps) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquetesApps con ese id",
+        msg: "No existe un paquetesAplicaciones con ese id",
       });
     }
     return res.status(201).json({
@@ -37,18 +38,18 @@ const getPaquetesAplicacionesById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo paqueteAplicaciones
 const createPaqueteAplicacion = async (req, res = response) => {
   try {
     const paqueteApps = req.body;
     const nuevo = await PTLPaqueteAplicaciones.create(paqueteApps);
     res.status(201).json(nuevo);
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el paqueteApps' });
+    res.status(500).json({ error: 'Error al crear el paquete' });
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar un nuevo paqueteAplicaciones
 const updatePaqueteAplicacion = async (req, res = response) => {
   try {
     const { paqueteAplicacionId } = req.body;
@@ -57,7 +58,7 @@ const updatePaqueteAplicacion = async (req, res = response) => {
     if (!paqueteDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete con ese id",
+        msg: "No existe un paquetesAplicaciones con ese id",
       });
     }
     const paqueteAppsActualizado = await PTLPaqueteAplicaciones.findByIdAndUpdate({ paqueteAplicacionId, paqueteApps });
@@ -70,7 +71,7 @@ const updatePaqueteAplicacion = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar un paqueteAplicaciones
 const deletePaqueteAplicacion = async (req, res = response) => {
   try {
     const { paqueteAplicacionId } = req.body;
@@ -78,7 +79,7 @@ const deletePaqueteAplicacion = async (req, res = response) => {
     if (!paqueteDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete con ese id",
+        msg: "No existe un paquetesAplicaciones con ese id",
       });
     }
     const paqueteAppsEliminado = await PTLPaqueteAplicaciones.findByIdAndDelete({ paqueteAplicacionId });

@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLEmpresasSC = require('../models/empresa-sc')(sequelize);
 
-// Obtener todos los roles
+// Obtener todas las empresas
 const getEmpresasSC = async (req, res) => {
   try {
     const empresasST = await PTLEmpresasSC.findAll();
@@ -14,80 +15,80 @@ const getEmpresasSC = async (req, res) => {
       elpresasST: empresasST,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener empresasST' });
+    res.status(500).json({ error: 'Error al obtener empresasSC' });
   }
 };
 
 const getEmpresaSCById = async (req, res) => {
   try {
     const { empresaId } = req.body;
-    const empresaST = await PTLEmpresasSC.findById(empresaId);
-    if (!empresaST) {
+    const empresaSC = await PTLEmpresasSC.findById(empresaId);
+    if (!empresaSC) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un empresaST por el id",
+        msg: "No existe una empresa con ese id",
       });
     }
     return res.status(201).json({
       ok: true,
-      empresaST: empresaST,
+      empresaSC: empresaSC,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener empresaST' });
+    res.status(500).json({ error: 'Error al obtener la empresaSC' });
   }
 };
 
-// Crear un nuevo rol
+// Crear una nueva empresa
 const createEmpresaSC = async (req, res = response) => {
   try {
-    const empresaST = req.body;
-    const nuevo = await PTLEmpresasSC.create(empresaST);
+    const empresaSC = req.body;
+    const nuevo = await PTLEmpresasSC.create(empresaSC);
     res.status(201).json(nuevo);
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear la empresaST' });
+    res.status(500).json({ error: 'Error al crear la empresaSC' });
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar una empresa
 const updateEmpresaSC = async (req, res = response) => {
   try {
     const { empresaId } = req.body;
-    const empresaST = req.body;
+    const empresaSC = req.body;
     const EmpresaSCDB = await PTLEmpresasSC.find(empresaId);
     if (!EmpresaSCDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una empresaST por ese id",
+        msg: "No existe una empresa con ese id",
       });
     }
-    const empresaSTActualizado = await PTLEmpresasSC.findByIdAndUpdate({ empresaId, empresaST });
+    const empresaSCActualizado = await PTLEmpresasSC.findByIdAndUpdate({ empresaId, empresaSC });
     return res.status(201).json({
       ok: true,
-      empresaST: empresaSTActualizado,
+      empresaSC: empresaSCActualizado,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar la EmpresaSC' });
   }
 };
 
-// Borrar un nuevo rol
+// Borrar una empresa
 const deleteEmpresaSC = async (req, res = response) => {
   try {
     const { empresaId } = req.body;
-    const empresaSTDB = await PTLEmpresasSC.findOne(empresaId);
-    if (!empresaSTDB) {
+    const empresaSCDB = await PTLEmpresasSC.findOne(empresaId);
+    if (!empresaSCDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una empresaST por el id",
+        msg: "No existe una empresa con ese id",
       });
     }
-    const empresaSTEliminado = await PTLEmpresasSC.findByIdAndDelete({ empresaId });
+    const empresaSCEliminado = await PTLEmpresasSC.findByIdAndDelete({ empresaId });
     return res.status(201).json({
       ok: true,
-      empresaST: empresaSTEliminado,
+      empresaSC: empresaSCEliminado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar la empresaST' });
+    res.status(500).json({ error: 'Error al eliminar la empresaSC' });
   }
 };
 

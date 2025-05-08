@@ -22,40 +22,44 @@ app.use( express.json() );
 app.use( express.static('public') );
 
 /*
-*   PTLUsuariosEmpresas
+*   PTLUsuariosEmpresasSC
 *   PTLSuscriptorAplicaciones
 *   PTLSuscriptorPaquetes
 
 *   PTLIdiomas
-*   PTLTectosID
+*   PTLTextosID
+*   PTLPaquetesSC
 */
 
 // Rutas
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
-app.use('/api/roles', require('./routes/roles') );
-app.use('/api/versiones-ap', require('./routes/versiones-ap') );
-app.use('/api/paquetes', require('./routes/paquetes') );
-app.use('/api/paquetes-aplicaciones', require('./routes/paquetes-aplicaciones') );
-app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
-app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
-// app.use('/api/usuarios-empresas', require('./routes/usuarios-empresas') );
-app.use('/api/usuarios', require('./routes/usuarios') );
-app.use('/api/suscriptores', require('./routes/suscriptores') );
-// app.use('/api/suscriptor-aplicaciones', require('./routes/suscriptor-paquetes') );
-app.use('/api/empresas-sc', require('./routes/empresas-sc') );
-app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
-// app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
-app.use('/api/tickets', require('./routes/tickets') );
-app.use('/api/requerimientos-tk', require('./routes/requerimientos') );
-app.use('/api/seguimientos-tk', require('./routes/seguimientos') );
-
-app.use('/api/logs-actividades', require('./routes/logs-actividades') );
-app.use('/api/logs-actualizaciones', require('./routes/logs-actualizaciones') );
-app.use('/api/logs-transacciones', require('./routes/logs-transacciones') );
-app.use('/api/sitios-ap', require('./routes/sitios-ap') );
 app.use('/api/contenidos-el', require('./routes/contenidos-el') );
+app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/enlaces-st', require('./routes/enlaces-st') );
+
+app.use('/api/logs-actividades-ap', require('./routes/logs-actividades-ap') );
+app.use('/api/logs-actualizaciones-ap', require('./routes/logs-actualizaciones-ap') );
+app.use('/api/logs-transacciones-ap', require('./routes/logs-transacciones-ap') );
+app.use('/api/modulos-ap', require('./routes/modulos-ap') );
+app.use('/api/paquetes-aplicaciones', require('./routes/paquetes-aplicaciones') );
+
+app.use('/api/paquetes', require('./routes/paquetes') );
+app.use('/api/requerimientos-tk', require('./routes/requerimientos-tk') );
+app.use('/api/roles-ap', require('./routes/roles-ap') );
+app.use('/api/seguimientos-rq', require('./routes/seguimientos-rq') );
+app.use('/api/sitios-ap', require('./routes/sitios-ap') );
+// app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
+app.use('/api/suscriptores', require('./routes/suscriptores') );
+
+app.use('/api/tickets-ap', require('./routes/tickets-ap') );
+// app.use('/api/usuarios-empresas', require('./routes/usuarios-empresas') );
+app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
+app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
+app.use('/api/usuarios', require('./routes/usuarios') );
+app.use('/api/versiones-ap', require('./routes/versiones-ap') );
+// app.use('/api/suscriptor-aplicaciones', require('./routes/suscriptor-paquetes') );
+
 // app.use('/api/pla-adjuntos', require('./routes/pla_adjuntos') );
 
 app.get('*', (req, res) => {

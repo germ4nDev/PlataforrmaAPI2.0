@@ -1,14 +1,15 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLUsuarioRoleAP = require('../models/usuario-role')(sequelize);
+const PTLUsuarioRoles = require('../models/usuario-role')(sequelize);
 
-// Obtener todos los roles
+// Obtener todos los usuariosRoles
 const getUsuariosRoles = async (req, res) => {
   try {
-    const roles = await PTLUsuarioRoleAP.findAll();
+    const roles = await PTLUsuarioRoles.findAll();
     return res.status(201).json({
       ok: true,
       usuariosRoles: roles,
@@ -20,12 +21,12 @@ const getUsuariosRoles = async (req, res) => {
 
 const getUsuariosRolesById = async (req, res) => {
   try {
-    const { usuarioRolId } = req.body;
-    const role = await PTLUsuarioRoleAP.findById(usuarioRolId);
+    const { usuarioRoleId } = req.body;
+    const role = await PTLUsuarioRoles.findById(usuarioRoleId);
     if (!role) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuarioRole por ese id",
+        msg: "No existe un usuarioRole con ese id",
       });
     }
     return res.status(201).json({
@@ -37,30 +38,30 @@ const getUsuariosRolesById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo usuarioRole
 const createUsuarioRole = async (req, res = response) => {
   try {
     const { usuarioId, rolId } = req.body;
-    const nuevo = await PTLUsuarioRoleAP.create({ usuarioId, rolId });
+    const nuevo = await PTLUsuarioRoles.create({ usuarioId, rolId });
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuario role' });
   }
 };
 
-// Actualizar un nuevo rol
+// Actualizar un usuarioRole
 const updateUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioRolId, usuarioId, rolId } = req.body;
-    const UsusarioRole = req.body;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.find(usuarioRolId);
+    const { usuarioRoleId, usuarioId, rolId } = req.body;
+    const UsuarioRole = req.body;
+    const usuarioRoleDB = await PTLUsuarioRoles.find(usuarioRoleId);
     if (!usuarioRoleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuarioRole con ese id",
       });
     }
-    const usuarioRoleDBActualizado = await PTLUsuarioRoleAP.findByIdAndUpdate({ usuarioRolId, UsusarioRole });
+    const usuarioRoleDBActualizado = await PTLUsuarioRoles.findByIdAndUpdate({ usuarioRoleId, UsuarioRole });
     return res.status(201).json({
       ok: true,
       usuarioRole: usuarioRoleDBActualizado,
@@ -70,18 +71,18 @@ const updateUsuarioRole = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
+// Borrar un usuarioRole
 const deleteUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioRolId } = req.body;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne(usuarioRolId);
+    const { usuarioRoleId } = req.body;
+    const usuarioRoleDB = await PTLUsuarioRoles.findOne(usuarioRoleId);
     if (!usuarioRoleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuarioRole con ese id",
       });
     }
-    const usuarioRoleDBEliminado = await PTLUsuarioRoleAP.findByIdAndDelete({ usuarioRolId });
+    const usuarioRoleDBEliminado = await PTLUsuarioRoles.findByIdAndDelete({ usuarioRoleId });
     return res.status(201).json({
       ok: true,
       usuarioRole: usuarioRoleDBEliminado,

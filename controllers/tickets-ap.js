@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLTicketsAP = require('../models/ticket')(sequelize);
+const PTLTicketsAP = require('../models/ticket-ap')(sequelize);
 
 // Obtener todos los ticketes
 const getTicketsAP = async (req, res) => {
@@ -48,7 +49,7 @@ const createTicketAP = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo ticket
+// Actualizar un ticket
 const updateTicketAP = async (req, res = response) => {
   try {
     const { ticketId } = req.body;
@@ -70,7 +71,7 @@ const updateTicketAP = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo ticket
+// Borrar un ticket
 const deleteTicketAP = async (req, res = response) => {
   try {
     const { ticketId } = req.body;

@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLEmpresasST', {
+    return sequelize.define('PTLEmpresasSC', {
       empresaId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -23,12 +24,12 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoUsuario: {
+      estadoEmpresa: {
         type: DataTypes.BOOLEAN,
         default: false,
       }
     }, {
-      tableName: 'PTLEmpresasST',
+      tableName: 'PTLEmpresasSC',
       timestamps: false
     });
   };

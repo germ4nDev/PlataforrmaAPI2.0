@@ -4,18 +4,18 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLUsuariosST', {
+    return sequelize.define('PTLUsuariosSC', {
       usuarioSTId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      usuarioId: {
+      suscriptorId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      suscriptorId: {
+      usuarioId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         default: false
       }
     }, {
-      tableName: 'PTLUsuariosST',
+      tableName: 'PTLUsuariosSC',
       timestamps: false
     });
   };
