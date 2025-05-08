@@ -16,10 +16,6 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
-      codigoModulo: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       nombreModulo: {
         type: DataTypes.STRING,
         allowNull: false
@@ -31,6 +27,10 @@ module.exports = (sequelize) => {
       estadoModulo: {
         type: DataTypes.BOOLEAN,
         default: false,
+        allowNull: false
+      },
+      codigoModulo: {
+        type: DataTypes.STRING,
         allowNull: false
       }
     }, {
