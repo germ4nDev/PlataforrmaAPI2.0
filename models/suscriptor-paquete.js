@@ -4,7 +4,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLPaquetesSC', {
+    return sequelize.define('PTLSuscriptoresPaquetes', {
       suscriptoPaqueteId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -19,13 +19,11 @@ module.exports = (sequelize) => {
         allowNull: false
       },
       fechaInicio: {
-        type: DataTypes.DATETIME,
-        default: Date.now(),
+        type: DataTypes.DATE,
         allowNull: false
       },
       fechaVencimiento: {
-        type: DataTypes.DATETIME,
-        default: Date.now(),
+        type: DataTypes.DATE,
         allowNull: false
       },
       codigoLicencia: {
@@ -37,7 +35,7 @@ module.exports = (sequelize) => {
         allowNull: false
       }
     }, {
-      tableName: 'PTLPaquetesSC',
+      tableName: 'PTLSuscriptoresPaquetes',
       timestamps: false
     });
   };

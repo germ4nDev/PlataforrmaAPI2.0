@@ -2,6 +2,7 @@
     Author: German Valencia
 */
 const { DataTypes } = require('sequelize');
+const sequelize = require('../database/connection');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLUsuariosAP', {
@@ -12,7 +13,8 @@ module.exports = (sequelize) => {
       },
       identificacionUsuario: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       nombreUsuario: {
         type: DataTypes.STRING,
@@ -20,15 +22,12 @@ module.exports = (sequelize) => {
       },
       correoUsuario: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
-      correoUsuario: {
+      userNameUsuario: {
         type: DataTypes.STRING,
-        allowNull: false
-      },
-      userName: {
-        type: DataTypes.STRING,
-        allowNull: false
+        unique: true
       },
       claveUsuario: {
         type: DataTypes.STRING,

@@ -4,10 +4,14 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuarios = require('../models/usuario')(sequelize);
+const { generarJWT } = require("../helpers/jwt");
+const bcrypt = require("bcryptjs");
 
 // Obtener todos los roles
 const getUsuarios = async (req, res) => {
   try {
+    console.log('acuya');
+    
     const usuarios = await PTLUsuarios.findAll();
     return res.status(201).json({
       ok: true,
@@ -37,12 +41,32 @@ const getUsuariosById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
+// Crear un nuevo usuario
 const createUsuario = async (req, res = response) => {
   try {
     const usuario = req.body;
-    const nuevo = await PTLUsuarios.create(usuario);
-    res.status(201).json(nuevo);
+    const emailDev = usuario.email;
+    const existeEmail = await PTLUsuarios.findOne({ 
+        where: {
+          correoUsuario: emailDev
+        } 
+     });
+    if (existeEmail) {
+      return res.json({
+        ok: false,
+        msg: "El correo ya está registrado",
+      });
+    } else {
+      const salt = bcrypt.genSaltSync();
+      usuario.claveUsuario = bcrypt.hashSync(usuario.claveUsuario, salt);
+      const nuevo = await PTLUsuarios.create(usuario);
+      const token = await generarJWT(nuevo.usuarioId, nuevo.userNameUsuario, nuevo.correoUsuario);
+      res.json({
+        ok: true,
+        usuario : nuevo,
+        token : token
+      });
+    }
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuario' });
   }
@@ -52,19 +76,23 @@ const createUsuario = async (req, res = response) => {
 const updateUsuario = async (req, res = response) => {
   try {
     const { usuarioId } = req.body;
-    const Ususario = req.body;
+    const Usuario = req.body;
     const usuarioDB = await PTLUsuarios.find(usuarioId);
     if (!usuarioDB) {
-      return res.status(404).json({
+      return res.json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
+    } else {
+      if (usuario.claveUsuario = '') {
+        usuario.claveUsuario = usuarioDB.claveUsuario;
+      }
+      const usuarioActualizado = await PTLUsuarios.findByIdAndUpdate({ usuarioId, Usuario });
+      return res.status(201).json({
+        ok: true,
+        usuario: usuarioActualizado,
+      });      
     }
-    const usuarioActualizado = await PTLUsuarios.findByIdAndUpdate({ usuarioId, Ususario });
-    return res.status(201).json({
-      ok: true,
-      usuario: usuarioActualizado,
-    });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar el usuario' });
   }

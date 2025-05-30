@@ -26,5 +26,4 @@ router.put("/:id",validarJWT, updateSitio);
 
 router.delete("/:id", [validarJWT], deleteSitio);
 
-
 module.exports = router;

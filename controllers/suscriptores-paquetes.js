@@ -3,98 +3,98 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLSuscriptoresAP = require('../models/suscriptor')(sequelize);
+const PTLSuscrioresPaquetes = require('../models/suscriptor-paquete')(sequelize);
 
 // Obtener todos los roles
-const getSuscriptores = async (req, res) => {
+const getSuscriptoresPaquetes = async (req, res) => {
   try {
-    const suscriptores = await PTLSuscriptoresAP.findAll();
+    const suscriptoresPaquetes = await PTLSuscrioresPaquetes.findAll();
     return res.status(201).json({
       ok: true,
-      suscriptores: suscriptores,
+      suscriptoresPaquetes: suscriptoresPaquetes,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Suscriptores' });
+    res.status(500).json({ error: 'Error al obtener suscriptoresPaquetes' });
   }
 };
  
-const getSuscriptoresById = async (req, res) => {
+const getSuscriptoresPaquetesById = async (req, res) => {
   try {
-    const { suscriptorId } = req.body;
-    const suscriptor = await PTLSuscriptoresAP.findById(suscriptorId);
-    if (!suscriptor) {
+    const { suscriptorPaqueteId } = req.body;
+    const suscriptorPaquete = await PTLSuscrioresPaquetes.findById(suscriptorPaqueteId);
+    if (!suscriptorPaquete) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un suscriptor con ese id",
+        msg: "No existe un suscriptorPaquete con ese id",
       });
     }
     return res.status(201).json({
       ok: true,
-      suscriptor: suscriptor,
+      suscriptorPaquete: suscriptorPaquete,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener el suscriptor' });
+    res.status(500).json({ error: 'Error al obtener el suscriptorPaquete' });
   }
 };
 
 // Crear un nuevo rol
-const createSuscriptor = async (req, res = response) => {
+const createSuscriptorPaquete = async (req, res = response) => {
   try {
     const suscriptor = req.body;
-    const nuevo = await PTLSuscriptoresAP.create(suscriptor);
+    const nuevo = await PTLSuscrioresPaquetes.create(suscriptor);
     res.status(201).json(nuevo);
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el suscriptor' });
+    res.status(500).json({ error: 'Error al crear el suscriptorPaquete' });
   }
 };
 
 // Actualizar un nuevo rol
-const updateSuscriptor = async (req, res = response) => {
+const updateSuscriptorPaquete = async (req, res = response) => {
   try {
-    const { suscriptorId } = req.body;
+    const { suscriptorPaqueteId } = req.body;
     const suscriptor = req.body;
-    const suscriptorDB = await PTLSuscriptoresAP.find(suscriptorId);
+    const suscriptorDB = await PTLSuscrioresPaquetes.find(suscriptorPaqueteId);
     if (!suscriptorDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un suscriptor con ese id",
+        msg: "No existe un suscriptorPaquete con ese id",
       });
     }
-    const suscriptorActualizado = await PTLSuscriptoresAP.findByIdAndUpdate({ suscriptorId, suscriptor });
+    const suscriptorActualizado = await PTLSuscrioresPaquetes.findByIdAndUpdate({ suscriptorPaqueteId, suscriptor });
     return res.status(201).json({
       ok: true,
-      suscriptor: suscriptorActualizado,
+      suscriptorPaquete: suscriptorActualizado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el suscriptor' });
+    res.status(500).json({ error: 'Error al actualizar el suscriptorPaquete' });
   }
 };
 
 // Borrar un nuevo rol
-const deleteSuscriptor = async (req, res = response) => {
+const deleteSuscriptorPaquete = async (req, res = response) => {
   try {
-    const { suscriptorId } = req.body;
-    const suscriptorDB = await PTLSuscriptoresAP.findOne(suscriptorId);
+    const { suscriptorPaqueteId } = req.body;
+    const suscriptorDB = await PTLSuscrioresPaquetes.findOne(suscriptorPaqueteId);
     if (!suscriptorDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un suscriptor con ese id",
+        msg: "No existe un suscriptorPaquete con ese id",
       });
     }
-    const suscriptorEliminado = await PTLSuscriptoresAP.findByIdAndDelete({ suscriptorId });
+    const suscriptorEliminado = await PTLSuscrioresPaquetes.findByIdAndDelete({ suscriptorPaqueteId });
     return res.status(201).json({
       ok: true,
-      suscriptor: suscriptorEliminado,
+      suscriptorPaquete: suscriptorEliminado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar suscriptor' });
+    res.status(500).json({ error: 'Error al eliminar suscriptorPaquete' });
   }
 };
 
 module.exports = {
-  getSuscriptores,
-  getSuscriptoresById,
-  createSuscriptor,
-  updateSuscriptor,
-  deleteSuscriptor,
+  getSuscriptoresPaquetes,
+  getSuscriptoresPaquetesById,
+  createSuscriptorPaquete,
+  updateSuscriptorPaquete,
+  deleteSuscriptorPaquete,
 };
