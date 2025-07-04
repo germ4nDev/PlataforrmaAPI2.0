@@ -5,7 +5,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/connection');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLUsuariosAP', {
+    return sequelize.define('PTLUsuarios', {
       usuarioId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
         default: false
       }
     }, {
-      tableName: 'PTLUsuarioAP',
+      tableName: 'PTLUsuarios',
       timestamps: false
     });
   };
