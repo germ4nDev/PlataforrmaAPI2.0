@@ -24,14 +24,12 @@ const login = async (req, res = response) => {
       } else {
         console.log('Usuario Encontrado', usuarioDB);
 
-        // Verificar contraseña
         const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
 
         if (isMatch) {
           console.log('✅ Login exitoso');
           const token = await generarJWT(usuarioDB.usuarioId, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
           console.log('token Usuario', token);
-          // usuarioDB.serviceToken = token;
           res.json({
             ok: true,
             token,
@@ -42,25 +40,7 @@ const login = async (req, res = response) => {
             ok: false,
             msg: "Contraseña no válida",
           });
-        }
-
-        // const validPassword = bcrypt.compareSync(claveUsuario, usuarioDB.claveUsuario);
-        // console.log('validPassword Usuario', validPassword);
-        // if (!validPassword) {
-        //   return res.json({
-        //     ok: false,
-        //     msg: "Contraseña no válida",
-        //   });
-        // }
-        // Generar el TOKEN - JWT
-        // const token = await generarJWT(usuarioDB.usuarioId, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
-        // console.log('token Usuario', token);
-        // // usuarioDB.serviceToken = token;
-        // res.json({
-        //   ok: true,
-        //   token,
-        //   usuario: usuarioDB,
-        // });        
+        }       
       }
     } catch (error) {
       console.log(error);

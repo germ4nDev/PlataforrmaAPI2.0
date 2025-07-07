@@ -6,23 +6,26 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLRolesAP = require('../models/role')(sequelize);
 
-// Obtener todos los role
 const getRolesAP = async (req, res) => {
   try {
-    const role = await PTLRolesAP.findAll();
+    const roles = await PTLRolesAP.findAll();
     return res.status(201).json({
       ok: true,
-      role: role,
+      roles: roles,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener RolesAP' });
+    res.status(500).json({ error: 'Error al obtener Roles' });
   }
 };
 
 const getRoleAPById = async (req, res) => {
   try {
-    const { roleId } = req.body;
-    const role = await PTLRolesAP.findById(roleId);
+    const roleId = req.params.id;
+    const role = await PTLRolesAP.findOne({
+      where: {
+        roleId: roleId,
+      },
+    });
     if (!role) {
       return res.status(404).json({
         ok: false,
@@ -34,61 +37,83 @@ const getRoleAPById = async (req, res) => {
       role: role,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener role' });
+    res.status(500).json({ error: "Error al obtener role" });
   }
 };
 
-// Crear un nuevo role
 const createRoleAP = async (req, res = response) => {
   try {
-    const role = req.body;
-    const nuevo = await PTLRolesAP.create(role);
-    res.status(201).json(nuevo);
+    const nuevoRole = req.body;
+    const roleDB = await PTLRolesAP.create(nuevoRole);
+    return res.status(201).json({
+      ok: true,
+      role: roleDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el role' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el role'
+    });
   }
 };
 
-// Actualizar un nuevo role
 const updateRoleAP = async (req, res = response) => {
   try {
-    const { roleId } = req.body;
-    const role = req.body;
-    const roleOg = await PTLRolesAP.find(roleId);
-    if (!roleOg) {
+    const { roleId, ...data } = req.body;
+    const roleDB = await PTLRolesAP.findOne({
+      where: { roleId }
+    });
+    if (!roleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un role por ese id",
+        msg: 'No existe un role con ese ID'
       });
     }
-    const roleActualizado = await PTLRolesAP.findByIdAndUpdate({ roleId, role });
-    return res.status(201).json({
+    await PTLRolesAP.update(data, {
+      where: { roleId }
+    });
+    const roleActualizado = await PTLRolesAP.findOne({ where: { roleId } });
+    return res.status(200).json({
       ok: true,
-      role: roleActualizado,
+      role: roleActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el role' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el role'
+    });
   }
 };
 
-// Borrar un nuevo role
 const deleteRoleAP = async (req, res = response) => {
   try {
-    const { roleId } = req.body;
-    const role = await PTLRolesAP.findOne(roleId);
-    if (!role) {
+    const rolId = req.params.id;
+    const roleDB = await PTLAplicaciones.findOne({
+      where: { rolId }
+    });
+    if (!roleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un role por ese id",
+        msg: 'No existe un role con ese ID'
       });
     }
-    const roleEliminado = await PTLRolesAP.findByIdAndDelete({ roleId });
-    return res.status(201).json({
+    roleEliminado = await PTLRolesAP.destroy({
+      where: { rolId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      role: roleEliminado,
+      usuario: roleEliminado,
+      msg: 'Role eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar role' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el usuario'
+    });
   }
 };
 

@@ -19,10 +19,14 @@ const getUsuariosRoles = async (req, res) => {
 };
 
 const getUsuariosRolesById = async (req, res) => {
-  try {
-    const { usuarioRolId } = req.body;
-    const role = await PTLUsuarioRoleAP.findById(usuarioRolId);
-    if (!role) {
+    try {
+    const usuarioRolId = req.params.id;
+    const usuarioRole = await PTLUsuarioRoleAP.findOne({
+      where: {
+        usuarioRolId: usuarioRolId,
+      },
+    });
+    if (!usuarioRole) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuarioRole por ese id",
@@ -30,50 +34,49 @@ const getUsuariosRolesById = async (req, res) => {
     }
     return res.status(201).json({
       ok: true,
-      usuarioRole: role,
+      usuarioRole: usuarioRole,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    res.status(500).json({ error: "Error al obtener usuarioRole" });
   }
 };
 
-// Crear un nuevo rol
 const createUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioId, rolId } = req.body;
-    const nuevo = await PTLUsuarioRoleAP.create({ usuarioId, rolId });
+    const usurioRole = req.body;
+    const nuevo = await PTLUsuarioRoleAP.create(usurioRole);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuario role' });
   }
 };
 
-// Actualizar un nuevo rol
 const updateUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioRolId, usuarioId, rolId } = req.body;
-    const UsusarioRole = req.body;
+    const { usuarioRolId, ...data } = req.body;
     const usuarioRoleDB = await PTLUsuarioRoleAP.find(usuarioRolId);
     if (!usuarioRoleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuarioRole por ese id",
       });
     }
-    const usuarioRoleDBActualizado = await PTLUsuarioRoleAP.findByIdAndUpdate({ usuarioRolId, UsusarioRole });
-    return res.status(201).json({
+    await PTLUsuarioRoleAP.update(data, {
+      where: { usuarioRolId }
+    });
+    const usuarioActualizado = await PTLUsuarioRoleAP.findOne({ where: { usuarioRolId } });
+    return res.status(200).json({
       ok: true,
-      usuarioRole: usuarioRoleDBActualizado,
+      usuarioRole: usuarioActualizado
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar el usuario role' });
   }
 };
 
-// Borrar un nuevo rol
 const deleteUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioRolId } = req.body;
+    const usuarioRolId = req.params.id;
     const usuarioRoleDB = await PTLUsuarioRoleAP.findOne(usuarioRolId);
     if (!usuarioRoleDB) {
       return res.status(404).json({
@@ -81,7 +84,9 @@ const deleteUsuarioRole = async (req, res = response) => {
         msg: "No existe un usuario por ese id",
       });
     }
-    const usuarioRoleDBEliminado = await PTLUsuarioRoleAP.findByIdAndDelete({ usuarioRolId });
+    usuarioRoleDBEliminado = await PTLUsuarioRoleAP.destroy({
+      where: { usuarioRolId }
+    });
     return res.status(201).json({
       ok: true,
       usuarioRole: usuarioRoleDBEliminado,
