@@ -10,8 +10,6 @@ const bcrypt = require("bcryptjs");
 // Obtener todos los roles
 const getUsuarios = async (req, res) => {
   try {
-    console.log('acuya');
-    
     const usuarios = await PTLUsuarios.findAll();
     return res.status(201).json({
       ok: true,
@@ -24,8 +22,12 @@ const getUsuarios = async (req, res) => {
 
 const getUsuariosById = async (req, res) => {
   try {
-    const { usuarioId } = req.body;
-    const usuario = await PTLUsuarios.findById(usuarioId);
+    const usuarioId = req.params.id;
+    const usuario = await PTLUsuarios.findOne({
+      where: {
+        usuarioId: usuarioId,
+      },
+    });
     if (!usuario) {
       return res.status(404).json({
         ok: false,
@@ -37,85 +39,105 @@ const getUsuariosById = async (req, res) => {
       usuario: usuario,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener el usuario' });
+    res.status(500).json({ error: "Error al obtener aplicacion" });
   }
 };
 
-// Crear un nuevo usuario
 const createUsuario = async (req, res = response) => {
   try {
-    const usuario = req.body;
-    const emailDev = usuario.email;
-    const existeEmail = await PTLUsuarios.findOne({ 
-        where: {
-          correoUsuario: emailDev
-        } 
-     });
-    if (existeEmail) {
-      return res.json({
+    const nuevoUsuario = req.body;
+    const existeIdentificacion = await PTLUsuarios.findOne({
+      where: { nombreUsuario: nuevoUsuario.identificacionUsuario }
+    });
+    if (existeIdentificacion) {
+      return res.status(400).json({
         ok: false,
-        msg: "El correo ya está registrado",
-      });
-    } else {
-      const salt = bcrypt.genSaltSync();
-      usuario.claveUsuario = bcrypt.hashSync(usuario.claveUsuario, salt);
-      const nuevo = await PTLUsuarios.create(usuario);
-      const token = await generarJWT(nuevo.usuarioId, nuevo.userNameUsuario, nuevo.correoUsuario);
-      res.json({
-        ok: true,
-        usuario : nuevo,
-        token : token
+        msg: 'Ya existe un usuario con esa identificación'
       });
     }
+    const existeNombre = await PTLUsuarios.findOne({
+      where: { nombreUsuario: nuevoUsuario.nombreUsuario }
+    });
+    if (existeNombre) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe un usuario con ese nombre'
+      });
+    }
+    const salt = bcrypt.genSaltSync();
+    const password = await bcrypt.hash(nuevoUsuario.claveUsuario, salt);
+    nuevoUsuario.claveUsuario = password;
+    nuevoUsuario.fotoUsuario = 'no-foto.png';
+    const usuarioDB = await PTLUsuarios.create(nuevoUsuario);
+    return res.status(201).json({
+      ok: true,
+      usuario: usuarioDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el usuario'
+    });
   }
 };
 
-// Actualizar un nuevo rol
 const updateUsuario = async (req, res = response) => {
   try {
-    const { usuarioId } = req.body;
-    const Usuario = req.body;
-    const usuarioDB = await PTLUsuarios.find(usuarioId);
-    if (!usuarioDB) {
-      return res.json({
-        ok: false,
-        msg: "No existe un usuario por ese id",
-      });
-    } else {
-      if (usuario.claveUsuario = '') {
-        usuario.claveUsuario = usuarioDB.claveUsuario;
-      }
-      const usuarioActualizado = await PTLUsuarios.findByIdAndUpdate({ usuarioId, Usuario });
-      return res.status(201).json({
-        ok: true,
-        usuario: usuarioActualizado,
-      });      
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el usuario' });
-  }
-};
-
-// Borrar un nuevo rol
-const deleteUsuario = async (req, res = response) => {
-  try {
-    const { usuarioId } = req.body;
-    const usuarioDB = await PTLUsuarios.findOne(usuarioId);
+    const { usuarioId, ...data } = req.body;
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: { usuarioId }
+    });
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: 'No existe un usuario con ese ID'
       });
     }
-    const usuarioEliminado = await PTLUsuarios.findByIdAndDelete({ usuarioId });
-    return res.status(201).json({
+    await PTLUsuarios.update(data, {
+      where: { usuarioId }
+    });
+    const usuarioActualizado = await PTLUsuarios.findOne({ where: { usuarioId } });
+    return res.status(200).json({
       ok: true,
-      usuario: usuarioEliminado,
+      usuario: usuarioActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar usuario' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el usuario'
+    });
+  }
+};
+
+const deleteUsuario = async (req, res = response) => {
+  try {
+    const usuarioId = req.params.id;
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: { usuarioId }
+    });
+    if (!usuarioDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No existe una aplicación con ese ID'
+      });
+    }
+    usuarioEliminado = await PTLUsuarios.destroy({
+      where: { usuarioId }
+    });
+
+    return res.status(200).json({
+      ok: true,
+      usuario: usuarioEliminado,
+      msg: 'Usuario eliminado correctamente'
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el usuario'
+    });
   }
 };
 
