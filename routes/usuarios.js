@@ -19,12 +19,12 @@ const router = Router();
 
 router.get("/", getUsuarios);
 
-router.post( "/",  validarJWT, createUsuario);
+router.post( "/", createUsuario);
 
-router.put("/:id",validarJWT, updateUsuario);
+router.put("/:id", updateUsuario);
 
-router.delete("/:id", [validarJWT], deleteUsuario);
+router.delete("/:id", deleteUsuario);
 
-router.get("/:id", validarJWT, getUsuariosById);
+router.get("/:id", getUsuariosById);
 
 module.exports = router;

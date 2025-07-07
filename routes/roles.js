@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getRolesAP);
 
-router.post( "/",  validarJWT, createRoleAP);
+router.post( "/",  createRoleAP);
 
-router.put("/:id", validarJWT, updateRoleAP);
+router.put("/:id", updateRoleAP);
 
-router.delete("/:id", validarJWT, deleteRoleAP);
+router.delete("/:id", deleteRoleAP);
 
-router.get("/:id", validarJWT, getRoleAPById);
+router.get("/:id", getRoleAPById);
 
 module.exports = router;

@@ -1,9 +1,9 @@
 /*
     Author: German Valencia
 */
-const express = require('express');
-const sequelize = require('../database/connection');
-const PTLAplicaciones = require('../models/aplicacion')(sequelize);
+const express = require("express");
+const sequelize = require("../database/connection");
+const PTLAplicaciones = require("../models/aplicacion")(sequelize);
 
 // Obtener todos los roles
 const getAplicaciones = async (req, res) => {
@@ -14,14 +14,18 @@ const getAplicaciones = async (req, res) => {
       aplicaciones: aplicaciones,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Aplicaciones' });
+    res.status(500).json({ error: "Error al obtener Aplicaciones" });
   }
 };
 
 const getAplicacionById = async (req, res) => {
   try {
-    const { aplicacionId } = req.body;
-    const aplicacion = await PTLAplicaciones.findById(aplicacionId);
+    const aplicacionId = req.params.id;
+    const aplicacion = await PTLAplicaciones.findOne({
+      where: {
+        aplicacionId: aplicacionId,
+      },
+    });
     if (!aplicacion) {
       return res.status(404).json({
         ok: false,
@@ -33,61 +37,92 @@ const getAplicacionById = async (req, res) => {
       aplicacion: aplicacion,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener aplicacion' });
+    res.status(500).json({ error: "Error al obtener aplicacion" });
   }
 };
 
-// Crear un nuevo rol
 const createAplicacion = async (req, res = response) => {
   try {
-    const aplicacion = req.body;
-    const nuevo = await PTLAplicaciones.create(aplicacion);
-    res.status(201).json(nuevo);
+    const nuevaAplicacion = req.body;
+    const existente = await PTLAplicaciones.findOne({
+      where: { codigoAplicacion: nuevaAplicacion.codigoAplicacion }
+    });
+    if (existente) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe una aplicación con ese código'
+      });
+    }
+    const aplicacionDB = await PTLAplicaciones.create(nuevaAplicacion);
+    return res.status(201).json({
+      ok: true,
+      aplicacion: aplicacionDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear la aplicacion' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear la aplicación'
+    });
   }
 };
 
-// Actualizar un nuevo rol
 const updateAplicacion = async (req, res = response) => {
   try {
-    const { aplicacionId } = req.body;
-    const aplicacion = req.body;
-    const AplicacionDB = await PTLAplicaciones.find(aplicacionId);
-    if (!AplicacionDB) {
+    const { aplicacionId, ...data } = req.body;
+    const aplicacionDB = await PTLAplicaciones.findOne({
+      where: { aplicacionId }
+    });
+    if (!aplicacionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una aplicacion por ese id",
+        msg: 'No existe una aplicación con ese ID'
       });
     }
-    const AplicacionActualizado = await PTLAplicaciones.findByIdAndUpdate({ aplicacionId, aplicacion });
-    return res.status(201).json({
+    await PTLAplicaciones.update(data, {
+      where: { aplicacionId }
+    });
+    const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { aplicacionId } });
+    return res.status(200).json({
       ok: true,
-      aplicacion: AplicacionActualizado,
+      aplicacion: aplicacionActualizada
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar la aplicacion' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar la aplicación'
+    });
   }
 };
 
-// Borrar una aplicacion
 const deleteAplicacion = async (req, res = response) => {
   try {
-    const { aplicacionId } = req.body;
-    const aplicacion = await PTLAplicaciones.findOne(aplicacionId);
-    if (!aplicacion) {
+    const aplicacionId = req.params.id;
+    const aplicacionDB = await PTLAplicaciones.findOne({
+      where: { aplicacionId }
+    });
+    if (!aplicacionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una aplicacion por el id",
+        msg: 'No existe una aplicación con ese ID'
       });
     }
-    const aplicacionEliminado = await PTLAplicaciones.findByIdAndDelete({ aplicacionId });
-    return res.status(201).json({
+    const aplicacionEliminada = await PTLAplicaciones.destroy({
+      where: { aplicacionId }
+    });
+    
+    return res.status(200).json({
       ok: true,
-      aplicacion: aplicacionEliminado,
+      aplicacion: aplicacionEliminada,
+      msg: 'Aplicación eliminada correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar la aplicacion' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar la aplicación'
+    });
   }
 };
 

@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getAplicaciones);
 
-router.post( "/",  validarJWT, createAplicacion);
+router.post( "/", createAplicacion);
 
-router.put("/:id",validarJWT, updateAplicacion);
+router.put("/:id", updateAplicacion);
 
-router.delete("/:id", [validarJWT], deleteAplicacion);
+router.delete("/:id", deleteAplicacion);
 
-router.get("/:id", validarJWT, getAplicacionById);
+router.get("/:id", getAplicacionById);
 
 module.exports = router;
