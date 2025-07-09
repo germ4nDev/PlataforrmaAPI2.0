@@ -1,14 +1,15 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLSuscriptoresAP = require('../models/suscriptor')(sequelize);
+const PTLSuscriptores = require('../models/suscriptor')(sequelize);
 
 // Obtener todos los roles
 const getSuscriptores = async (req, res) => {
   try {
-    const suscriptores = await PTLSuscriptoresAP.findAll();
+    const suscriptores = await PTLSuscriptores.findAll();
     return res.status(201).json({
       ok: true,
       suscriptores: suscriptores,
@@ -21,7 +22,7 @@ const getSuscriptores = async (req, res) => {
 const getSuscriptoresById = async (req, res) => {
   try {
     const { suscriptorId } = req.body;
-    const suscriptor = await PTLSuscriptoresAP.findById(suscriptorId);
+    const suscriptor = await PTLSuscriptores.findById(suscriptorId);
     if (!suscriptor) {
       return res.status(404).json({
         ok: false,
@@ -41,7 +42,7 @@ const getSuscriptoresById = async (req, res) => {
 const createSuscriptor = async (req, res = response) => {
   try {
     const suscriptor = req.body;
-    const nuevo = await PTLSuscriptoresAP.create(suscriptor);
+    const nuevo = await PTLSuscriptores.create(suscriptor);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el suscriptor' });
@@ -53,14 +54,14 @@ const updateSuscriptor = async (req, res = response) => {
   try {
     const { suscriptorId } = req.body;
     const suscriptor = req.body;
-    const suscriptorDB = await PTLSuscriptoresAP.find(suscriptorId);
+    const suscriptorDB = await PTLSuscriptores.find(suscriptorId);
     if (!suscriptorDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un suscriptor con ese id",
       });
     }
-    const suscriptorActualizado = await PTLSuscriptoresAP.findByIdAndUpdate({ suscriptorId, suscriptor });
+    const suscriptorActualizado = await PTLSuscriptores.findByIdAndUpdate({ suscriptorId, suscriptor });
     return res.status(201).json({
       ok: true,
       suscriptor: suscriptorActualizado,
@@ -74,14 +75,14 @@ const updateSuscriptor = async (req, res = response) => {
 const deleteSuscriptor = async (req, res = response) => {
   try {
     const { suscriptorId } = req.body;
-    const suscriptorDB = await PTLSuscriptoresAP.findOne(suscriptorId);
+    const suscriptorDB = await PTLSuscriptores.findOne(suscriptorId);
     if (!suscriptorDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un suscriptor con ese id",
       });
     }
-    const suscriptorEliminado = await PTLSuscriptoresAP.findByIdAndDelete({ suscriptorId });
+    const suscriptorEliminado = await PTLSuscriptores.findByIdAndDelete({ suscriptorId });
     return res.status(201).json({
       ok: true,
       suscriptor: suscriptorEliminado,
