@@ -5,7 +5,6 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSitiosAP = require('../models/sitio-ap')(sequelize);
 
-// Obtener todos los sitios
 const getSitios = async (req, res) => {
   try {
     const sitios = await PTLSitiosAP.findAll();
@@ -14,14 +13,18 @@ const getSitios = async (req, res) => {
       sitios: sitios,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener los sitios' });
+    res.status(500).json({ error: 'Error al obtener Sitios' });
   }
 };
 
 const getSitioById = async (req, res) => {
   try {
-    const { sitioId } = req.body;
-    const sitio = await PTLSitiosAP.findById(sitioId);
+    const sitioId = req.params.id;
+    const sitio = await PTLSitiosAP.findOne({
+      where: {
+        sitioId: sitioId,
+      },
+    });
     if (!sitio) {
       return res.status(404).json({
         ok: false,
@@ -30,64 +33,95 @@ const getSitioById = async (req, res) => {
     }
     return res.status(201).json({
       ok: true,
-      sitios: role,
+      sitio: sitio,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener el sitio' });
+    res.status(500).json({ error: "Error al obtener aplicacion" });
   }
 };
 
-// Crear un nuevo sitio
 const createSitio = async (req, res = response) => {
   try {
-    const { sitioId } = req.body;
-    const nuevo = await PTLSitiosAP.create({ sitioId });
-    res.status(201).json(nuevo);
-  } catch (err) {
-    res.status(500).json({ error: 'Error al crear el sitio' });
-  }
-};
-
-// Actualizar un nuevo sitio
-const updateSitio = async (req, res = response) => {
-  try {
-    const { sitioId } = req.body;
-    const sitio = req.body;
-    const sitioBD = await PTLSitiosAP.find(sitioId);
-    if (!sitioBD) {
-      return res.status(404).json({
+    const nuevoSitio = req.body;
+    const existeNombre = await PTLSitiosAP.findOne({
+      where: { nombreSitio: nuevoSitio.nombreSitio }
+    });
+    if (existeNombre) {
+      return res.status(400).json({
         ok: false,
-        msg: "No existe un sitio por ese id",
+        msg: 'Ya existe un sitio con ese nombre'
       });
     }
-    const sitioBDActualizado = await PTLSitiosAP.findByIdAndUpdate({ sitioId, sitio });
+    const sitioDB = await PTLSitiosAP.create(nuevoSitio);
     return res.status(201).json({
       ok: true,
-      sitios: sitioBDActualizado,
+      sitio: sitioDB
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el sitio' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el sitio'
+    });
   }
 };
 
-// Borrar un nuevo sitio
-const deleteSitio = async (req, res = response) => {
+const updateSitio = async (req, res = response) => {
   try {
-    const { sitioId } = req.body;
-    const sitioDB = await PTLSitiosAP.findOne(sitioId);
+    const { sitioId, ...data } = req.body;
+    const sitioDB = await PTLSitiosAP.findOne({
+      where: { sitioId }
+    });
     if (!sitioDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un sitio por ese id",
+        msg: 'No existe un sitio con ese ID'
       });
     }
-    const sitioDBEliminado = await PTLSitiosAP.findByIdAndDelete({ sitioId });
-    return res.status(201).json({
+    await PTLSitiosAP.update(data, {
+      where: { sitioId }
+    });
+    const sitioActualizado = await PTLSitiosAP.findOne({ where: { sitioId } });
+    return res.status(200).json({
       ok: true,
-      sitios: sitioDBEliminado,
+      sitio: sitioActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar el sitio' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el sitio'
+    });
+  }
+};
+
+const deleteSitio = async (req, res = response) => {
+  try {
+    const sitioId = req.params.id;
+    const sitioDB = await PTLSitiosAP.findOne({
+      where: { sitioId }
+    });
+    if (!sitioDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No existe un sitio con ese ID'
+      });
+    }
+    sitioEliminado = await PTLSitiosAP.destroy({
+      where: { sitioId }
+    });
+
+    return res.status(200).json({
+      ok: true,
+      sitio: sitioEliminado,
+      msg: 'Sitio eliminado correctamente'
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el sitio'
+    });
   }
 };
 

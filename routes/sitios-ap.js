@@ -12,18 +12,17 @@ const {
     updateSitio,
     deleteSitio,
 } = require("../controllers/sitios-ap");
-const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
 router.get("/", getSitios);
 
-router.get("/:id", validarJWT, getSitioById);
+router.get("/:id", getSitioById);
 
-router.post( "/",  validarJWT, createSitio);
+router.post( "/",  createSitio);
 
-router.put("/:id",validarJWT, updateSitio);
+router.put("/:id", updateSitio);
 
-router.delete("/:id", [validarJWT], deleteSitio);
+router.delete("/:id", deleteSitio);
 
 module.exports = router;

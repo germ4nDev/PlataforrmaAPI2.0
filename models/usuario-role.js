@@ -2,6 +2,7 @@
     Author: German Valencia
 */
 const { DataTypes } = require('sequelize');
+const sequelize = require('../database/connection');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLUsuarioRoleAP', {
@@ -14,14 +15,17 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      aplicacionId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
       roleId: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      estadoRole: {
-        type: DataTypes.BLOB,
-        default: false,
-        allowNull: false
+      estadoUsuarioRole: {
+        type: DataTypes.BOOLEAN,
+        default: false
       }
     }, {
       tableName: 'PTLUsuarioRoleAP',

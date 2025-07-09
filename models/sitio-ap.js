@@ -15,6 +15,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      aplicacionId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
       descripcionSitio: {
         type: DataTypes.STRING,
         allowNull: false
@@ -25,10 +29,6 @@ module.exports = (sequelize) => {
       },
       estadoSitio: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
         allowNull: false
       },
       puertoSitio: {
