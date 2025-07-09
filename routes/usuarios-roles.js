@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getUsuariosRoles);
 
-router.post( "/",  validarJWT, createUsuarioRole);
+router.post( "/", createUsuarioRole);
 
-router.put("/:id",validarJWT, updateUsuarioRole);
+router.put("/:id", updateUsuarioRole);
 
-router.delete("/:id", [validarJWT], deleteUsuarioRole);
+router.delete("/:id", deleteUsuarioRole);
 
-router.get("/:id", validarJWT, getUsuariosRolesById);
+router.get("/:id",  getUsuariosRolesById);
 
 module.exports = router;

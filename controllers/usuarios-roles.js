@@ -8,10 +8,11 @@ const PTLUsuarioRoleAP = require('../models/usuario-role')(sequelize);
 // Obtener todos los roles
 const getUsuariosRoles = async (req, res) => {
   try {
-    const roles = await PTLUsuarioRoleAP.findAll();
+    const usuariosRoles = await PTLUsuarioRoleAP.findAll();
+    console.log('usuarios roles', usuariosRoles);
     return res.status(201).json({
       ok: true,
-      usuariosRoles: roles,
+      usuariosRoles: usuariosRoles,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener UsuariosRoles' });
