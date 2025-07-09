@@ -1,18 +1,15 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLSuscriptoresAP', {
+    return sequelize.define('PTLSuscriptores', {
       suscriptorId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-      },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
       },
       nombreSuscriptor: {
         type: DataTypes.STRING,
@@ -25,9 +22,13 @@ module.exports = (sequelize) => {
       estadoSuscriptor: {
         type: DataTypes.BOOLEAN,
         allowNull: false
+      },
+      conexionId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
     }, {
-      tableName: 'PTLSuscriptoresAP',
+      tableName: 'PTLSuscriptores',
       timestamps: false
     });
   };
