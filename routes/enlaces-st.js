@@ -12,19 +12,17 @@ const {
     updateEnlace,
     deleteEnlace,
 } = require("../controllers/enlaces-st");
-const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
 router.get("/", getEnlaces);
 
-router.get("/:id", validarJWT, getEnlaceById);
+router.get("/:id", getEnlaceById);
 
-router.post( "/",  validarJWT, createEnlace);
+router.post( "/", createEnlace);
 
-router.put("/:id",validarJWT, updateEnlace);
+router.put("/:id",  updateEnlace);
 
-router.delete("/:id", [validarJWT], deleteEnlace);
-
+router.delete("/:id", deleteEnlace);
 
 module.exports = router;

@@ -20,12 +20,16 @@ const getEnlaces = async (req, res) => {
 
 const getEnlaceById = async (req, res) => {
   try {
-    const { enlaceId } = req.body;
-    const enlace = await PTLEnlacesST.findById(enlaceId);
+    const enlaceId = req.params.id;
+    const enlace = await PTLEnlacesST.findOne({
+      where: {
+        enlaceId: enlaceId,
+      },
+    });
     if (!enlace) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un enlace con ese id",
+        msg: "No existe un enlace por ese id",
       });
     }
     return res.status(201).json({
@@ -33,61 +37,95 @@ const getEnlaceById = async (req, res) => {
       enlace: enlace,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener el enlace' });
+    res.status(500).json({ error: "Error al obtener el enlace" });
   }
 };
 
 // Crear un nuevo enlace
 const createEnlace = async (req, res = response) => {
   try {
-    const { enlaceId } = req.body;
-    const nuevo = await PTLEnlacesST.create({ enlaceId });
-    res.status(201).json(nuevo);
+    const nuevoEnlace = req.body;
+    const existeNombre = await PTLEnlacesST.findOne({
+      where: { nombreEnlace: nuevoEnlace.nombreEnlace }
+    });
+    if (existeNombre) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe un enlace con ese nombre'
+      });
+    }
+    const enlaceDB = await PTLEnlacesST.create(nuevoEnlace);
+    return res.status(201).json({
+      ok: true,
+      enlace: enlaceDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el enlace' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el enlace'
+    });
   }
 };
 
 // Actualizar un nuevo enlace
 const updateEnlace = async (req, res = response) => {
   try {
-    const { enlaceId } = req.body;
-    const enlace = req.body;
-    const enlaceBD = await PTLEnlacesST.find(enlaceId);
-    if (!enlaceBD) {
+    const { enlaceId, ...data } = req.body;
+    const enlaceDB = await PTLEnlacesST.findOne({
+      where: { enlaceId }
+    });
+    if (!enlaceDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un enlace con ese id",
+        msg: 'No existe un enlace con ese ID'
       });
     }
-    const enlaceBDActualizado = await PTLEnlacesST.findByIdAndUpdate({ enlaceId, enlace });
-    return res.status(201).json({
+    await PTLEnlacesST.update(data, {
+      where: { enlaceId }
+    });
+    const enlaceActualizado = await PTLEnlacesST.findOne({ where: { enlaceId } });
+    return res.status(200).json({
       ok: true,
-      enlace: enlaceBDActualizado,
+      enlace: enlaceActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el enlace' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el enlace'
+    });
   }
 };
 
 // Borrar un nuevo enlace
 const deleteEnlace = async (req, res = response) => {
   try {
-    const { enlaceId } = req.body;
-    const enlaceDB = await PTLEnlacesST.findOne(enlaceId);
+    const enlaceId = req.params.id;
+    const enlaceDB = await PTLEnlacesST.findOne({
+      where: { enlaceId }
+    });
     if (!enlaceDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un enlace con ese id",
+        msg: 'No existe un sitio con ese ID'
       });
     }
-    const enlaceDBEliminado = await PTLEnlacesST.findByIdAndDelete({ enlaceId });
-    return res.status(201).json({
+    enlaceEliminado = await PTLEnlacesST.destroy({
+      where: { enlaceId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      enlace: enlaceDBEliminado,
+      enlace: enlaceEliminado,
+      msg: 'Enlace eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar el enlace' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el enlace'
+    });
   }
 };
 

@@ -36,7 +36,7 @@ const getSitioById = async (req, res) => {
       sitio: sitio,
     });
   } catch (err) {
-    res.status(500).json({ error: "Error al obtener aplicacion" });
+    res.status(500).json({ error: "Error al obtener el sitio" });
   }
 };
 
