@@ -23,6 +23,15 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    suiteId: {
+      type: DataTypes.INTEGER,
+      default: 0,
+      allowNull: false
+    },
+    codigoSuite: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     descripcionRole: {
       type: DataTypes.STRING,
       allowNull: false
