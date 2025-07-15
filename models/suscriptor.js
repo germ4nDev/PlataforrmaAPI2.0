@@ -23,10 +23,10 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-      conexionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      }
+      // conexionId: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false
+      // }
     }, {
       tableName: 'PTLSuscriptores',
       timestamps: false
