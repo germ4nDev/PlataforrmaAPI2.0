@@ -4,35 +4,35 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLModulosAP', {
-      moduloId: {
+    return sequelize.define('PTLSuitesAP', {
+      suiteId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      suiteAplicacionId: {
+      aplicacionId: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      codigoModulo: {
+      codigoSuite: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      nombreModulo: {
+      nombreSuite: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionModulo: {
+      descripcionSuite: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoModulo: {
+      estadoSuite: {
         type: DataTypes.BOOLEAN,
         default: false,
         allowNull: false
       }
     }, {
-      tableName: 'PTLModulosAP',
+      tableName: 'PTLSuitesAP',
       timestamps: false
     });
   };
