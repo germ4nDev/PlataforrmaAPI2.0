@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getSuscriptores);
 
-router.post( "/",  validarJWT, createSuscriptor);
+router.post( "/", createSuscriptor);
 
-router.put("/:id",validarJWT, updateSuscriptor);
+router.put("/:id", updateSuscriptor);
 
-router.delete("/:id", [validarJWT], deleteSuscriptor);
+router.delete("/:id", deleteSuscriptor);
 
-router.get("/:id", validarJWT, getSuscriptoresById);
+router.get("/:id", getSuscriptoresById);
 
 module.exports = router;

@@ -12,19 +12,18 @@ const {
     updateContenido,
     deleteContenido,
 } = require("../controllers/contenidos-el");
-const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
 router.get("/", getContenidos);
 
-router.get("/:id", validarJWT, getContenidoById);
+router.get("/:id", getContenidoById);
 
-router.post( "/",  validarJWT, createContenido);
+router.post( "/", createContenido);
 
-router.put("/:id",validarJWT, updateContenido);
+router.put("/:id", updateContenido);
 
-router.delete("/:id", [validarJWT], deleteContenido);
+router.delete("/:id", deleteContenido);
 
 
 module.exports = router;
