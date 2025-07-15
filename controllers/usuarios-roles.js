@@ -21,10 +21,10 @@ const getUsuariosRoles = async (req, res) => {
 
 const getUsuariosRolesById = async (req, res) => {
     try {
-    const usuarioRolId = req.params.id;
+    const usuarioRoleId = req.params.id;
     const usuarioRole = await PTLUsuarioRoleAP.findOne({
       where: {
-        usuarioRolId: usuarioRolId,
+        usuarioRoleId: usuarioRoleId,
       },
     });
     if (!usuarioRole) {
@@ -54,39 +54,48 @@ const createUsuarioRole = async (req, res = response) => {
 
 const updateUsuarioRole = async (req, res = response) => {
   try {
-    const { usuarioRolId, ...data } = req.body;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.find(usuarioRolId);
+    const { usuarioRoleId, ...data } = req.body;
+    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne({
+      where: { usuarioRoleId }
+    });
     if (!usuarioRoleDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuarioRole por ese id",
+        msg: 'No existe un usuarioRole con ese ID'
       });
     }
     await PTLUsuarioRoleAP.update(data, {
-      where: { usuarioRolId }
+      where: { usuarioRoleId }
     });
-    const usuarioActualizado = await PTLUsuarioRoleAP.findOne({ where: { usuarioRolId } });
+    const usuarioRoleActualizado = await PTLUsuarioRoleAP.findOne({ where: { usuarioRoleId } });
     return res.status(200).json({
       ok: true,
-      usuarioRole: usuarioActualizado
+      usuarioRole: usuarioRoleActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el usuario role' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el usuarioRole'
+    });
   }
 };
 
 const deleteUsuarioRole = async (req, res = response) => {
   try {
-    const usuarioRolId = req.params.id;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne(usuarioRolId);
+    const usuarioRoleId = req.params.id;
+    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne({
+      where: { usuarioRoleId }
+    });
     if (!usuarioRoleDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
     }
+    console.log('eliminar el registro', usuarioRoleDB);
     usuarioRoleDBEliminado = await PTLUsuarioRoleAP.destroy({
-      where: { usuarioRolId }
+      where: { usuarioRoleId }
     });
     return res.status(201).json({
       ok: true,
