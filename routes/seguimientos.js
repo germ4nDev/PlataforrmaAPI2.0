@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/seguimientos
 */
 const { Router } = require("express");
@@ -18,12 +19,12 @@ const router = Router();
 
 router.get("/", getSeguimientosRQ);
 
-router.post( "/",  validarJWT, createSeguimientoRQ);
+router.post( "/", createSeguimientoRQ);
 
-router.put("/:id", validarJWT, updateSeguimientoRQ);
+router.put("/:id", updateSeguimientoRQ);
 
-router.delete("/:id", validarJWT, deleteSeguimientoRQ);
+router.delete("/:id", deleteSeguimientoRQ);
 
-router.get("/:id", validarJWT, getSeguimientoRQById);
+router.get("/:id", getSeguimientoRQById);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -14,14 +15,18 @@ const getRequerimientosTK = async (req, res) => {
       requerimientos: requerimientos,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener RequerimientosTK' });
+    res.status(500).json({ error: 'Error al obtener requerimientos' });
   }
 };
 
 const getRequerimientoTKById = async (req, res) => {
   try {
-    const { requerimientoId } = req.body;
-    const requerimiento = await PTLRequerimientosTK.findById(requerimientoId);
+    const requerimientoId = req.params.id;
+    const requerimiento = await PTLRequerimientosTK.findOne({
+      where: {
+        requerimientoId: requerimientoId,
+      },
+    });
     if (!requerimiento) {
       return res.status(404).json({
         ok: false,
@@ -33,61 +38,86 @@ const getRequerimientoTKById = async (req, res) => {
       requerimiento: requerimiento,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener requerimientos' });
+    res.status(500).json({ error: "Error al obtener requerimiento" });
   }
 };
 
 // Crear un nuevo requerimiento
 const createRequerimientoTK = async (req, res = response) => {
   try {
-    const requerimiento = req.body;
-    const nuevo = await PTLRequerimientosTK.create(requerimiento);
-    res.status(201).json(nuevo);
+    const nuevoRequerimiento = req.body;
+    const requerimientoDB = await PTLRequerimientosTK.create(nuevoRequerimiento);
+    return res.status(201).json({
+      ok: true,
+      requerimiento: requerimientoDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el requerimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el requerimiento'
+    });
   }
 };
 
 // Actualizar un nuevo requerimiento
 const updateRequerimientoTK = async (req, res = response) => {
   try {
-    const { requerimientoId } = req.body;
-    const requerimiento = req.body;
-    const requerimientoOg = await PTLRequerimientosTK.find(requerimientoId);
-    if (!requerimientoOg) {
+    const { requerimientoId, ...data } = req.body;
+    const requerimientoDB = await PTLRequerimientosTK.findOne({
+      where: { requerimientoId }
+    });
+    if (!requerimientoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un requerimiento por ese id",
+        msg: 'No existe un requerimiento con ese ID'
       });
     }
-    const requerimientoActualizado = await PTLRequerimientosTK.findByIdAndUpdate({ requerimientoId, requerimiento });
-    return res.status(201).json({
+    await PTLRequerimientosTK.update(data, {
+      where: { requerimientoId }
+    });
+    const requerimientoActualizado = await PTLRequerimientosTK.findOne({ where: { requerimientoId } });
+    return res.status(200).json({
       ok: true,
-      requerimiento: requerimientoActualizado,
+      requerimiento: requerimientoActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el requerimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el requerimiento'
+    });
   }
 };
 
 // Borrar un nuevo requerimiento
 const deleteRequerimientoTK = async (req, res = response) => {
   try {
-    const { requerimientoId } = req.body;
-    const requerimiento = await PTLRequerimientosTK.findOne(requerimientoId);
-    if (!requerimiento) {
+    const requerimientoId = req.params.id;
+    const requerimientoDB = await PTLRequerimientosTK.findOne({
+      where: { requerimientoId }
+    });
+    if (!requerimientoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un requerimiento por ese id",
+        msg: 'No existe un requerimiento con ese ID'
       });
     }
-    const requerimientoEliminado = await PTLRequerimientosTK.findByIdAndDelete({ requerimientoId });
-    return res.status(201).json({
+    requerimientoEliminado = await PTLRequerimientosTK.destroy({
+      where: { requerimientoId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      requerimiento: requerimientoEliminado,
+      usuario: requerimientoEliminado,
+      msg: 'requerimiento eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar requerimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el requerimiento'
+    });
   }
 };
 

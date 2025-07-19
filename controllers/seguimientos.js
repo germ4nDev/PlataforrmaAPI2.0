@@ -1,5 +1,7 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
+
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -20,8 +22,12 @@ const getSeguimientosRQ = async (req, res) => {
 
 const getSeguimientoRQById = async (req, res) => {
   try {
-    const { seguimientoId } = req.body;
-    const seguimiento = await PTLSeguimientosRQ.findById(seguimientoId);
+    const seguimientoId = req.params.id;
+    const seguimiento = await PTLSeguimientosRQ.findOne({
+      where: {
+        seguimientoId: seguimientoId,
+      },
+    });
     if (!seguimiento) {
       return res.status(404).json({
         ok: false,
@@ -33,61 +39,86 @@ const getSeguimientoRQById = async (req, res) => {
       seguimiento: seguimiento,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener seguimientos' });
+    res.status(500).json({ error: "Error al obtener seguimiento" });
   }
 };
 
 // Crear un nuevo seguimiento
 const createSeguimientoRQ = async (req, res = response) => {
   try {
-    const seguimiento = req.body;
-    const nuevo = await PTLSeguimientosRQ.create(seguimiento);
-    res.status(201).json(nuevo);
+    const nuevoSeguimiento = req.body;
+    const seguimientoDB = await PTLSeguimientosRQ.create(nuevoSeguimiento);
+    return res.status(201).json({
+      ok: true,
+      seguimiento: seguimientoDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el seguimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el seguimiento'
+    });
   }
 };
 
 // Actualizar un nuevo seguimiento
 const updateSeguimientoRQ = async (req, res = response) => {
   try {
-    const { seguimientoId } = req.body;
-    const seguimiento = req.body;
-    const seguimientoOg = await PTLSeguimientosRQ.find(seguimientoId);
-    if (!seguimientoOg) {
+    const { seguimientoId, ...data } = req.body;
+    const seguimientoDB = await PTLSeguimientosRQ.findOne({
+      where: { seguimientoId }
+    });
+    if (!seguimientoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un seguimiento por ese id",
+        msg: 'No existe un seguimiento con ese ID'
       });
     }
-    const seguimientoActualizado = await PTLSeguimientosRQ.findByIdAndUpdate({ seguimientoId, seguimiento });
-    return res.status(201).json({
+    await PTLSeguimientosRQ.update(data, {
+      where: { seguimientoId }
+    });
+    const seguimientoActualizado = await PTLSeguimientosRQ.findOne({ where: { seguimientoId } });
+    return res.status(200).json({
       ok: true,
-      seguimiento: seguimientoActualizado,
+      seguimiento: seguimientoActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el seguimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el seguimiento'
+    });
   }
 };
 
 // Borrar un nuevo seguimiento
 const deleteSeguimientoRQ = async (req, res = response) => {
   try {
-    const { seguimientoId } = req.body;
-    const seguimiento = await PTLSeguimientosRQ.findOne(seguimientoId);
-    if (!seguimiento) {
+    const seguimientoId = req.params.id;
+    const seguimientoDB = await PTLSeguimientosRQ.findOne({
+      where: { seguimientoId }
+    });
+    if (!seguimientoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un seguimiento por ese id",
+        msg: 'No existe un seguimiento con ese ID'
       });
     }
-    const seguimientoEliminado = await PTLSeguimientosRQ.findByIdAndDelete({ seguimientoId });
-    return res.status(201).json({
+    seguimientoEliminado = await PTLSeguimientosRQ.destroy({
+      where: { seguimientoId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      seguimiento: seguimientoEliminado,
+      usuario: seguimientoEliminado,
+      msg: 'seguimiento eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar seguimiento' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el seguimiento'
+    });
   }
 };
 

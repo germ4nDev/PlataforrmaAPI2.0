@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -20,12 +21,16 @@ const getTicketsAP = async (req, res) => {
 
 const getTicketsAPById = async (req, res) => {
   try {
-    const { ticketId } = req.body;
-    const ticket = await PTLTicketsAP.findById(ticketId);
+    const ticketId = req.params.id;
+    const ticket = await PTLTicketsAP.findOne({
+      where: {
+        ticketId: ticketId,
+      },
+    });
     if (!ticket) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un ticket con ese id",
+        msg: "No existe un ticket por ese id",
       });
     }
     return res.status(201).json({
@@ -33,61 +38,86 @@ const getTicketsAPById = async (req, res) => {
       ticket: ticket,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener el ticket' });
+    res.status(500).json({ error: "Error al obtener ticket" });
   }
 };
 
 // Crear un nuevo ticket
 const createTicketAP = async (req, res = response) => {
   try {
-    const ticket = req.body;
-    const nuevo = await PTLTicketsAP.create(ticket);
-    res.status(201).json(nuevo);
+    const nuevoTicket = req.body;
+    const ticketDB = await PTLTicketsAP.create(nuevoTicket);
+    return res.status(201).json({
+      ok: true,
+      ticket: ticketDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el ticket' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el ticket'
+    });
   }
 };
 
 // Actualizar un nuevo ticket
 const updateTicketAP = async (req, res = response) => {
   try {
-    const { ticketId } = req.body;
-    const ticket = req.body;
-    const ticketDB = await PTLTicketsAP.find(ticketId);
+    const { ticketId, ...data } = req.body;
+    const ticketDB = await PTLTicketsAP.findOne({
+      where: { ticketId }
+    });
     if (!ticketDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un ticket con ese id",
+        msg: 'No existe un ticket con ese ID'
       });
     }
-    const ticketActualizado = await PTLTicketsAP.findByIdAndUpdate({ ticketId, ticket });
-    return res.status(201).json({
+    await PTLTicketsAP.update(data, {
+      where: { ticketId }
+    });
+    const ticketActualizado = await PTLTicketsAP.findOne({ where: { ticketId } });
+    return res.status(200).json({
       ok: true,
-      ticket: ticketActualizado,
+      ticket: ticketActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el ticket' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el ticket'
+    });
   }
 };
 
 // Borrar un nuevo ticket
 const deleteTicketAP = async (req, res = response) => {
   try {
-    const { ticketId } = req.body;
-    const ticketDB = await PTLTicketsAP.findOne(ticketId);
+    const ticketId = req.params.id;
+    const ticketDB = await PTLTicketsAP.findOne({
+      where: { ticketId }
+    });
     if (!ticketDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un ticket con ese id",
+        msg: 'No existe un ticket con ese ID'
       });
     }
-    const ticketEliminado = await PTLTicketsAP.findByIdAndDelete({ ticketId });
-    return res.status(201).json({
+    ticketEliminado = await PTLTicketsAP.destroy({
+      where: { ticketId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      ticket: ticketEliminado,
+      usuario: ticketEliminado,
+      msg: 'ticket eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar ticket' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el ticket'
+    });
   }
 };
 

@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/suscriptores
 */
 const { Router } = require("express");
@@ -18,12 +19,12 @@ const router = Router();
 
 router.get("/", getTicketsAP);
 
-router.post( "/",  validarJWT, createTicketAP);
+router.post( "/", createTicketAP);
 
-router.put("/:id",validarJWT, updateTicketAP);
+router.put("/:id", updateTicketAP);
 
-router.delete("/:id", [validarJWT], deleteTicketAP);
+router.delete("/:id", deleteTicketAP);
 
-router.get("/:id", validarJWT, getTicketsAPById);
+router.get("/:id", getTicketsAPById);
 
 module.exports = router;

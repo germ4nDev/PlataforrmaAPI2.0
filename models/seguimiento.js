@@ -1,5 +1,7 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
+
 */
 const { DataTypes } = require('sequelize');
 
@@ -25,6 +27,10 @@ module.exports = (sequelize) => {
       },
       estadoSeguimiento: {
         type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      estadoRequerimiento: {
+        type: DataTypes.INTEGER,
         allowNull: false
       }
     }, {
