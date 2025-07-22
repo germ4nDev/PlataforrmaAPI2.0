@@ -12,6 +12,7 @@ const {
     getRequerimientoTKById,
     createRequerimientoTK,
     updateRequerimientoTK,
+    updateEstadoRequerimiento,
     deleteRequerimientoTK,
 } = require("../controllers/requerimientos");
 
@@ -20,6 +21,8 @@ const router = Router();
 router.get("/", getRequerimientosTK);
 
 router.post( "/", createRequerimientoTK);
+
+router.patch("/:id", updateEstadoRequerimiento);
 
 router.put("/:id", updateRequerimientoTK);
 

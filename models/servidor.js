@@ -1,40 +1,33 @@
 /*
-    Author: German Valencia
-    Actualización: John Castañeda
-
+    Author: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLSeguimientosRQ', {
-      seguimientoId: {
+    return sequelize.define('PTLServidor', {
+      servidorId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      requerimientoId: {
-        type: DataTypes.INTEGER,
-        default: 0,
-        allowNull: false
-      },
-      nombreSeguimiento: {
+      nombreServidor: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionSeguimiento: {
+      descripcionServidor: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoSeguimiento: {
+      rutaServidor: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoRequerimiento: {
+      estadoServidor: {
         type: DataTypes.STRING,
         allowNull: false
       }
     }, {
-      tableName: 'PTLSeguimientosRQ',
+      tableName: 'PTLServidor',
       timestamps: false
     });
   };
