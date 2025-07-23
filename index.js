@@ -44,7 +44,7 @@ app.use('/api/suscriptores', require('./routes/suscriptores') );
 app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
 app.use('/api/usuarios-empresas', require('./routes/usuaios-empresas') );
-app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
+app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
 // ESTADOS
 app.use('/api/tipos-estados', require('./routes/tipos-estados') );
 app.use('/api/estados', require('./routes/estados') );
