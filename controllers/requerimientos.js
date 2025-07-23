@@ -90,6 +90,40 @@ const updateRequerimientoTK = async (req, res = response) => {
   }
 };
 
+const updateEstadoRequerimiento = async (req, res = response) => {
+  try {
+    const requerimientoId = req.params.id;
+    const { estadoRequerimiento } = req.body;
+
+    const requerimientoDB = await PTLRequerimientosTK.findOne({
+      where: { requerimientoId }
+    });
+
+    if (!requerimientoDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No existe un requerimiento con ese ID'
+      });
+    }
+
+    await PTLRequerimientosTK.update(
+      { estadoRequerimiento },
+      { where: { requerimientoId } }
+    );
+
+    return res.status(200).json({
+      ok: true,
+      msg: 'Estado actualizado correctamente'
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el estado del requerimiento'
+    });
+  }
+};
+
 // Borrar un nuevo requerimiento
 const deleteRequerimientoTK = async (req, res = response) => {
   try {
@@ -126,5 +160,6 @@ module.exports = {
   getRequerimientoTKById,
   createRequerimientoTK,
   updateRequerimientoTK,
+  updateEstadoRequerimiento,
   deleteRequerimientoTK,
 };
