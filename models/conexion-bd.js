@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
@@ -18,6 +19,11 @@ module.exports = (sequelize) => {
         suscriptorId: {
             type: DataTypes.INTEGER,
             default: 0,
+            allowNull: false
+        },
+        paqueteId:{
+            type: DataTypes.INTEGER,
+            default:0,
             allowNull: false
         },
         nombreConexion: {
