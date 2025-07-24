@@ -1,10 +1,10 @@
 /*
-    Author: German Valencia
+    Author: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLEmpresasST', {
+    return sequelize.define('PTLPaquetesSC', {
       suscriptorAplicacionId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -39,7 +39,7 @@ module.exports = (sequelize) => {
         default: false,
       }
     }, {
-      tableName: 'PTLEmpresasST',
+      tableName: 'PTLPaquetesSC',
       timestamps: false
     });
   };
