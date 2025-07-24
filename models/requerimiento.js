@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
@@ -24,9 +25,13 @@ module.exports = (sequelize) => {
         allowNull: false
       },
       estadoRequerimiento: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false
-      }
+      },
+      // codigoError: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false
+      // }
     }, {
       tableName: 'PTLRequerimientosTK',
       timestamps: false

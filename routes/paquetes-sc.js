@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/suscriptores
 */
 const { Router } = require("express");
@@ -18,12 +19,12 @@ const router = Router();
 
 router.get("/", getPaquetesSC);
 
-router.post( "/",  validarJWT, createPaqueteSC);
+router.post( "/", createPaqueteSC);
 
-router.put("/:id",validarJWT, updatePaqueteSC);
+router.put("/:id", updatePaqueteSC);
 
-router.delete("/:id", [validarJWT], deletePaqueteSC);
+router.delete("/:id", deletePaqueteSC);
 
-router.get("/:id", validarJWT, getPaquetesSCById);
+router.get("/:id", getPaquetesSCById);
 
 module.exports = router;

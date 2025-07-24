@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/requerimientos
 */
 const { Router } = require("express");
@@ -11,6 +12,7 @@ const {
     getRequerimientoTKById,
     createRequerimientoTK,
     updateRequerimientoTK,
+    updateEstadoRequerimiento,
     deleteRequerimientoTK,
 } = require("../controllers/requerimientos");
 
@@ -18,12 +20,14 @@ const router = Router();
 
 router.get("/", getRequerimientosTK);
 
-router.post( "/",  validarJWT, createRequerimientoTK);
+router.post( "/", createRequerimientoTK);
 
-router.put("/:id", validarJWT, updateRequerimientoTK);
+router.patch("/:id", updateEstadoRequerimiento);
 
-router.delete("/:id", validarJWT, deleteRequerimientoTK);
+router.put("/:id", updateRequerimientoTK);
 
-router.get("/:id", validarJWT, getRequerimientoTKById);
+router.delete("/:id", deleteRequerimientoTK);
+
+router.get("/:id", getRequerimientoTKById);
 
 module.exports = router;

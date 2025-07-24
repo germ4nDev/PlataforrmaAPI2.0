@@ -1,41 +1,34 @@
 /*
-    Author: German Valencia
+    Author: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLSuscriptoresPaquetes', {
-      suscriptoPaqueteId: {
+    return sequelize.define('PTLTiposEstados', {
+      tipoEstadoId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      suscriptorId: {
+      tipoEstado: {
         type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
-      paqueteId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      fechaInicio: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      fechaVencimiento: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      codigoLicencia: {
+      nombreTipo: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      estadoLicencia: {
+      descripcionEstado: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       }
     }, {
-      tableName: 'PTLSuscriptoresPaquetes',
+      tableName: 'PTLTiposEstados',
       timestamps: false
     });
   };

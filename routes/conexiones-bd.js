@@ -1,5 +1,7 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
+
     Ruta: /api/conexiones-bd
 */
 const { Router } = require("express");
@@ -18,12 +20,12 @@ const router = Router();
 
 router.get("/", getConexionesBD);
 
-router.post( "/",  validarJWT, createConexion);
+router.post( "/", createConexion);
 
-router.put("/:id",validarJWT, updateConexion);
+router.put("/:id", updateConexion);
 
-router.delete("/:id", [validarJWT], deleteConexion);
+router.delete("/:id", deleteConexion);
 
-router.get("/:id", validarJWT, getConexionById);
+router.get("/:id", getConexionById);
 
 module.exports = router;

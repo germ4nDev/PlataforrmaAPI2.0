@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -14,18 +15,22 @@ const getConexionesBD = async (req, res) => {
       conexiones: conexiones,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener ConezionesBD' });
+    res.status(500).json({ error: 'Error al obtener la ConexionBD' });
   }
 };
 
 const getConexionById = async (req, res) => {
   try {
-    const { conexionId } = req.body;
-    const conexion = await PTLConexionesBD.findById(conexionId);
+    const conexionId = req.params.id;
+    const conexion = await PTLConexionesBD.findOne({
+      where: {
+        conexionId: conexionId,
+      },
+    });
     if (!conexion) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un conexion por el id",
+        msg: "No existe una conexion por ese id",
       });
     }
     return res.status(201).json({
@@ -33,61 +38,86 @@ const getConexionById = async (req, res) => {
       conexion: conexion,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener conexion' });
+    res.status(500).json({ error: "Error al obtener la conexion" });
   }
 };
 
 // Crear un nuevo rol
 const createConexion = async (req, res = response) => {
   try {
-    const conexion = req.body;
-    const nuevo = await PTLConexionesBD.create(conexion);
-    res.status(201).json(nuevo);
+    const nuevaConexion = req.body;
+    const conexionDB = await PTLConexionesBD.create(nuevaConexion);
+    return res.status(201).json({
+      ok: true,
+      conexion: conexionDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear la conexion' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear la conexion'
+    });
   }
 };
 
 // Actualizar un nuevo rol
 const updateConexion = async (req, res = response) => {
   try {
-    const { conexionId } = req.body;
-    const conexion = req.body;
-    const ConexionDB = await PTLConexionesBD.find(conexionId);
-    if (!ConexionDB) {
+    const { conexionId, ...data } = req.body;
+    const conexionDB = await PTLConexionesBD.findOne({
+      where: { conexionId }
+    });
+    if (!conexionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una conexion por ese id",
+        msg: 'No existe una conexion con ese ID'
       });
     }
-    const conexionDBActualizado = await PTLConexionesBD.findByIdAndUpdate({ conexionId, conexion });
-    return res.status(201).json({
+    await PTLConexionesBD.update(data, {
+      where: { conexionId }
+    });
+    const conexionActualizado = await PTLConexionesBD.findOne({ where: { conexionId } });
+    return res.status(200).json({
       ok: true,
-      conexion: conexionDBActualizado,
+      conexion: conexionActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar la ConexionDB' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar la conexion'
+    });
   }
 };
 
 // Borrar un nuevo rol
 const deleteConexion = async (req, res = response) => {
   try {
-    const { conexionId } = req.body;
-    const conexionDB = await PTLConexionesBD.findOne(conexionId);
+    const conexionId = req.params.id;
+    const conexionDB = await PTLConexionesBD.findOne({
+      where: { conexionId }
+    });
     if (!conexionDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una conexion por el id",
+        msg: 'No existe un conexion con ese ID'
       });
     }
-    const conexionDBEliminado = await PTLConexionesBD.findByIdAndDelete({ conexionId });
-    return res.status(201).json({
+    conexionEliminado = await PTLConexionesBD.destroy({
+      where: { conexionId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      conexion: conexionDBEliminado,
+      usuario: conexionEliminado,
+      msg: 'la conexion se elimino correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar la conexion' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar la conexion'
+    });
   }
 };
 

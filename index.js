@@ -1,7 +1,7 @@
 /*
     index.js
     Author: German Valencia
-    Actualización: German Valencia
+    Actualización: German Valencia, John Castañeda
 */
 require('dotenv').config();
 const path = require('path');
@@ -38,13 +38,17 @@ app.use('/api/roles', require('./routes/roles') );
 app.use('/api/auth', require('./routes/auth') );
 // CONEXIONES BD 
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
+app.use('/api/servidores', require('./routes/servidores') );
 // SUSCRIPTORES
 app.use('/api/suscriptores', require('./routes/suscriptores') );
 app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
 app.use('/api/usuarios-empresas', require('./routes/usuaios-empresas') );
-app.use('/api/suscriptor-paquetes', require('./routes/suscriptor-paquetes') );
-// TIVKETS
+app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
+// ESTADOS
+app.use('/api/tipos-estados', require('./routes/tipos-estados') );
+app.use('/api/estados', require('./routes/estados') );
+// TICKETS
 app.use('/api/tickets', require('./routes/tickets') );
 app.use('/api/requerimientos-tk', require('./routes/requerimientos') );
 app.use('/api/seguimientos-tk', require('./routes/seguimientos') );
