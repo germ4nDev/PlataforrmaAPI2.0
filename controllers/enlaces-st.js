@@ -8,10 +8,10 @@ const PTLEnlacesST = require('../models/enlace-st')(sequelize);
 // Obtener todos los Enlace
 const getEnlaces = async (req, res) => {
   try {
-    const enlace = await PTLEnlacesST.findAll();
+    const enlaces = await PTLEnlacesST.findAll();
     return res.status(201).json({
       ok: true,
-      enlace: enlace,
+      enlaces: enlaces,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener en enlace' });
