@@ -8,10 +8,10 @@ const PTLContenidosEL = require('../models/contenido-el')(sequelize);
 // Obtener todos los Contenido
 const getContenidos = async (req, res) => {
   try {
-    const contenido = await PTLContenidosEL.findAll();
+    const contenidos = await PTLContenidosEL.findAll();
     return res.status(201).json({
       ok: true,
-      contenido: contenido,
+      contenidos: contenidos,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener en Contenido' });
