@@ -1,29 +1,29 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLPaquetes', {
-      paquetesId: {
+      paqueteId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
-        allowNull: false
-      },
-      nombrePaquetes: {
+      nombrePaquete: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      descripcionPaquetes: {
+      descripcionPaquete: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      costoPquete: {
+      estadoPaquete: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      costoPaquete: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
@@ -40,10 +40,6 @@ module.exports = (sequelize) => {
       precioPromocion: {
         type: DataTypes.INTEGER,
         default: 0,
-        allowNull: false
-      },
-      estadoPaquetes: {
-        type: DataTypes.BOOLEAN,
         allowNull: false
       },
       acuerdoLicencia: {

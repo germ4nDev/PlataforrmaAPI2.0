@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -14,18 +15,22 @@ const getPaquetes = async (req, res) => {
       paquetes: paquetes,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Paquetes' });
+    res.status(500).json({ error: 'Error al obtener los paquetes' });
   }
 };
 
 const getPaqueteById = async (req, res) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = await PTLPaquetes.findById(paqueteId);
+    const paqueteId = req.params.id;
+    const paquete = await PTLPaquetes.findOne({
+      where: {
+        paqueteId: paqueteId,
+      },
+    });
     if (!paquete) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: "No existe un Paquete por ese id",
       });
     }
     return res.status(201).json({
@@ -33,61 +38,86 @@ const getPaqueteById = async (req, res) => {
       paquete: paquete,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    res.status(500).json({ error: "Error al obtener Paquete" });
   }
 };
 
 // Crear un nuevo paquete
 const createPaquete = async (req, res = response) => {
   try {
-    const paquete = req.body;
-    const nuevo = await PTLPaquetes.create(paquete);
-    res.status(201).json(nuevo);
+    const nuevoPaquete = req.body;
+    const paqueteDB = await PTLPaquetes.create(nuevoPaquete);
+    return res.status(201).json({
+      ok: true,
+      paquete: paqueteDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el paquete' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el paquete'
+    });
   }
 };
 
 // Actualizar un nuevo paquete
 const updatePaquete = async (req, res = response) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = req.body;
-    const paqueteOg = await PTLPaquetes.find(paqueteId);
-    if (!paqueteOg) {
+    const { paqueteId, ...data } = req.body;
+    const paqueteDB = await PTLPaquetes.findOne({
+      where: { paqueteId }
+    });
+    if (!paqueteDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: 'No existe un paquete con ese ID'
       });
     }
-    const paqueteActualizado = await PTLPaquetes.findByIdAndUpdate({ paqueteId, paquete });
-    return res.status(201).json({
+    await PTLPaquetes.update(data, {
+      where: { paqueteId }
+    });
+    const paqueteActualizado = await PTLPaquetes.findOne({ where: { paqueteId } });
+    return res.status(200).json({
       ok: true,
-      paquete: paqueteActualizado,
+      paquete: paqueteActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el paquete' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el paquete'
+    });
   }
 };
 
 // Borrar un nuevo paquete
 const deletePaquete = async (req, res = response) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = await PTLPaquetes.findOne(paqueteId);
-    if (!paquete) {
+    const paqueteId = req.params.id;
+    const paqueteDB = await PTLPaquetes.findOne({
+      where: { paqueteId }
+    });
+    if (!paqueteDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: 'No existe un paquete con ese ID'
       });
     }
-    const paqueteEliminado = await PTLPaquetes.findByIdAndDelete({ paqueteId });
-    return res.status(201).json({
+    paqueteEliminado = await PTLPaquetes.destroy({
+      where: { paqueteId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      paquete: paqueteEliminado,
+      usuario: paqueteEliminado,
+      msg: 'paquete eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar paquete' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el paquete'
+    });
   }
 };
 

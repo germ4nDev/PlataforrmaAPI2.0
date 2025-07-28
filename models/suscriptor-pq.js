@@ -4,18 +4,23 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLPaquetesSC', {
-      suscriptorAplicacionId: {
+    return sequelize.define('PTLSuscriptoresPQ', {
+      suscriptorPaqueteId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      suscriptorId: {
+      codigoSuscriptor: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
       paqueteId: {
+        type: DataTypes.INTEGER,
+        default: 0,
+        allowNull: false
+      },
+      conexionId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
@@ -39,7 +44,7 @@ module.exports = (sequelize) => {
         default: false,
       }
     }, {
-      tableName: 'PTLPaquetesSC',
+      tableName: 'PTLSuscriptoresPQ',
       timestamps: false
     });
   };
