@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
     Ruta: /api/usuarios-roles
 */
 const { Router } = require("express");
@@ -18,12 +19,12 @@ const router = Router();
 
 router.get("/", getPaquetes);
 
-router.post( "/",  validarJWT, createPaquete);
+router.post( "/", createPaquete);
 
-router.put("/:id",validarJWT, updatePaquete);
+router.put("/:id", updatePaquete);
 
-router.delete("/:id", [validarJWT], deletePaquete);
+router.delete("/:id", deletePaquete);
 
-router.get("/:id", validarJWT, getPaqueteById);
+router.get("/:id", getPaqueteById);
 
 module.exports = router;
