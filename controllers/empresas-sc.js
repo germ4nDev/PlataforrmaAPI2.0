@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualización: John Castañeda
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -8,86 +9,115 @@ const PTLEmpresasSC = require('../models/empresa-sc')(sequelize);
 // Obtener todos los roles
 const getEmpresasSC = async (req, res) => {
   try {
-    const empresasST = await PTLEmpresasSC.findAll();
+    const empresasSC = await PTLEmpresasSC.findAll();
     return res.status(201).json({
       ok: true,
-      elpresasST: empresasST,
+      empresas: empresasSC,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener empresasST' });
+    res.status(500).json({ error: 'Error al obtener empresasSC' });
   }
 };
 
 const getEmpresaSCById = async (req, res) => {
   try {
-    const { empresaId } = req.body;
-    const empresaST = await PTLEmpresasSC.findById(empresaId);
-    if (!empresaST) {
+    const empresaId = req.params.id;
+    const empresa = await PTLEmpresasSC.findOne({
+      where: {
+        empresaId: empresaId,
+      },
+    });
+    if (!empresa) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un empresaST por el id",
+        msg: "No existe un empresa por ese id",
       });
     }
     return res.status(201).json({
       ok: true,
-      empresaST: empresaST,
+      empresa: empresa,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener empresaST' });
+    res.status(500).json({ error: "Error al obtener empresa" });
   }
 };
 
 // Crear un nuevo rol
 const createEmpresaSC = async (req, res = response) => {
   try {
-    const empresaST = req.body;
-    const nuevo = await PTLEmpresasSC.create(empresaST);
-    res.status(201).json(nuevo);
+    const nuevoEmpresaSC = req.body;
+    const empresaDB = await PTLEmpresasSC.create(nuevoEmpresaSC);
+    return res.status(201).json({
+      ok: true,
+      empresa: empresaDB
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear la empresaST' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al crear el empresa'
+    });
   }
 };
 
 // Actualizar un nuevo rol
 const updateEmpresaSC = async (req, res = response) => {
   try {
-    const { empresaId } = req.body;
-    const empresaST = req.body;
-    const EmpresaSCDB = await PTLEmpresasSC.find(empresaId);
-    if (!EmpresaSCDB) {
+    const { empresaId, ...data } = req.body;
+    const empresaDB = await PTLEmpresasSC.findOne({
+      where: { empresaId }
+    });
+    if (!empresaDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una empresaST por ese id",
+        msg: 'No existe un empresa con ese ID'
       });
     }
-    const empresaSTActualizado = await PTLEmpresasSC.findByIdAndUpdate({ empresaId, empresaST });
-    return res.status(201).json({
+    await PTLEmpresasSC.update(data, {
+      where: { empresaId }
+    });
+    const empresaActualizado = await PTLEmpresasSC.findOne({ where: { empresaId } });
+    return res.status(200).json({
       ok: true,
-      empresaST: empresaSTActualizado,
+      empresa: empresaActualizado
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar la EmpresaSC' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el empresa'
+    });
   }
 };
 
 // Borrar un nuevo rol
 const deleteEmpresaSC = async (req, res = response) => {
   try {
-    const { empresaId } = req.body;
-    const empresaSTDB = await PTLEmpresasSC.findOne(empresaId);
-    if (!empresaSTDB) {
+    const empresaId = req.params.id;
+    const empresaDB = await PTLEmpresasSC.findOne({
+      where: { empresaId }
+    });
+    if (!empresaDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe una empresaST por el id",
+        msg: 'No existe un empresa con ese ID'
       });
     }
-    const empresaSTEliminado = await PTLEmpresasSC.findByIdAndDelete({ empresaId });
-    return res.status(201).json({
+    empresaEliminado = await PTLEmpresasSC.destroy({
+      where: { empresaId }
+    });
+
+    return res.status(200).json({
       ok: true,
-      empresaST: empresaSTEliminado,
+      usuario: empresaEliminado,
+      msg: 'empresa eliminado correctamente'
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar la empresaST' });
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al eliminar el empresa'
+    });
   }
 };
 

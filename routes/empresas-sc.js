@@ -1,6 +1,7 @@
 /*
     Author: German Valencia
-    Ruta: /api/empresas-st
+    Actualización: John Castañeda
+    Ruta: /api/empresas-cs
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
@@ -18,12 +19,12 @@ const router = Router();
 
 router.get("/", getEmpresasSC);
 
-router.post( "/",  validarJWT, createEmpresaSC);
+router.post( "/", createEmpresaSC);
 
-router.put("/:id",validarJWT, updateEmpresaSC);
+router.put("/:id", updateEmpresaSC);
 
-router.delete("/:id", [validarJWT], deleteEmpresaSC);
+router.delete("/:id", deleteEmpresaSC);
 
-router.get("/:id", validarJWT, getEmpresaSCById);
+router.get("/:id", getEmpresaSCById);
 
 module.exports = router;
