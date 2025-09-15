@@ -20,7 +20,7 @@ const getUsuariosRoles = async (req, res) => {
 };
 
 const getUsuariosRolesById = async (req, res) => {
-    try {
+  try {
     const usuarioRoleId = req.params.id;
     const usuarioRole = await PTLUsuarioRoleAP.findOne({
       where: {
@@ -106,10 +106,47 @@ const deleteUsuarioRole = async (req, res = response) => {
   }
 };
 
+const deleteTodosUsuarioRole = async (req, res = response) => {
+  try {
+    const usuarioId = Number(req.params.usId);
+    const aplicacionId = Number(req.params.apId);
+    const suiteId = Number(req.params.suId);
+    console.log('Parametros recibidos:', { usuarioId, aplicacionId, suiteId });
+
+    const usuarioRolesDB = await PTLUsuarioRoleAP.findAll({
+      where: { usuarioId, aplicacionId, suiteId }
+    });
+
+    console.log('usuarioRolesDB', usuarioRolesDB);
+    if (usuarioRolesDB.length > 0) {
+      for (const usuRole of usuarioRolesDB) {
+        console.log('Eliminando:', usuRole.usuarioRoleId);
+        await PTLUsuarioRoleAP.destroy({
+          where: { usuarioRoleId: usuRole.usuarioRoleId }
+        });
+      }
+      return res.status(201).json({
+        ok: true,
+        usuarioRole: 'Todos Eliminados',
+      });
+    } else {
+      return res.status(200).json({
+        ok: false,
+        usuarioRole: 'No hay roles',
+      });
+    }
+  } catch (err) {
+    console.error('Error al eliminar usuario role', err);
+    return res.status(500).json({ error: 'Error al eliminar usuario role' });
+  }
+};
+
+
 module.exports = {
   getUsuariosRoles,
   getUsuariosRolesById,
   createUsuarioRole,
   updateUsuarioRole,
   deleteUsuarioRole,
+  deleteTodosUsuarioRole,
 };

@@ -12,11 +12,14 @@ const {
   createUsuarioRole,
   updateUsuarioRole,
   deleteUsuarioRole,
+  deleteTodosUsuarioRole,
 } = require("../controllers/usuarios-roles");
 
 const router = Router();
 
 router.get("/", getUsuariosRoles);
+
+router.get("/:id",  getUsuariosRolesById);
 
 router.post( "/", createUsuarioRole);
 
@@ -24,6 +27,6 @@ router.put("/:id", updateUsuarioRole);
 
 router.delete("/:id", deleteUsuarioRole);
 
-router.get("/:id",  getUsuariosRolesById);
+router.delete("/clean/:usId/:apId/:suId", deleteTodosUsuarioRole);
 
 module.exports = router;
