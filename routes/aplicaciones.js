@@ -12,6 +12,7 @@ const {
     createAplicacion,
     updateAplicacion,
     deleteAplicacion,
+    getAplicacionByCode,
 } = require("../controllers/aplicaciones");
 
 const router = Router();
@@ -25,5 +26,7 @@ router.put("/:id", updateAplicacion);
 router.delete("/:id", deleteAplicacion);
 
 router.get("/:id", getAplicacionById);
+
+router.get("/code/:code", getAplicacionByCode);
 
 module.exports = router;

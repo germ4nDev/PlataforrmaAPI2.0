@@ -10,14 +10,16 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      codigoAplicacin: {
+        type: DataTypes.STRING,
         allowNull: false
       },
-      suscriptorId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      codigoSuite: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoModulo: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       usuarioId: {
@@ -25,7 +27,11 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
-      fecha: {
+      codigoErrr: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      fechaLog: {
         type: DataTypes.DATE,
         allowNull: false
       },
@@ -38,3 +44,4 @@ module.exports = (sequelize) => {
       timestamps: false
     });
   };
+

@@ -25,17 +25,18 @@ app.use( express.static('public') );
 *   TODO
 */
 
-// APLICACIONES
-app.use('/api/aplicaciones', require('./routes/aplicaciones') );
-app.use('/api/versiones-ap', require('./routes/versiones-ap') );
-app.use('/api/paquetes', require('./routes/paquetes') );
-app.use('/api/paquetes-aplicaciones', require('./routes/paquetes-aplicaciones') );
-app.use('/api/modulos', require('./routes/modulos-ap') );
-app.use('/api/suites', require('./routes/suites-ap') );
+// PLATAFORMA
 app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
 app.use('/api/usuarios', require('./routes/usuarios') );
 app.use('/api/roles', require('./routes/roles') );
 app.use('/api/auth', require('./routes/auth') );
+app.use('/api/upload', require('./routes/uploads') );
+// APLICACIONES
+app.use('/api/aplicaciones', require('./routes/aplicaciones') );
+app.use('/api/versiones-ap', require('./routes/versiones-ap') );
+app.use('/api/paquetes-ap', require('./routes/paquetes-ap') );
+app.use('/api/modulos', require('./routes/modulos-ap') );
+app.use('/api/suites', require('./routes/suites-ap') );
 // CONEXIONES BD 
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
 app.use('/api/servidores', require('./routes/servidores') );

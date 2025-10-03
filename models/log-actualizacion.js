@@ -10,27 +10,25 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      codigoAplicacion: {
+        type: DataTypes.STRING,
         allowNull: false
       },
-      suscriptorId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      codigoVersion: {
+        type: DataTypes.STRING,
         allowNull: false
       },
-      versionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
-        allowNull: false
-      },
-      fecha: {
+      fechaLog: {
         type: DataTypes.DATE,
         allowNull: false
       },
       descripcionLog: {
         type: DataTypes.STRING,
+        allowNull: false
+      },
+      usuarioId: {
+        type: DataTypes.INTEGER,
+        default: 0,
         allowNull: false
       },
     }, {

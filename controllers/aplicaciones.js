@@ -41,6 +41,29 @@ const getAplicacionById = async (req, res) => {
   }
 };
 
+const getAplicacionByCode = async (req, res) => {
+  try {
+    const codego = req.params.code;
+    const aplicacion = await PTLAplicaciones.findOne({
+      where: {
+        codigoAplicacion: codego,
+      },
+    });
+    if (!aplicacion) {
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe un aplicacion por el codigo",
+      });
+    }
+    return res.status(201).json({
+      ok: true,
+      aplicacion: aplicacion,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Error al obtener aplicacion" });
+  }
+};
+
 const createAplicacion = async (req, res = response) => {
   try {
     const nuevaAplicacion = req.body;
@@ -132,4 +155,5 @@ module.exports = {
   createAplicacion,
   updateAplicacion,
   deleteAplicacion,
+  getAplicacionByCode,
 };

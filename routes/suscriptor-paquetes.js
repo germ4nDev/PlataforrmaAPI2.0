@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getSuscriptoresPaquetes);
 
-router.get("/:id", validarJWT, getSuscriptoresPaquetesById);
+router.get("/:id", getSuscriptoresPaquetesById);
 
-router.post( "/",  validarJWT, createSuscriptorPaquete);
+router.post( "/",  createSuscriptorPaquete);
 
-router.put("/:id",validarJWT, updateSuscriptorPaquete);
+router.put("/:id", updateSuscriptorPaquete);
 
-router.delete("/:id", [validarJWT], deleteSuscriptorPaquete);
+router.delete("/:id",  deleteSuscriptorPaquete);
 
 module.exports = router;

@@ -10,12 +10,28 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
+      codigoAplicacin: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoSuite: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoModulo: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      usuarioId: {
         type: DataTypes.INTEGER,
         default: 0,
         allowNull: false
       },
-      fecha: {
+      codigoErrr: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      fechaLog: {
         type: DataTypes.DATE,
         allowNull: false
       },
@@ -23,18 +39,6 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      codigoError: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      mensajeError: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      usuarioGenerador: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
     }, {
       tableName: 'PTLLogTransaccionesAP',
       timestamps: false

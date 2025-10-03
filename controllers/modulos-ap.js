@@ -20,14 +20,19 @@ const getModulos = async (req, res) => {
 
 const getModuloById = async (req, res) => {
   try {
-    const { moduloId } = req.body;
-    const modulo = await PTModulosAP.findById(moduloId);
+    const moduloId = req.params.id;
+    console.log('consultar el id', moduloId);
+    const modulo = await PTModulosAP.findOne({
+      where: { moduloId },
+    });
+    console.log('modulo', modulo);
     if (!modulo) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un modulo por ese id",
       });
     }
+
     return res.status(201).json({
       ok: true,
       modulo: modulo,
@@ -48,19 +53,23 @@ const createModulo = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo modulo
 const updateModulo = async (req, res = response) => {
   try {
-    const { moduloId } = req.body;
+    const moduloId = req.params.id;
     const modulo = req.body;
-    const moduloOg = await PTModulosAP.find(moduloId);
+    const moduloOg = await PTModulosAP.findOne({
+      where: { moduloId },
+    });
     if (!moduloOg) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un modulo por ese id",
       });
     }
-    const moduloActualizado = await PTModulosAP.findByIdAndUpdate({ moduloId, modulo });
+    await PTModulosAP.update(modulo, {
+      where: { moduloId }
+    });
+    const moduloActualizado = await PTModulosAP.findOne({ where: { moduloId } });
     return res.status(201).json({
       ok: true,
       modulo: moduloActualizado,
@@ -73,15 +82,19 @@ const updateModulo = async (req, res = response) => {
 // Borrar un nuevo modulo
 const deleteModulo = async (req, res = response) => {
   try {
-    const { moduloId } = req.body;
-    const modulo = await PTModulosAP.findOne(moduloId);
+    const moduloId = req.params.id;
+    const modulo = await PTModulosAP.findOne({
+      where: { moduloId },
+    });
     if (!modulo) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un modulo por ese id",
       });
     }
-    const moduloEliminado = await PTModulosAP.findByIdAndDelete({ moduloId });
+    const moduloEliminado = await PTModulosAP.destroy({
+      where: { moduloId }
+    });
     return res.status(201).json({
       ok: true,
       modulo: moduloEliminado,

@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", getModulos);
 
-router.post( "/",  validarJWT, createModulo);
+router.post( "/", createModulo);
 
-router.put("/:id",validarJWT, updateModulo);
+router.put("/:id", updateModulo);
 
-router.delete("/:id", [validarJWT], deleteModulo);
+router.delete("/:id", deleteModulo);
 
-router.get("/:id", validarJWT, getModuloById);
+router.get("/:id", getModuloById);
 
 module.exports = router;

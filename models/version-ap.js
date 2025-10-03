@@ -10,9 +10,16 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      fechaVersion: {
+        type: DataTypes.DATE,
+        allowNull: false
+      },
+      codigoAplicacion: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoVersion: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       nombreVersion: {

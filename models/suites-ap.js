@@ -10,8 +10,8 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
+      codigoAplicacion: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       codigoSuite: {
@@ -23,6 +23,10 @@ module.exports = (sequelize) => {
         allowNull: false
       },
       descripcionSuite: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      rutaInicio: {
         type: DataTypes.STRING,
         allowNull: false
       },

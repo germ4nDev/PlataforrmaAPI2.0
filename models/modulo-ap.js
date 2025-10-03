@@ -10,11 +10,19 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      suiteAplicacionId: {
-        type: DataTypes.INTEGER,
+      codigoAplicacion: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoSuite: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       codigoModulo: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      codigoPadre: {
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -23,6 +31,10 @@ module.exports = (sequelize) => {
         allowNull: false
       },
       descripcionModulo: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      rutaModulo: {
         type: DataTypes.STRING,
         allowNull: false
       },
