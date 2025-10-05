@@ -103,7 +103,7 @@ const deleteTicketAP = async (req, res = response) => {
         msg: 'No existe un ticket con ese ID'
       });
     }
-    ticketEliminado = await PTLTicketsAP.destroy({
+    const ticketEliminado = await PTLTicketsAP.destroy({
       where: { ticketId }
     });
 

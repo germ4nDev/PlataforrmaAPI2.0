@@ -33,8 +33,8 @@ app.use('/api/auth', require('./routes/auth') );
 app.use('/api/upload', require('./routes/uploads') );
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
-app.use('/api/versiones-ap', require('./routes/versiones-ap') );
-app.use('/api/paquetes-ap', require('./routes/paquetes-ap') );
+app.use('/api/versiones', require('./routes/versiones-ap') );
+app.use('/api/paquetes', require('./routes/paquetes-ap') );
 app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/suites', require('./routes/suites-ap') );
 // CONEXIONES BD 

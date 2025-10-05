@@ -20,8 +20,10 @@ const getPaquetes = async (req, res) => {
 
 const getPaqueteById = async (req, res) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = await PTLPaquetes.findById(paqueteId);
+    const paqueteId = req.params.id;
+    const paquete = await PTLPaquetes.findOne({
+      where: { paqueteId },
+    });
     if (!paquete) {
       return res.status(404).json({
         ok: false,
@@ -37,7 +39,6 @@ const getPaqueteById = async (req, res) => {
   }
 };
 
-// Crear un nuevo paquete
 const createPaquete = async (req, res = response) => {
   try {
     const paquete = req.body;
@@ -48,19 +49,23 @@ const createPaquete = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo paquete
 const updatePaquete = async (req, res = response) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = req.body;
-    const paqueteOg = await PTLPaquetes.find(paqueteId);
+    const paqueteId = req.params.id;
+    const data = req.body;
+    const paqueteOg = await PTLPaquetes.findOne({
+      where: { paqueteId },
+    });
     if (!paqueteOg) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un paquete por ese id",
       });
     }
-    const paqueteActualizado = await PTLPaquetes.findByIdAndUpdate({ paqueteId, paquete });
+    await PTLPaquetes.update(data, {
+      where: { paqueteId }
+    });
+    const paqueteActualizado = await PTLPaquetes.findOne({ where: { versionId } });
     return res.status(201).json({
       ok: true,
       paquete: paqueteActualizado,
@@ -70,18 +75,21 @@ const updatePaquete = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo paquete
 const deletePaquete = async (req, res = response) => {
   try {
-    const { paqueteId } = req.body;
-    const paquete = await PTLPaquetes.findOne(paqueteId);
+    const paqueteId = req.params.id;
+    const paquete = await PTLPaquetes.findOne({
+      where: { paqueteId },
+    });
     if (!paquete) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un paquete por ese id",
       });
     }
-    const paqueteEliminado = await PTLPaquetes.findByIdAndDelete({ paqueteId });
+    const paqueteEliminado = await PTLPaquetes.destroy({
+      where: { paqueteId }
+    });
     return res.status(201).json({
       ok: true,
       paquete: paqueteEliminado,

@@ -5,7 +5,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLVersionesAP', {
-      versionesId: {
+      versionId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true

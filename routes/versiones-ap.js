@@ -7,8 +7,8 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getVersioesAP,
-    getVersioesAPById,
+    getVersionesAP,
+    getVersionesAPById,
     createVersionAP,
     updateVersionAP,
     deleteVersionAP,
@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getVersioesAP);
+router.get("/", getVersionesAP);
 
-router.post( "/",  validarJWT, createVersionAP);
+router.post( "/",  createVersionAP);
 
-router.put("/:id",validarJWT, updateVersionAP);
+router.put("/:id", updateVersionAP);
 
-router.delete("/:id", [validarJWT], deleteVersionAP);
+router.delete("/:id", deleteVersionAP);
 
-router.get("/:id", validarJWT, getVersioesAPById);
+router.get("/:id", getVersionesAPById);
 
 module.exports = router;

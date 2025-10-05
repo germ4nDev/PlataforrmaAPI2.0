@@ -5,8 +5,7 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLVersionesAP = require('../models/version-ap')(sequelize);
 
-// Obtener todos los versionAPes
-const getVersioesAP = async (req, res) => {
+const getVersionesAP = async (req, res) => {
   try {
     const versiones = await PTLVersionesAP.findAll();
     return res.status(201).json({
@@ -18,11 +17,13 @@ const getVersioesAP = async (req, res) => {
   }
 };
 
-const getVersioesAPById = async (req, res) => {
+const getVersionesAPById = async (req, res) => {
   try {
-    const { versionesId } = req.body;
-    const versionAP = await PTLVersionesAP.findById(versionesId);
-    if (!versionAP) {
+    const versionId = req.params.id;
+    const version = await PTLVersionesAP.findOne({
+      where: { versionId },
+    });
+    if (!version) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un versionAP por ese id",
@@ -30,61 +31,71 @@ const getVersioesAPById = async (req, res) => {
     }
     return res.status(201).json({
       ok: true,
-      versionAP: versionAP,
+      version: version,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener versionAP' });
   }
 };
 
-// Crear un nuevo versionAP
 const createVersionAP = async (req, res = response) => {
   try {
     const versionAP = req.body;
+    console.log('datos version', versionAP);
     const nuevo = await PTLVersionesAP.create(versionAP);
-    res.status(201).json(nuevo);
+    return res.status(201).json({
+      ok: true,
+      version: nuevo,
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear ;a VersionAP' });
   }
 };
 
-// Actualizar un nuevo versionAP
 const updateVersionAP = async (req, res = response) => {
   try {
-    const { versionesId } = req.body;
-    const versionAP = req.body;
-    const versionAPDB = await PTLVersionesAP.find(versionesId);
-    if (!versionAP) {
+    const versionId = req.params.id;
+    const data = req.body;
+    const version = await PTLVersionesAP.findOne({
+      where: { versionId },
+    });
+    if (!version) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un versionAP por ese id",
       });
     }
-    const versionAPActualizado = await PTLVersionesAP.findByIdAndUpdate({ versionesId, versionAPDB });
+    await PTLVersionesAP.update(data, {
+      where: { versionId }
+    });
+    const versionAPActualizado = await PTLVersionesAP.findOne({ where: { versionId } });
     return res.status(201).json({
       ok: true,
-      versionAP: versionAPActualizado,
+      version: versionAPActualizado,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar la versionAP' });
   }
 };
 
-// Borrar un nuevo versionAP
 const deleteVersionAP = async (req, res = response) => {
   try {
-    const { versionesId } = req.body;
-    const versionAPDB = await PTLVersionesAP.findOne(versionesId);
-    if (!versionAPDB) {
+    const versionId = req.params.id;
+    const version = await PTLVersionesAP.findOne({
+      where: { versionId },
+    });
+    if (!version) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un versionesId por ese id",
       });
     }
-    const versionAPEliminado = await PTLVersionesAP.findByIdAndDelete({ versionesId });
+    const versionAPEliminado = await PTLVersionesAP.destroy({
+      where: { versionId }
+    });
     return res.status(201).json({
       ok: true,
-      versionAP: versionAPEliminado,
+      version: versionAPEliminado,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al eliminar usuario versionAP' });
@@ -92,8 +103,8 @@ const deleteVersionAP = async (req, res = response) => {
 };
 
 module.exports = {
-  getVersioesAP,
-  getVersioesAPById,
+  getVersionesAP,
+  getVersionesAPById,
   createVersionAP,
   updateVersionAP,
   deleteVersionAP,
