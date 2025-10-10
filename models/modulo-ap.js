@@ -42,6 +42,11 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         default: false,
         allowNull: false
+      },
+      hijos: {
+        type: DataTypes.BOOLEAN,
+        default: false,
+        allowNull: false
       }
     }, {
       tableName: 'PTLModulosAP',

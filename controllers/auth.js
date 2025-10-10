@@ -24,6 +24,10 @@ const login = async (req, res = response) => {
       } else {
         console.log('Usuario Encontrado', usuarioDB);
 
+        const salt = bcrypt.genSaltSync();
+        const password = await bcrypt.hash(dataUser.password, salt);
+        console.log('password digitado', password);
+
         const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
 
         if (isMatch) {
@@ -68,6 +72,46 @@ const verificarUserInRole = async (req, res = response) => {
   });
 };
 
+const verificaarClaveActual = async (req, res = response) => {
+    console.log('login Usuario', req.body);
+    const dataUser = req.body;
+    try {
+      const usuarioDB = await PTLUsuarios.findOne({ 
+        where: {
+          userNameUsuario: dataUser.username
+        } 
+      });
+      if (!usuarioDB) {
+        res.json({
+          ok: false,
+          msg: "UserName no encontrado",
+        });
+      } else {
+        console.log('Usuario Encontrado', usuarioDB);
+
+        const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
+
+        if (isMatch) {
+          res.json({
+            ok: true,
+            usuario: usuarioDB,
+          });    
+        } else {
+          return res.json({
+            ok: false,
+            msg: "Contraseña no válida",
+          });
+        }       
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        ok: false,
+        msg: "Error de sistema, Hable con el administrador",
+      });
+    }
+};
+
 const renewToken = async (req, res = response) => {
   const uid = req.uid;
   // Generar el TOKEN - JWT
@@ -85,5 +129,6 @@ const renewToken = async (req, res = response) => {
 module.exports = {
   login,
   renewToken,
+  verificaarClaveActual,
   verificarUserInRole,
 };

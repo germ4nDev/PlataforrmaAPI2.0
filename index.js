@@ -37,6 +37,8 @@ app.use('/api/versiones', require('./routes/versiones-ap') );
 app.use('/api/paquetes', require('./routes/paquetes-ap') );
 app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/suites', require('./routes/suites-ap') );
+app.use('/api/tipos-valores', require('./routes/tipos-valores') );
+app.use('/api/valores-unitarios', require('./routes/valores-unitarios') );
 // CONEXIONES BD 
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
 app.use('/api/servidores', require('./routes/servidores') );

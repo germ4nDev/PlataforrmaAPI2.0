@@ -12,6 +12,7 @@ const {
   getUsuariosById,
   createUsuario,
   updateUsuario,
+  updateUsuarioClave,
   deleteUsuario,
 } = require("../controllers/usuarios");
 
@@ -22,6 +23,10 @@ router.get("/", getUsuarios);
 router.post( "/", createUsuario);
 
 router.put("/:id", updateUsuario);
+
+router.put("/datos/:id", updateUsuario);
+
+router.put("/clave/:id", updateUsuarioClave);
 
 router.delete("/:id", deleteUsuario);
 

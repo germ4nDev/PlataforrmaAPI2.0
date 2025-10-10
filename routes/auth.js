@@ -9,6 +9,7 @@ const { validarJWT } = require("../middlewares/validar-jwt");
 const {
   login,
   renewToken,
+  verificaarClaveActual,
   verificarUserInRole,
 } = require("../controllers/auth");
 
@@ -16,8 +17,10 @@ const router = Router();
 
 router.post("/", login);
 
-router.post("/role", validarJWT, verificarUserInRole);
+router.post("/role", verificarUserInRole);
 
-router.get("/renew", validarJWT, renewToken);
+router.post("/compare", verificaarClaveActual);
+
+router.get("/renew", renewToken);
 
 module.exports = router;

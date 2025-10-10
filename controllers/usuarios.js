@@ -111,6 +111,39 @@ const updateUsuario = async (req, res = response) => {
   }
 };
 
+const updateUsuarioClave = async (req, res = response) => {
+  try {
+    const { usuarioId, ...data } = req.body;
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: { usuarioId }
+    });
+    if (!usuarioDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No existe un usuario con ese ID'
+      });
+    }
+    const salt = bcrypt.genSaltSync();
+    const password = await bcrypt.hash(nuevoUsuario.claveUsuario, salt);
+    nuevoUsuario.claveUsuario = password;
+
+    await PTLUsuarios.update(data, {
+      where: { usuarioId }
+    });
+    const usuarioActualizado = await PTLUsuarios.findOne({ where: { usuarioId } });
+    return res.status(200).json({
+      ok: true,
+      usuario: usuarioActualizado
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al actualizar el usuario'
+    });
+  }
+};
+
 const deleteUsuario = async (req, res = response) => {
   try {
     const usuarioId = req.params.id;
@@ -146,5 +179,6 @@ module.exports = {
   getUsuariosById,
   createUsuario,
   updateUsuario,
+  updateUsuarioClave,
   deleteUsuario,
 };
