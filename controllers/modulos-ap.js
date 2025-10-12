@@ -47,8 +47,11 @@ const createModulo = async (req, res = response) => {
   try {
     const modulo = req.body;
     const nuevo = await PTModulosAP.create(modulo);
-    res.status(201).json(nuevo);
-  } catch (err) {
+return res.status(201).json({
+      ok: true,
+      modulo: nuevo,
+    });
+    } catch (err) {
     res.status(500).json({ error: 'Error al crear el modulo' });
   }
 };
