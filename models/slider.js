@@ -4,38 +4,30 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLAplicaciones', {
-            aplicacionId: {
+    return sequelize.define('PTLSliderInicio', {
+            sliderId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            nombreAplicacion: {
+            nombreSlider: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            descripcionAplicacion: {
+            urlSlider: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            translateKey: {
+            descripcionSlider: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            estadoAplicacion: {
+            estadoSlider: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            codigoAplicacion: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            imagenInicio: {
-                type: DataTypes.STRING,
                 allowNull: false
             }
         }, {
-        tableName: 'PTLAplicaciones',
+        tableName: 'PTLSliderInicio',
         timestamps: false
     });
 };

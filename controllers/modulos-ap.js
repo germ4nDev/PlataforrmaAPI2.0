@@ -1,9 +1,9 @@
 /*
     Author: German Valencia
 */
-const express = require('express');
-const sequelize = require('../database/connection');
-const PTModulosAP = require('../models/modulo-ap')(sequelize);
+const express = require("express");
+const sequelize = require("../database/connection");
+const PTModulosAP = require("../models/modulo-ap")(sequelize);
 
 // Obtener todos los modulos
 const getModulos = async (req, res) => {
@@ -14,18 +14,18 @@ const getModulos = async (req, res) => {
       modulos: modulos,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Modulos' });
+    res.status(500).json({ error: "Error al obtener Modulos" });
   }
 };
 
 const getModuloById = async (req, res) => {
   try {
     const moduloId = req.params.id;
-    console.log('consultar el id', moduloId);
+    console.log("consultar el id", moduloId);
     const modulo = await PTModulosAP.findOne({
       where: { moduloId },
     });
-    console.log('modulo', modulo);
+    console.log("modulo", modulo);
     if (!modulo) {
       return res.status(404).json({
         ok: false,
@@ -38,7 +38,7 @@ const getModuloById = async (req, res) => {
       modulo: modulo,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener roles' });
+    res.status(500).json({ error: "Error al obtener roles" });
   }
 };
 
@@ -47,12 +47,12 @@ const createModulo = async (req, res = response) => {
   try {
     const modulo = req.body;
     const nuevo = await PTModulosAP.create(modulo);
-return res.status(201).json({
+    return res.status(201).json({
       ok: true,
       modulo: nuevo,
     });
-    } catch (err) {
-    res.status(500).json({ error: 'Error al crear el modulo' });
+  } catch (err) {
+    res.status(500).json({ error: "Error al crear el modulo" });
   }
 };
 
@@ -70,15 +70,17 @@ const updateModulo = async (req, res = response) => {
       });
     }
     await PTModulosAP.update(modulo, {
-      where: { moduloId }
+      where: { moduloId },
     });
-    const moduloActualizado = await PTModulosAP.findOne({ where: { moduloId } });
+    const moduloActualizado = await PTModulosAP.findOne({
+      where: { moduloId },
+    });
     return res.status(201).json({
       ok: true,
       modulo: moduloActualizado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al actualizar el modulo' });
+    res.status(500).json({ error: "Error al actualizar el modulo" });
   }
 };
 
@@ -96,14 +98,14 @@ const deleteModulo = async (req, res = response) => {
       });
     }
     const moduloEliminado = await PTModulosAP.destroy({
-      where: { moduloId }
+      where: { moduloId },
     });
     return res.status(201).json({
       ok: true,
       modulo: moduloEliminado,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar modulo' });
+    res.status(500).json({ error: "Error al eliminar modulo" });
   }
 };
 

@@ -4,38 +4,34 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLAplicaciones', {
-            aplicacionId: {
+    return sequelize.define('PTLColorSettings', {
+            colorNavId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            nombreAplicacion: {
+            navbarColor: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            descripcionAplicacion: {
+            textoColor: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            translateKey: {
+            iconosColor: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            estadoAplicacion: {
+            buttonsHoverColor: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            estadoSlider: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            codigoAplicacion: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            imagenInicio: {
-                type: DataTypes.STRING,
                 allowNull: false
             }
         }, {
-        tableName: 'PTLAplicaciones',
+        tableName: 'PTLColorSettings',
         timestamps: false
     });
 };

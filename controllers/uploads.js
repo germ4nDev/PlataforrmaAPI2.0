@@ -9,8 +9,6 @@ const { v4: uuidv4 } = require("uuid");
 const fileUpload = (req, res = response) => {
   const tipo = req.params.tipo;
   const id = req.params.id;
-
-  // Validar tipo
   const tiposValidos = [
     "suscriptores",
     "aplicaciones",
@@ -20,27 +18,24 @@ const fileUpload = (req, res = response) => {
     "empresas",
     "adjuntos",
     "sitios",
+    "suites",
     "firmas"
   ];
-  
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
       ok: false,
       msg: "No es de suscriptores, aplicaciones, usuarios, documentosss, adjuntos, sitios, firmas (tipo)",
     });
   }
-
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).json({
       ok: false,
       msg: "No hay ningún archivo",
     });
   }
-
-  const file = req.files.imagen;
+  const file = req.files.foto;
   const nombreCortado = file.name.split("."); // wolverine.1.3.jpg
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
-
   // const extensionesValidas = [
   //   "png",
   //   "jpg",
@@ -65,7 +60,6 @@ const fileUpload = (req, res = response) => {
   // Generar el nombre del archivo
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
   const path = `./uploads/${tipo}/${nombreArchivo}`;
-
   file.mv(path, (err) => {
     if (err) {
       console.log(err);
@@ -74,7 +68,6 @@ const fileUpload = (req, res = response) => {
         msg: "Error al mover el archivo",
       });
     }
-
     res.json({
       ok: true,
       msg: "Archivo cargado",
@@ -94,11 +87,6 @@ const retornaImagen = (req, res = response) => {
     const pathImg = path.join(__dirname, `../uploads/no-img.jpg`);
     res.sendFile(pathImg);
   }
-  // res.json({
-  //   ok: true,
-  //   msg: "Archivo existe",
-  //   ruta: pathImg
-  // });
 };
 
 module.exports = {

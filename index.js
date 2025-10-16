@@ -31,6 +31,8 @@ app.use('/api/usuarios', require('./routes/usuarios') );
 app.use('/api/roles', require('./routes/roles') );
 app.use('/api/auth', require('./routes/auth') );
 app.use('/api/upload', require('./routes/uploads') );
+app.use('/api/sliders', require('./routes/sliders-inicio') );
+app.use('/api/colores', require('./routes/colores-settings') );
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
 app.use('/api/versiones', require('./routes/versiones-ap') );

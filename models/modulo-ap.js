@@ -38,6 +38,14 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      icon: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      translateKey: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       estadoModulo: {
         type: DataTypes.BOOLEAN,
         default: false,
