@@ -33,14 +33,14 @@ app.use('/api/auth', require('./routes/auth') );
 app.use('/api/upload', require('./routes/uploads') );
 app.use('/api/sliders', require('./routes/sliders-inicio') );
 app.use('/api/colores', require('./routes/colores-settings') );
+app.use('/api/tipos-valor', require('./routes/tipos-valor') );
+app.use('/api/valores-unitarios', require('./routes/valores-unitarios') );
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
 app.use('/api/versiones', require('./routes/versiones-ap') );
 app.use('/api/paquetes', require('./routes/paquetes-ap') );
 app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/suites', require('./routes/suites-ap') );
-app.use('/api/tipos-valores', require('./routes/tipos-valores') );
-app.use('/api/valores-unitarios', require('./routes/valores-unitarios') );
 // CONEXIONES BD 
 app.use('/api/conexiones-bd', require('./routes/conexiones-bd') );
 app.use('/api/servidores', require('./routes/servidores') );

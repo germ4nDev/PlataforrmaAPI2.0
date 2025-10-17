@@ -3,25 +3,24 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLTiposValores = require('../models/tipo-valor')(sequelize);
+const PTLTiposValor = require('../models/tipo-valor')(sequelize);
 
-// Obtener todos los tiposValores
-const getTiposValores = async (req, res) => {
+const getTiposValor = async (req, res) => {
   try {
-    const tiposValores = await PTLTiposValores.findAll();
+    const tipos = await PTLTiposValor.findAll();
     return res.status(201).json({
       ok: true,
-      tiposValores: tiposValores,
+      tiposValor: tipos,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener los tiposValores' });
+    res.status(500).json({ error: 'Error al obtener los tiposValor ' + err });
   }
 };
 
-const getTiposValoresById = async (req, res) => {
+const getTiposValorById = async (req, res) => {
   try {
     const tipoValorId = req.params.id;
-    const tipoValor = await PTLTiposValores.findOne({
+    const tipoValor = await PTLTiposValor.findOne({
       where: {
         tipoValorId: tipoValorId,
       },
@@ -42,10 +41,10 @@ const getTiposValoresById = async (req, res) => {
 };
 
 // Crear un nuevo tipoValor
-const createTipoValor = async (req, res = response) => {
+const createTkipoValor = async (req, res = response) => {
   try {
-    const nuevoTipoValor = req.body;
-    const tipoValorDB = await PTLTiposValores.create(nuevoTipoValor);
+    const nuevoTkipoValor = req.body;
+    const tipoValorDB = await PTLTiposValor.create(nuevoTkipoValor);
     return res.status(201).json({
       ok: true,
       tipoValor: tipoValorDB
@@ -60,10 +59,10 @@ const createTipoValor = async (req, res = response) => {
 };
 
 // Actualizar un nuevo tipoValor
-const updateTipoValor = async (req, res = response) => {
+const updateTkipoValor = async (req, res = response) => {
   try {
     const { tipoValorId, ...data } = req.body;
-    const tipoValorDB = await PTLTiposValores.findOne({
+    const tipoValorDB = await PTLTiposValor.findOne({
       where: { tipoValorId }
     });
     if (!tipoValorDB) {
@@ -72,10 +71,10 @@ const updateTipoValor = async (req, res = response) => {
         msg: 'No existe un tipoValor con ese ID'
       });
     }
-    await PTLTiposValores.update(data, {
+    await PTLTiposValor.update(data, {
       where: { tipoValorId }
     });
-    const tipoValorActualizado = await PTLTiposValores.findOne({ where: { tipoValorId } });
+    const tipoValorActualizado = await PTLTiposValor.findOne({ where: { tipoValorId } });
     return res.status(200).json({
       ok: true,
       tipoValor: tipoValorActualizado
@@ -90,10 +89,10 @@ const updateTipoValor = async (req, res = response) => {
 };
 
 // Borrar un nuevo tipoValor
-const deleteTipoValor = async (req, res = response) => {
+const deleteTkipoValor = async (req, res = response) => {
   try {
     const tipoValorId = req.params.id;
-    const tipoValorDB = await PTLTiposValores.findOne({
+    const tipoValorDB = await PTLTiposValor.findOne({
       where: { tipoValorId }
     });
     if (!tipoValorDB) {
@@ -102,7 +101,7 @@ const deleteTipoValor = async (req, res = response) => {
         msg: 'No existe un tipoValor con ese ID'
       });
     }
-    tipoValorEliminado = await PTLTiposValores.destroy({
+    tipoValorEliminado = await PTLTiposValor.destroy({
       where: { tipoValorId }
     });
 
@@ -121,9 +120,9 @@ const deleteTipoValor = async (req, res = response) => {
 };
 
 module.exports = {
-  getTiposValores,
-  getTiposValoresById,
-  createTipoValor,
-  updateTipoValor,
-  deleteTipoValor,
+  getTiposValor,
+  getTiposValorById,
+  createTkipoValor,
+  updateTkipoValor,
+  deleteTkipoValor,
 };

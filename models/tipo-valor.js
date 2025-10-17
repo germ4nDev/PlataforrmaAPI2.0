@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      tipoValor: {
+      nombreTipo: {
         type: DataTypes.STRING,
         allowNull: false
       },
