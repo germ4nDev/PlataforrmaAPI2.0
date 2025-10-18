@@ -19,6 +19,7 @@ const fileUpload = (req, res = response) => {
     "adjuntos",
     "sitios",
     "suites",
+    "sliders",
     "firmas"
   ];
   if (!tiposValidos.includes(tipo)) {
