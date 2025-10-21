@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            estadoSlider: {
+            estadoColor: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false
             }
