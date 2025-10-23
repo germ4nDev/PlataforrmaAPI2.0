@@ -6,24 +6,17 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('PTLConexionesBD', {
-        conexionId : {
+        conexionId: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        aplicacionId: {
-            type: DataTypes.INTEGER,
-            default: 0,
+        codigoSuscriptor: {
+            type: DataTypes.STRING,
             allowNull: false
         },
-        suscriptorId: {
-            type: DataTypes.INTEGER,
-            default: 0,
-            allowNull: false
-        },
-        paqueteId:{
-            type: DataTypes.INTEGER,
-            default:0,
+        codigoPaquete: {
+            type: DataTypes.STRING,
             allowNull: false
         },
         nombreConexion: {
@@ -59,7 +52,7 @@ module.exports = (sequelize) => {
             default: 0,
             allowNull: false
         }
-        }, {
+    }, {
         tableName: 'PTLConexionesBD',
         timestamps: false
     });

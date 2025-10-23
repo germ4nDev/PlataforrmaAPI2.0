@@ -38,7 +38,8 @@ app.use('/api/valores-unitarios', require('./routes/valores-unitarios') );
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
 app.use('/api/versiones', require('./routes/versiones-ap') );
-app.use('/api/paquetes', require('./routes/paquetes-ap') );
+app.use('/api/paquetes', require('./routes/paquetes') );
+app.use('/api/items-paquete', require('./routes/items-paquete') );
 app.use('/api/modulos', require('./routes/modulos-ap') );
 app.use('/api/suites', require('./routes/suites-ap') );
 // CONEXIONES BD 

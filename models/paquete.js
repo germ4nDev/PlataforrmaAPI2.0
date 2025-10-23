@@ -10,9 +10,8 @@ module.exports = (sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      aplicacionId: {
-        type: DataTypes.INTEGER,
-        default: 0,
+      codigoPaquete: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       nombrePaquetes: {
@@ -20,6 +19,10 @@ module.exports = (sequelize) => {
         allowNull: false
       },
       descripcionPaquetes: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      acuerdoLicencia: {
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -33,22 +36,30 @@ module.exports = (sequelize) => {
         default: 0,
         allowNull: false
       },
-      promocion: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
       precioPromocion: {
         type: DataTypes.INTEGER,
         default: 0,
+        allowNull: false
+      },
+      promocion: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
       },
       estadoPaquetes: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-      acuerdoLicencia: {
+      imagenPaquete: {
         type: DataTypes.STRING,
-        allowNull: false
+        default: ''
+      },
+      iconoPaquete: {
+        type: DataTypes.STRING,
+        default: ''
+      },
+      colorPaquete: {
+        type: DataTypes.STRING,
+        default: ''
       },
     }, {
       tableName: 'PTLPaquetes',
