@@ -11,25 +11,34 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    usuarioId: {
-      type: DataTypes.INTEGER,
+    codigoUsuario: {
+      type: DataTypes.STRING,
       allowNull: false
     },
-    aplicacionId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    suiteId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    roleId: {
-      type: DataTypes.INTEGER,
+    codigoRole: {
+      type: DataTypes.STRING,
       allowNull: false
     },
     estadoUsuarioRole: {
       type: DataTypes.BOOLEAN,
       default: false
+    },
+    // AUDITORIA ------------
+    codigoUsuarioCreacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaCreacion: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    codigoUsuarioModificacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaModificacion: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     tableName: 'PTLUsuarioRoleAP',

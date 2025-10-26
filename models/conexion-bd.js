@@ -1,6 +1,6 @@
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Actualización: German Valencia
 */
 const { DataTypes } = require('sequelize');
 
@@ -8,8 +8,12 @@ module.exports = (sequelize) => {
     return sequelize.define('PTLConexionesBD', {
         conexionId: {
             type: DataTypes.INTEGER,
-            primaryKey: true,
             autoIncrement: true
+        },
+        codigoConexion: {
+            type: DataTypes.STRING,
+            primaryKey: true,
+            allowNull: false
         },
         codigoSuscriptor: {
             type: DataTypes.STRING,
@@ -19,16 +23,12 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        codigoAplicacion: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         nombreConexion: {
             type: DataTypes.STRING,
-            allowNull: false
-        },
-        descripcionConexion: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        estadoConexion: {
-            type: DataTypes.BOOLEAN,
             allowNull: false
         },
         nombreServidor: {
@@ -50,6 +50,31 @@ module.exports = (sequelize) => {
         BDPort: {
             type: DataTypes.INTEGER,
             default: 0,
+            allowNull: false
+        },
+        descripcionConexion: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        estadoConexion: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        // AUDITORIA ------------
+        codigoUsuarioCreacion: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        fechaCreacion: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        codigoUsuarioModificacion: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        fechaModificacion: {
+            type: DataTypes.DATE,
             allowNull: false
         }
     }, {

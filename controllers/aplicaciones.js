@@ -20,10 +20,10 @@ const getAplicaciones = async (req, res) => {
 
 const getAplicacionById = async (req, res) => {
   try {
-    const aplicacionId = req.params.id;
+    const codigoAplicacion = req.params.id;
     const aplicacion = await PTLAplicaciones.findOne({
       where: {
-        aplicacionId: aplicacionId,
+        codigoAplicacion: codigoAplicacion,
       },
     });
     if (!aplicacion) {
@@ -70,10 +70,19 @@ const createAplicacion = async (req, res = response) => {
     const existente = await PTLAplicaciones.findOne({
       where: { codigoAplicacion: nuevaAplicacion.codigoAplicacion }
     });
+    const existeNombre = await PTLAplicaciones.findOne({
+      where: { nombreAplicacion: nuevaAplicacion.nombreAplicacion }
+    });
     if (existente) {
       return res.status(400).json({
         ok: false,
         msg: 'Ya existe una aplicación con ese código'
+      });
+    }
+    if (existeNombre) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe una aplicación con ese nombre'
       });
     }
     const aplicacionDB = await PTLAplicaciones.create(nuevaAplicacion);
@@ -92,9 +101,9 @@ const createAplicacion = async (req, res = response) => {
 
 const updateAplicacion = async (req, res = response) => {
   try {
-    const { aplicacionId, ...data } = req.body;
+    const { codigoAplicacion, ...data } = req.body;
     const aplicacionDB = await PTLAplicaciones.findOne({
-      where: { aplicacionId }
+      where: { codigoAplicacion }
     });
     if (!aplicacionDB) {
       return res.status(404).json({
@@ -103,7 +112,7 @@ const updateAplicacion = async (req, res = response) => {
       });
     }
     await PTLAplicaciones.update(data, {
-      where: { aplicacionId }
+      where: { codigoAplicacion }
     });
     const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { aplicacionId } });
     return res.status(200).json({
@@ -121,9 +130,9 @@ const updateAplicacion = async (req, res = response) => {
 
 const deleteAplicacion = async (req, res = response) => {
   try {
-    const aplicacionId = req.params.id;
+    const codigoAplicacion = req.params.id;
     const aplicacionDB = await PTLAplicaciones.findOne({
-      where: { aplicacionId }
+      where: { codigoAplicacion }
     });
     if (!aplicacionDB) {
       return res.status(404).json({
@@ -132,7 +141,7 @@ const deleteAplicacion = async (req, res = response) => {
       });
     }
     const aplicacionEliminada = await PTLAplicaciones.destroy({
-      where: { aplicacionId }
+      where: { codigoAplicacion }
     });
     
     return res.status(200).json({

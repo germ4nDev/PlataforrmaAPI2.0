@@ -7,36 +7,16 @@ module.exports = (sequelize) => {
   return sequelize.define(
     "PTLSuitesAP",
     {
-      suiteId: {
+      suitePqueteId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         autoIncrement: true,
       },
-      codigoAplicacion: {
+      codigoPaquete: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       codigoSuite: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-        allowNull: false,
-      },
-      nombreSuite: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      descripcionSuite: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      rutaInicio: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      translateKey: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      imagenInicio: {
         type: DataTypes.STRING,
         allowNull: false,
       },

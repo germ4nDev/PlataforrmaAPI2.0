@@ -7,28 +7,22 @@ module.exports = (sequelize) => {
   return sequelize.define('PTLRolesAP', {
     roleId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true
     },
-    aplicacionId: {
-      type: DataTypes.INTEGER,
-      default: 0,
+    codigoRole: {
+      type: DataTypes.STRING,
+      primaryKey: true,
       allowNull: false
     },
     codigoAplicacion: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nombreRole: {
+    codigoSuite: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    suiteId: {
-      type: DataTypes.INTEGER,
-      default: 0,
-      allowNull: false
-    },
-    codigoSuite: {
+    nombreRole: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -38,6 +32,23 @@ module.exports = (sequelize) => {
     },
     estadoRole: {
       type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    // AUDITORIA ------------
+    codigoUsuarioCreacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaCreacion: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    codigoUsuarioModificacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaModificacion: {
+      type: DataTypes.DATE,
       allowNull: false
     }
   }, {

@@ -4,30 +4,47 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLTextosID', {
-      textoId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      idiomaId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      anclaTexto: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      textoValor: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      estadoTexto: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      }
-    }, {
-      tableName: 'PTLTextosID',
-      timestamps: false
-    });
-  };
+  return sequelize.define('PTLTextosID', {
+    textoId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    idiomaId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    anclaTexto: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    textoValor: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    estadoTexto: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    // AUDITORIA ------------
+    codigoUsuarioCreacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaCreacion: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    codigoUsuarioModificacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaModificacion: {
+      type: DataTypes.DATE,
+      allowNull: false
+    }
+  }, {
+    tableName: 'PTLTextosID',
+    timestamps: false
+  });
+};
