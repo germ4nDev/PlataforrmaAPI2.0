@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualizado: German Valiencia 20251026
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -7,7 +8,6 @@ const PTLUsuarios = require('../models/usuario')(sequelize);
 const { generarJWT } = require("../helpers/jwt");
 const bcrypt = require("bcryptjs");
 
-// Obtener todos los roles
 const getUsuarios = async (req, res) => {
   try {
     const usuarios = await PTLUsuarios.findAll();
@@ -22,10 +22,10 @@ const getUsuarios = async (req, res) => {
 
 const getUsuariosById = async (req, res) => {
   try {
-    const usuarioId = req.params.id;
+    const codigoUsuario = req.params.id;
     const usuario = await PTLUsuarios.findOne({
       where: {
-        usuarioId: usuarioId,
+        codigoUsuario: codigoUsuario,
       },
     });
     if (!usuario) {
@@ -84,9 +84,9 @@ const createUsuario = async (req, res = response) => {
 
 const updateUsuario = async (req, res = response) => {
   try {
-    const { usuarioId, ...data } = req.body;
+    const { codigoUsuario, ...data } = req.body;
     const usuarioDB = await PTLUsuarios.findOne({
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
     if (!usuarioDB) {
       return res.status(404).json({
@@ -95,9 +95,9 @@ const updateUsuario = async (req, res = response) => {
       });
     }
     await PTLUsuarios.update(data, {
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
-    const usuarioActualizado = await PTLUsuarios.findOne({ where: { usuarioId } });
+    const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
     return res.status(200).json({
       ok: true,
       usuario: usuarioActualizado
@@ -113,9 +113,9 @@ const updateUsuario = async (req, res = response) => {
 
 const updateUsuarioClave = async (req, res = response) => {
   try {
-    const { usuarioId, ...data } = req.body;
+    const { codigoUsuario, ...data } = req.body;
     const usuarioDB = await PTLUsuarios.findOne({
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
     if (!usuarioDB) {
       return res.status(404).json({
@@ -128,9 +128,9 @@ const updateUsuarioClave = async (req, res = response) => {
     nuevoUsuario.claveUsuario = password;
 
     await PTLUsuarios.update(data, {
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
-    const usuarioActualizado = await PTLUsuarios.findOne({ where: { usuarioId } });
+    const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
     return res.status(200).json({
       ok: true,
       usuario: usuarioActualizado
@@ -146,9 +146,9 @@ const updateUsuarioClave = async (req, res = response) => {
 
 const deleteUsuario = async (req, res = response) => {
   try {
-    const usuarioId = req.params.id;
+    const codigoUsuario = req.params.id;
     const usuarioDB = await PTLUsuarios.findOne({
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
     if (!usuarioDB) {
       return res.status(404).json({
@@ -157,7 +157,7 @@ const deleteUsuario = async (req, res = response) => {
       });
     }
     usuarioEliminado = await PTLUsuarios.destroy({
-      where: { usuarioId }
+      where: { codigoUsuario }
     });
 
     return res.status(200).json({

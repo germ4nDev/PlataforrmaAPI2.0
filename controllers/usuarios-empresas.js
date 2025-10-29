@@ -3,7 +3,7 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLUsuariosEmpresasSC = require('../models/usuario-empresa-sc')(sequelize);
+const PTLUsuariosEmpresasSC = require('../models/usuario-sc')(sequelize);
 
 // Obtener todos los usuariosEmpresas
 const getUsuariosEmpresas = async (req, res) => {

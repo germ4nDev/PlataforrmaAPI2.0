@@ -19,10 +19,10 @@ const getSitios = async (req, res) => {
 
 const getSitioById = async (req, res) => {
   try {
-    const sitioId = req.params.id;
+    const codigoSitio = req.params.id;
     const sitio = await PTLSitiosAP.findOne({
       where: {
-        sitioId: sitioId,
+        codigoSitio: codigoSitio,
       },
     });
     if (!sitio) {
@@ -68,9 +68,9 @@ const createSitio = async (req, res = response) => {
 
 const updateSitio = async (req, res = response) => {
   try {
-    const { sitioId, ...data } = req.body;
+    const { codigoSitio, ...data } = req.body;
     const sitioDB = await PTLSitiosAP.findOne({
-      where: { sitioId }
+      where: { codigoSitio }
     });
     if (!sitioDB) {
       return res.status(404).json({
@@ -79,9 +79,9 @@ const updateSitio = async (req, res = response) => {
       });
     }
     await PTLSitiosAP.update(data, {
-      where: { sitioId }
+      where: { codigoSitio }
     });
-    const sitioActualizado = await PTLSitiosAP.findOne({ where: { sitioId } });
+    const sitioActualizado = await PTLSitiosAP.findOne({ where: { codigoSitio } });
     return res.status(200).json({
       ok: true,
       sitio: sitioActualizado
@@ -97,9 +97,9 @@ const updateSitio = async (req, res = response) => {
 
 const deleteSitio = async (req, res = response) => {
   try {
-    const sitioId = req.params.id;
+    const codigoSitio = req.params.id;
     const sitioDB = await PTLSitiosAP.findOne({
-      where: { sitioId }
+      where: { codigoSitio }
     });
     if (!sitioDB) {
       return res.status(404).json({
@@ -108,7 +108,7 @@ const deleteSitio = async (req, res = response) => {
       });
     }
     sitioEliminado = await PTLSitiosAP.destroy({
-      where: { sitioId }
+      where: { codigoSitio }
     });
 
     return res.status(200).json({

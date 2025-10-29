@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualizado: German Valiencia 20251026
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -19,9 +20,9 @@ const getValoresUnitarios = async (req, res) => {
 
 const getValoresUnitariosById = async (req, res) => {
   try {
-    const valorUnitarioId = req.params.id;
+    const codigoValor = req.params.id;
     const valorUnitario = await PTKValoresUnitarios.findOne({
-      where: { valorUnitarioId },
+      where: { codigoValor },
     });
     if (!valorUnitario) {
       return res.status(404).json({
@@ -54,10 +55,10 @@ const createValorUnitario = async (req, res = response) => {
 
 const updateValorUnitario = async (req, res = response) => {
   try {
-    const valorUnitarioId = req.params.id;
+    const codigoValor = req.params.id;
     const data = req.body;
     const valorUnitario = await PTKValoresUnitarios.findOne({
-      where: { valorUnitarioId },
+      where: { codigoValor },
     });
     if (!valorUnitario) {
       return res.status(404).json({
@@ -66,9 +67,9 @@ const updateValorUnitario = async (req, res = response) => {
       });
     }
     await PTKValoresUnitarios.update(data, {
-      where: { valorUnitarioId }
+      where: { codigoValor }
     });
-    const valorUnitarioActualizado = await PTKValoresUnitarios.findOne({ where: { valorUnitarioId } });
+    const valorUnitarioActualizado = await PTKValoresUnitarios.findOne({ where: { codigoValor } });
     return res.status(201).json({
       ok: true,
       valorUnitario: valorUnitarioActualizado,
@@ -80,9 +81,9 @@ const updateValorUnitario = async (req, res = response) => {
 
 const deleteValorUnitario = async (req, res = response) => {
   try {
-    const valorUnitarioId = req.params.id;
+    const codigoValor = req.params.id;
     const valorUnitario = await PTKValoresUnitarios.findOne({
-      where: { valorUnitarioId },
+      where: { codigoValor },
     });
     if (!valorUnitario) {
       return res.status(404).json({
@@ -91,7 +92,7 @@ const deleteValorUnitario = async (req, res = response) => {
       });
     }
     const valorUnitarioEliminado = await PTKValoresUnitarios.destroy({
-      where: { valorUnitarioId }
+      where: { codigoValor }
     });
     return res.status(201).json({
       ok: true,

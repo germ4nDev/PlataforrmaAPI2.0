@@ -37,16 +37,18 @@ const geLogActividadById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
 const createLogActividad = async (req, res = response) => {
   try {
     const log = req.body;
+    console.log('cuerpo del log', log);
     const nuevo = await PTLLogActividadesAP.create(log);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el log' });
   }
 };
+
+
 
 module.exports = {
   geLogsActividades,

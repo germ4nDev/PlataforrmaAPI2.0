@@ -1,11 +1,12 @@
 /*
     Author: German Valencia
+    Actualizado: German Valencia 20251026
 */
 const express = require("express");
 const sequelize = require("../database/connection");
+const { createLogActividad } = require("./logs-actividades");
 const PTLAplicaciones = require("../models/aplicacion")(sequelize);
 
-// Obtener todos los roles
 const getAplicaciones = async (req, res) => {
   try {
     const aplicaciones = await PTLAplicaciones.findAll();
@@ -66,7 +67,7 @@ const getAplicacionByCode = async (req, res) => {
 
 const createAplicacion = async (req, res = response) => {
   try {
-    const nuevaAplicacion = req.body;
+    const nuevaAplicacion = req.body.data;
     const existente = await PTLAplicaciones.findOne({
       where: { codigoAplicacion: nuevaAplicacion.codigoAplicacion }
     });
@@ -85,7 +86,24 @@ const createAplicacion = async (req, res = response) => {
         msg: 'Ya existe una aplicación con ese nombre'
       });
     }
+    nuevaAplicacion.codigoUsuarioCreacion = req.usuario?.id || 0;
+    nuevaAplicacion.fechaCreacion = new Date().toISOString();
     const aplicacionDB = await PTLAplicaciones.create(nuevaAplicacion);
+    if (aplicacionDB) {
+      const logData = {
+        codigoAplicacin: req.body.codigoAplicacion,
+        codigoSuite: req.body.codigoSuite,
+        codigoModulo: req.body.codigoModulo,
+        usuarioId: req.usuario?.id || 0,
+        codigoRespuesta: '200',
+        fechaLog: new Date().toISOString(),
+        descripcionLog: `Se insertó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
+        idUsuario: req.usuario?.id || 0,
+        codigoUsuarioCreacion: req.usuario?.id || 0,
+        fechaCreacion: new Date().toISOString(),
+      };
+      await createLogActividad(logData);
+    }
     return res.status(201).json({
       ok: true,
       aplicacion: aplicacionDB
@@ -111,10 +129,27 @@ const updateAplicacion = async (req, res = response) => {
         msg: 'No existe una aplicación con ese ID'
       });
     }
+    data.codigoUsuarioModificacion = req.usuario?.id || 0;
+    data.fechaModificacion = new Date().toISOString();
     await PTLAplicaciones.update(data, {
       where: { codigoAplicacion }
     });
-    const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { aplicacionId } });
+    const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { codigoAplicacion } });
+    if (aplicacionDB) {
+      const logData = {
+        codigoAplicacin: data.codigoAplicacion,
+        codigoSuite: data.codigoSuite,
+        codigoModulo: data.codigoModulo,
+        usuarioId: req.usuario?.id || 0,
+        codigoRespuesta: '200',
+        fechaLog: new Date().toISOString(),
+        descripcionLog: `Se actualizó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
+        idUsuario: req.usuario?.id || 0,
+        codigoUsuarioCreacion: req.usuario?.id || 0,
+        fechaCreacion: new Date().toISOString(),
+      };
+      await createLogActividad(logData);
+    }
     return res.status(200).json({
       ok: true,
       aplicacion: aplicacionActualizada
@@ -143,7 +178,7 @@ const deleteAplicacion = async (req, res = response) => {
     const aplicacionEliminada = await PTLAplicaciones.destroy({
       where: { codigoAplicacion }
     });
-    
+
     return res.status(200).json({
       ok: true,
       aplicacion: aplicacionEliminada,

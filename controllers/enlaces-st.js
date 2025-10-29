@@ -1,11 +1,11 @@
 /*
     Author: John Castañeda
+    Actualizado: German Valencia
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLEnlacesST = require('../models/enlace-st')(sequelize);
 
-// Obtener todos los Enlace
 const getEnlaces = async (req, res) => {
   try {
     const enlaces = await PTLEnlacesST.findAll();
@@ -20,10 +20,10 @@ const getEnlaces = async (req, res) => {
 
 const getEnlaceById = async (req, res) => {
   try {
-    const enlaceId = req.params.id;
+    const codigoEnlace = req.params.id;
     const enlace = await PTLEnlacesST.findOne({
       where: {
-        enlaceId: enlaceId,
+        codigoEnlace: codigoEnlace,
       },
     });
     if (!enlace) {
@@ -41,7 +41,6 @@ const getEnlaceById = async (req, res) => {
   }
 };
 
-// Crear un nuevo enlace
 const createEnlace = async (req, res = response) => {
   try {
     const nuevoEnlace = req.body;
@@ -68,12 +67,11 @@ const createEnlace = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo enlace
 const updateEnlace = async (req, res = response) => {
   try {
-    const { enlaceId, ...data } = req.body;
+    const { codigoEnlace, ...data } = req.body;
     const enlaceDB = await PTLEnlacesST.findOne({
-      where: { enlaceId }
+      where: { codigoEnlace }
     });
     if (!enlaceDB) {
       return res.status(404).json({
@@ -82,9 +80,9 @@ const updateEnlace = async (req, res = response) => {
       });
     }
     await PTLEnlacesST.update(data, {
-      where: { enlaceId }
+      where: { codigoEnlace }
     });
-    const enlaceActualizado = await PTLEnlacesST.findOne({ where: { enlaceId } });
+    const enlaceActualizado = await PTLEnlacesST.findOne({ where: { codigoEnlace } });
     return res.status(200).json({
       ok: true,
       enlace: enlaceActualizado
@@ -98,12 +96,11 @@ const updateEnlace = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo enlace
 const deleteEnlace = async (req, res = response) => {
   try {
-    const enlaceId = req.params.id;
+    const codigoEnlace = req.params.id;
     const enlaceDB = await PTLEnlacesST.findOne({
-      where: { enlaceId }
+      where: { codigoEnlace }
     });
     if (!enlaceDB) {
       return res.status(404).json({
@@ -112,7 +109,7 @@ const deleteEnlace = async (req, res = response) => {
       });
     }
     enlaceEliminado = await PTLEnlacesST.destroy({
-      where: { enlaceId }
+      where: { codigoEnlace }
     });
 
     return res.status(200).json({

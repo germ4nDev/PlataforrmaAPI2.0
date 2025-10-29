@@ -1,11 +1,11 @@
 /*
     Author: John Castañeda
+    Actualizado: German Valencia
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLContenidosEL = require('../models/contenido-el')(sequelize);
 
-// Obtener todos los Contenido
 const getContenidos = async (req, res) => {
   try {
     const contenidos = await PTLContenidosEL.findAll();
@@ -20,10 +20,10 @@ const getContenidos = async (req, res) => {
 
 const getContenidoById = async (req, res) => {
   try {
-    const contenidoId = req.params.id;
+    const codigoContenido = req.params.id;
     const contenido = await PTLContenidosEL.findOne({
       where: {
-        contenidoId: contenidoId,
+        codigoContenido: codigoContenido,
       },
     });
     if (!contenido) {
@@ -41,7 +41,6 @@ const getContenidoById = async (req, res) => {
   }
 };
 
-// Crear un nuevo Contenido
 const createContenido = async (req, res = response) => {
   try {
     const nuevoContenido = req.body;
@@ -68,12 +67,11 @@ const createContenido = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo Contenido
 const updateContenido = async (req, res = response) => {
   try {
-    const { contenidoId, ...data } = req.body;
+    const { codigoContenido, ...data } = req.body;
     const contenidoDB = await PTLContenidosEL.findOne({
-      where: { contenidoId }
+      where: { codigoContenido }
     });
     if (!contenidoDB) {
       return res.status(404).json({
@@ -82,9 +80,9 @@ const updateContenido = async (req, res = response) => {
       });
     }
     await PTLContenidosEL.update(data, {
-      where: { contenidoId }
+      where: { codigoContenido }
     });
-    const contenidoActualizado = await PTLContenidosEL.findOne({ where: { contenidoId } });
+    const contenidoActualizado = await PTLContenidosEL.findOne({ where: { codigoContenido } });
     return res.status(200).json({
       ok: true,
       contenido: contenidoActualizado
@@ -98,12 +96,11 @@ const updateContenido = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo Contenido
 const deleteContenido = async (req, res = response) => {
   try {
-    const contenidoId = req.params.id;
+    const codigoContenido = req.params.id;
     const contenidoDB = await PTLContenidosEL.findOne({
-      where: { contenidoId }
+      where: { codigoContenido }
     });
     if (!contenidoDB) {
       return res.status(404).json({
@@ -112,7 +109,7 @@ const deleteContenido = async (req, res = response) => {
       });
     }
     contenidoEliminado = await PTLContenidosEL.destroy({
-      where: { contenidoId }
+      where: { codigoContenido }
     });
 
     return res.status(200).json({

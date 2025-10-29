@@ -20,10 +20,10 @@ const getRolesAP = async (req, res) => {
 
 const getRoleAPById = async (req, res) => {
   try {
-    const roleId = req.params.id;
+    const codigoRole = req.params.id;
     const role = await PTLRolesAP.findOne({
       where: {
-        roleId: roleId,
+        codigoRole: codigoRole,
       },
     });
     if (!role) {
@@ -60,9 +60,9 @@ const createRoleAP = async (req, res = response) => {
 
 const updateRoleAP = async (req, res = response) => {
   try {
-    const { roleId, ...data } = req.body;
+    const { codigoRole, ...data } = req.body;
     const roleDB = await PTLRolesAP.findOne({
-      where: { roleId }
+      where: { codigoRole }
     });
     if (!roleDB) {
       return res.status(404).json({
@@ -71,9 +71,9 @@ const updateRoleAP = async (req, res = response) => {
       });
     }
     await PTLRolesAP.update(data, {
-      where: { roleId }
+      where: { codigoRole }
     });
-    const roleActualizado = await PTLRolesAP.findOne({ where: { roleId } });
+    const roleActualizado = await PTLRolesAP.findOne({ where: { codigoRole } });
     return res.status(200).json({
       ok: true,
       role: roleActualizado

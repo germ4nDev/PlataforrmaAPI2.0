@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
       default: 0,
       allowNull: false
     },
-    codigoErrr: {
+    codigoRespuesta: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -45,14 +45,6 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaCreacion: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    codigoUsuarioModificacion: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    fechaModificacion: {
       type: DataTypes.DATE,
       allowNull: false
     }

@@ -4,7 +4,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLEmpresasST', {
+  return sequelize.define('PTLEmpresasSC', {
     empresaId: {
       type: DataTypes.INTEGER,
       autoIncrement: true
@@ -48,7 +48,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLEmpresasST',
+    tableName: 'PTLEmpresasSC',
     timestamps: false
   });
 };

@@ -32,7 +32,7 @@ const login = async (req, res = response) => {
 
         if (isMatch) {
           console.log('✅ Login exitoso');
-          const token = await generarJWT(usuarioDB.usuarioId, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
+          const token = await generarJWT(usuarioDB.codigoUsuairo, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
           console.log('token Usuario', token);
           res.json({
             ok: true,
@@ -114,9 +114,7 @@ const verificaarClaveActual = async (req, res = response) => {
 
 const renewToken = async (req, res = response) => {
   const uid = req.uid;
-  // Generar el TOKEN - JWT
   const token = await generarJWT(uid);
-  // Obtener el usuario por UID
   const usuario = await Usuario.findById(uid);
 
   res.json({

@@ -6,7 +6,6 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLConexionesBD = require('../models/conexion-bd')(sequelize);
 
-// Obtener todos los roles
 const getConexionesBD = async (req, res) => {
   try {
     const conexiones = await PTLConexionesBD.findAll();
@@ -21,10 +20,10 @@ const getConexionesBD = async (req, res) => {
 
 const getConexionById = async (req, res) => {
   try {
-    const conexionId = req.params.id;
+    const codigoConexion = req.params.id;
     const conexion = await PTLConexionesBD.findOne({
       where: {
-        conexionId: conexionId,
+        codigoConexion: codigoConexion,
       },
     });
     if (!conexion) {
@@ -42,7 +41,6 @@ const getConexionById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
 const createConexion = async (req, res = response) => {
   try {
     const nuevaConexion = req.body;
@@ -60,12 +58,11 @@ const createConexion = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
 const updateConexion = async (req, res = response) => {
   try {
-    const { conexionId, ...data } = req.body;
+    const { codigoConexion, ...data } = req.body;
     const conexionDB = await PTLConexionesBD.findOne({
-      where: { conexionId }
+      where: { codigoConexion }
     });
     if (!conexionDB) {
       return res.status(404).json({
@@ -74,9 +71,9 @@ const updateConexion = async (req, res = response) => {
       });
     }
     await PTLConexionesBD.update(data, {
-      where: { conexionId }
+      where: { codigoConexion }
     });
-    const conexionActualizado = await PTLConexionesBD.findOne({ where: { conexionId } });
+    const conexionActualizado = await PTLConexionesBD.findOne({ where: { codigoConexion } });
     return res.status(200).json({
       ok: true,
       conexion: conexionActualizado
@@ -90,12 +87,11 @@ const updateConexion = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
 const deleteConexion = async (req, res = response) => {
   try {
-    const conexionId = req.params.id;
+    const codigoConexion = req.params.id;
     const conexionDB = await PTLConexionesBD.findOne({
-      where: { conexionId }
+      where: { codigoConexion }
     });
     if (!conexionDB) {
       return res.status(404).json({
@@ -104,7 +100,7 @@ const deleteConexion = async (req, res = response) => {
       });
     }
     conexionEliminado = await PTLConexionesBD.destroy({
-      where: { conexionId }
+      where: { codigoConexion }
     });
 
     return res.status(200).json({

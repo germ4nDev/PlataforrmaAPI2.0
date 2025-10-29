@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
-    codigoUsuairo: {
+    codigoUsuario: {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false

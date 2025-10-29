@@ -5,7 +5,6 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLPaquetes = require('../models/paquete')(sequelize);
 
-// Obtener todos los paquetes
 const getPaquetes = async (req, res) => {
   try {
     const paquetes = await PTLPaquetes.findAll();
@@ -20,14 +19,14 @@ const getPaquetes = async (req, res) => {
 
 const getPaqueteById = async (req, res) => {
   try {
-    const paqueteId = req.params.id;
+    const codigoPaquete = req.params.id;
     const paquete = await PTLPaquetes.findOne({
-      where: { paqueteId },
+      where: { codigoPaquete },
     });
     if (!paquete) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un paquete por ese id",
+        msg: "No existe un paquete por ese codigo",
       });
     }
     return res.status(201).json({
@@ -51,10 +50,10 @@ const createPaquete = async (req, res = response) => {
 
 const updatePaquete = async (req, res = response) => {
   try {
-    const paqueteId = req.params.id;
+    const codigoPaquete = req.params.id;
     const data = req.body;
     const paqueteOg = await PTLPaquetes.findOne({
-      where: { paqueteId },
+      where: { codigoPaquete },
     });
     if (!paqueteOg) {
       return res.status(404).json({
@@ -63,7 +62,7 @@ const updatePaquete = async (req, res = response) => {
       });
     }
     await PTLPaquetes.update(data, {
-      where: { paqueteId }
+      where: { codigoPaquete }
     });
     const paqueteActualizado = await PTLPaquetes.findOne({ where: { versionId } });
     return res.status(201).json({
@@ -77,9 +76,9 @@ const updatePaquete = async (req, res = response) => {
 
 const deletePaquete = async (req, res = response) => {
   try {
-    const paqueteId = req.params.id;
+    const codigoPaquete = req.params.id;
     const paquete = await PTLPaquetes.findOne({
-      where: { paqueteId },
+      where: { codigoPaquete },
     });
     if (!paquete) {
       return res.status(404).json({
@@ -88,7 +87,7 @@ const deletePaquete = async (req, res = response) => {
       });
     }
     const paqueteEliminado = await PTLPaquetes.destroy({
-      where: { paqueteId }
+      where: { codigoPaquete }
     });
     return res.status(201).json({
       ok: true,

@@ -4,7 +4,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLUsuariosST', {
+  return sequelize.define('PTLUsuariosSC', {
     usuarioSTId: {
       type: DataTypes.INTEGER,
       autoIncrement: true
@@ -44,7 +44,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLUsuariosST',
+    tableName: 'PTLUsuariosSC',
     timestamps: false
   });
 };

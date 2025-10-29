@@ -6,7 +6,6 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLRequerimientosTK = require('../models/requerimiento')(sequelize);
 
-// Obtener todos los requerimientos
 const getRequerimientosTK = async (req, res) => {
   try {
     const requerimientos = await PTLRequerimientosTK.findAll();
@@ -21,10 +20,10 @@ const getRequerimientosTK = async (req, res) => {
 
 const getRequerimientoTKById = async (req, res) => {
   try {
-    const requerimientoId = req.params.id;
+    const codigoRequerimiento = req.params.id;
     const requerimiento = await PTLRequerimientosTK.findOne({
       where: {
-        requerimientoId: requerimientoId,
+        codigoRequerimiento: codigoRequerimiento,
       },
     });
     if (!requerimiento) {
@@ -42,7 +41,6 @@ const getRequerimientoTKById = async (req, res) => {
   }
 };
 
-// Crear un nuevo requerimiento
 const createRequerimientoTK = async (req, res = response) => {
   try {
     const nuevoRequerimiento = req.body;
@@ -60,12 +58,11 @@ const createRequerimientoTK = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo requerimiento
 const updateRequerimientoTK = async (req, res = response) => {
   try {
-    const { requerimientoId, ...data } = req.body;
+    const { codigoRequerimiento, ...data } = req.body;
     const requerimientoDB = await PTLRequerimientosTK.findOne({
-      where: { requerimientoId }
+      where: { codigoRequerimiento }
     });
     if (!requerimientoDB) {
       return res.status(404).json({
@@ -74,9 +71,9 @@ const updateRequerimientoTK = async (req, res = response) => {
       });
     }
     await PTLRequerimientosTK.update(data, {
-      where: { requerimientoId }
+      where: { codigoRequerimiento }
     });
-    const requerimientoActualizado = await PTLRequerimientosTK.findOne({ where: { requerimientoId } });
+    const requerimientoActualizado = await PTLRequerimientosTK.findOne({ where: { codigoRequerimiento } });
     return res.status(200).json({
       ok: true,
       requerimiento: requerimientoActualizado
@@ -92,11 +89,11 @@ const updateRequerimientoTK = async (req, res = response) => {
 
 const updateEstadoRequerimiento = async (req, res = response) => {
   try {
-    const requerimientoId = req.params.id;
+    const codigoRequerimiento = req.params.id;
     const { estadoRequerimiento } = req.body;
 
     const requerimientoDB = await PTLRequerimientosTK.findOne({
-      where: { requerimientoId }
+      where: { codigoRequerimiento }
     });
 
     if (!requerimientoDB) {
@@ -108,7 +105,7 @@ const updateEstadoRequerimiento = async (req, res = response) => {
 
     await PTLRequerimientosTK.update(
       { estadoRequerimiento },
-      { where: { requerimientoId } }
+      { where: { codigoRequerimiento } }
     );
 
     return res.status(200).json({
@@ -124,12 +121,11 @@ const updateEstadoRequerimiento = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo requerimiento
 const deleteRequerimientoTK = async (req, res = response) => {
   try {
-    const requerimientoId = req.params.id;
+    const codigoRequerimiento = req.params.id;
     const requerimientoDB = await PTLRequerimientosTK.findOne({
-      where: { requerimientoId }
+      where: { codigoRequerimiento }
     });
     if (!requerimientoDB) {
       return res.status(404).json({
@@ -138,7 +134,7 @@ const deleteRequerimientoTK = async (req, res = response) => {
       });
     }
     requerimientoEliminado = await PTLRequerimientosTK.destroy({
-      where: { requerimientoId }
+      where: { codigoRequerimiento }
     });
 
     return res.status(200).json({

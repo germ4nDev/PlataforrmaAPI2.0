@@ -1,13 +1,13 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
+    Actualizado: German Valencia
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const suscriptor = require('../models/suscriptor');
 const PTLSuscriptores = require('../models/suscriptor')(sequelize);
 
-// Obtener todos los roles
 const getSuscriptores = async (req, res) => {
   try {
     const suscriptores = await PTLSuscriptores.findAll();
@@ -22,10 +22,10 @@ const getSuscriptores = async (req, res) => {
  
 const getSuscriptoresById = async (req, res) => {
   try {
-    const suscriptorId = req.params.id;
+    const codigoSuscriptor = req.params.id;
     const suscriptor = await PTLSuscriptores.findOne({
       where: {
-        suscriptorId: suscriptorId,
+        codigoSuscriptor: codigoSuscriptor,
       },
     });
     if (!suscriptor) {
@@ -73,9 +73,9 @@ const createSuscriptor = async (req, res = response) => {
 // Actualizar un nuevo rol
 const updateSuscriptor = async (req, res = response) => {
   try {
-    const { suscriptorId, ...data } = req.body;
+    const { codigoSuscriptor, ...data } = req.body;
     const suscriptorDB = await PTLSuscriptores.findOne({
-      where: { suscriptorId }
+      where: { codigoSuscriptor }
     });
     if (!suscriptorDB) {
       return res.status(404).json({
@@ -84,9 +84,9 @@ const updateSuscriptor = async (req, res = response) => {
       });
     }
     await PTLSuscriptores.update(data, {
-      where: { suscriptorId }
+      where: { codigoSuscriptor }
     });
-    const suscriptorActualizado = await PTLSuscriptores.findOne({ where: { suscriptorId } });
+    const suscriptorActualizado = await PTLSuscriptores.findOne({ where: { codigoSuscriptor } });
     return res.status(200).json({
       ok: true,
       suscriptor: suscriptorActualizado
@@ -103,9 +103,9 @@ const updateSuscriptor = async (req, res = response) => {
 // Borrar un nuevo rol
 const deleteSuscriptor = async (req, res = response) => {
   try {
-    const suscriptorId = req.params.id;
+    const codigoSuscriptor = req.params.id;
     const suscriptorDB = await PTLSuscriptores.findOne({
-      where: { suscriptorId }
+      where: { codigoSuscriptor }
     });
     if (!suscriptorDB) {
       return res.status(404).json({
@@ -114,7 +114,7 @@ const deleteSuscriptor = async (req, res = response) => {
       });
     }
     suscriptorEliminado = await PTLSuscriptores.destroy({
-      where: { suscriptorId }
+      where: { codigoSuscriptor }
     });
 
     return res.status(200).json({

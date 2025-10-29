@@ -1,12 +1,12 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
+    Actualizado: german Valencia 20251026
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTicketsAP = require('../models/ticket')(sequelize);
 
-// Obtener todos los ticketes
 const getTicketsAP = async (req, res) => {
   try {
     const ticketsAP = await PTLTicketsAP.findAll();
@@ -21,10 +21,10 @@ const getTicketsAP = async (req, res) => {
 
 const getTicketsAPById = async (req, res) => {
   try {
-    const ticketId = req.params.id;
+    const codigoTicket = req.params.id;
     const ticket = await PTLTicketsAP.findOne({
       where: {
-        ticketId: ticketId,
+        codigoTicket: codigoTicket,
       },
     });
     if (!ticket) {
@@ -63,9 +63,9 @@ const createTicketAP = async (req, res = response) => {
 // Actualizar un nuevo ticket
 const updateTicketAP = async (req, res = response) => {
   try {
-    const { ticketId, ...data } = req.body;
+    const { codigoTicket, ...data } = req.body;
     const ticketDB = await PTLTicketsAP.findOne({
-      where: { ticketId }
+      where: { codigoTicket }
     });
     if (!ticketDB) {
       return res.status(404).json({
@@ -74,9 +74,9 @@ const updateTicketAP = async (req, res = response) => {
       });
     }
     await PTLTicketsAP.update(data, {
-      where: { ticketId }
+      where: { codigoTicket }
     });
-    const ticketActualizado = await PTLTicketsAP.findOne({ where: { ticketId } });
+    const ticketActualizado = await PTLTicketsAP.findOne({ where: { codigoTicket } });
     return res.status(200).json({
       ok: true,
       ticket: ticketActualizado
@@ -93,9 +93,9 @@ const updateTicketAP = async (req, res = response) => {
 // Borrar un nuevo ticket
 const deleteTicketAP = async (req, res = response) => {
   try {
-    const ticketId = req.params.id;
+    const codigoTicket = req.params.id;
     const ticketDB = await PTLTicketsAP.findOne({
-      where: { ticketId }
+      where: { codigoTicket }
     });
     if (!ticketDB) {
       return res.status(404).json({
@@ -104,7 +104,7 @@ const deleteTicketAP = async (req, res = response) => {
       });
     }
     const ticketEliminado = await PTLTicketsAP.destroy({
-      where: { ticketId }
+      where: { codigoTicket }
     });
 
     return res.status(200).json({

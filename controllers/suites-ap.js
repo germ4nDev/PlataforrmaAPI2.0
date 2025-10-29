@@ -19,13 +19,10 @@ const getSuitesAP = async (req, res) => {
 
 const getSuitesAPById = async (req, res) => {
   try {
-    const suiteId = req.params.id;
-        console.log('suite', suiteId);
-
+    const codigoSuite = req.params.id;
+        console.log('suite', codigoSuite);
     const suite = await PTLSuitesAP.findOne({
-      where: {
-        suiteId,
-      },
+      where: { codigoSuite },
     });
     if (!suite) {
       return res.status(404).json({
@@ -72,9 +69,9 @@ const createSuiteAP = async (req, res = response) => {
 
 const updateSuiteAP = async (req, res = response) => {
   try {
-    const { suiteId, ...data } = req.body;
+    const { codigoSuite, ...data } = req.body;
     const suiteDB = await PTLSuitesAP.findOne({
-      where: { suiteId }
+      where: { codigoSuite }
     });
     if (!suiteDB) {
       return res.status(404).json({
@@ -83,9 +80,9 @@ const updateSuiteAP = async (req, res = response) => {
       });
     }
     await PTLSuitesAP.update(data, {
-      where: { suiteId }
+      where: { codigoSuite }
     });
-    const suiteActualizado = await PTLSuitesAP.findOne({ where: { suiteId } });
+    const suiteActualizado = await PTLSuitesAP.findOne({ where: { codigoSuite } });
     return res.status(200).json({
       ok: true,
       suite: suiteActualizado
@@ -101,9 +98,9 @@ const updateSuiteAP = async (req, res = response) => {
 
 const deleteSuiteAP = async (req, res = response) => {
   try {
-    const suiteId = req.params.id;
+    const codigoSuite = req.params.id;
     const suiteDB = await PTLSuitesAP.findOne({
-      where: { suiteId }
+      where: { codigoSuite }
     });
     if (!suiteDB) {
       return res.status(404).json({
@@ -112,7 +109,7 @@ const deleteSuiteAP = async (req, res = response) => {
       });
     }
     suiteEliminado = await PTLSuitesAP.destroy({
-      where: { suiteId }
+      where: { codigoSuite }
     });
 
     return res.status(200).json({

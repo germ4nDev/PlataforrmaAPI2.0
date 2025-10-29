@@ -1,17 +1,17 @@
 /*
     Author: German Valencia
+    Actualizado: German Valiencia 20251026
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuariosSC = require('../models/usuario-sc')(sequelize);
 
-// Obtener todos los usuasrios SC
 const getUsuariosSC = async (req, res) => {
   try {
-    const usuarios = await PTLUsuariosSC.findAll();
+    const usuariosSC = await PTLUsuariosSC.findAll();
     return res.status(201).json({
       ok: true,
-      usuarios: usuarios,
+      usuariosSC: usuariosSC,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener Usuarios' });
@@ -20,9 +20,9 @@ const getUsuariosSC = async (req, res) => {
 
 const getUsuariosSCById = async (req, res) => {
   try {
-    const { usuarioId } = req.body;
-    const usuario = await PTLUsuariosSC.findById(usuarioId);
-    if (!usuario) {
+    const { codigoUsuarioSC } = req.body;
+    const usuarioSC = await PTLUsuariosSC.findById(codigoUsuarioSC);
+    if (!usuarioSC) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
@@ -30,61 +30,58 @@ const getUsuariosSCById = async (req, res) => {
     }
     return res.status(201).json({
       ok: true,
-      usuario: usuario,
+      usuarioSC: usuarioSC,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener el usuario' });
   }
 };
 
-// Crear un nuevo usuairo SC
 const createUsuarioSC = async (req, res = response) => {
   try {
-    const usuario = req.body;
-    const nuevo = await PTLUsuariosSC.create(usuario);
+    const usuarioSC = req.body;
+    const nuevo = await PTLUsuariosSC.create(usuarioSC);
     res.status(201).json(nuevo);
   } catch (err) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    res.status(500).json({ error: 'Error al crear el usuarioSC' });
   }
 };
 
-// Actualizar un nuevo usuario SC
 const updateUsuarioSC = async (req, res = response) => {
   try {
-    const { usuarioSCId } = req.body;
+    const { codigoUsuarioSC } = req.body;
     const Ususario = req.body;
-    const usuarioDB = await PTLUsuariosSC.find(usuarioSCId);
+    const usuarioDB = await PTLUsuariosSC.find(codigoUsuarioSC);
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
     }
-    const usuarioActualizado = await PTLUsuariosSC.findByIdAndUpdate({ usuarioId, Ususario });
+    const usuarioActualizado = await PTLUsuariosSC.findByIdAndUpdate({ codigoUsuarioSC, Ususario });
     return res.status(201).json({
       ok: true,
-      usuario: usuarioActualizado,
+      usuarioSC: usuarioActualizado,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar el usuario' });
   }
 };
 
-// Borrar un usuasrio SC
 const deleteUsuarioSC = async (req, res = response) => {
   try {
-    const { usuarioSCId } = req.body;
-    const usuarioDB = await PTLUsuariosSC.findOne(usuarioSCId);
+    const { codigoUsuarioSC } = req.body;
+    const usuarioDB = await PTLUsuariosSC.findOne(codigoUsuarioSC);
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
     }
-    const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ usuarioSCId });
+    const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ codigoUsuarioSC });
     return res.status(201).json({
       ok: true,
-      usuario: usuarioEliminado,
+      usuarioSC: usuarioEliminado,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al eliminar usuario' });

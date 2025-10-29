@@ -1,5 +1,6 @@
 /*
     Author: German Valencia
+    Actualizado: German Valiencia 20251026
 */
 const express = require('express');
 const sequelize = require('../database/connection');
@@ -19,9 +20,9 @@ const getVersionesAP = async (req, res) => {
 
 const getVersionesAPById = async (req, res) => {
   try {
-    const versionId = req.params.id;
+    const codigoVersion = req.params.id;
     const version = await PTLVersionesAP.findOne({
-      where: { versionId },
+      where: { codigoVersion },
     });
     if (!version) {
       return res.status(404).json({
@@ -54,10 +55,10 @@ const createVersionAP = async (req, res = response) => {
 
 const updateVersionAP = async (req, res = response) => {
   try {
-    const versionId = req.params.id;
+    const codigoVersion = req.params.id;
     const data = req.body;
     const version = await PTLVersionesAP.findOne({
-      where: { versionId },
+      where: { codigoVersion },
     });
     if (!version) {
       return res.status(404).json({
@@ -66,9 +67,9 @@ const updateVersionAP = async (req, res = response) => {
       });
     }
     await PTLVersionesAP.update(data, {
-      where: { versionId }
+      where: { codigoVersion }
     });
-    const versionAPActualizado = await PTLVersionesAP.findOne({ where: { versionId } });
+    const versionAPActualizado = await PTLVersionesAP.findOne({ where: { codigoVersion } });
     return res.status(201).json({
       ok: true,
       version: versionAPActualizado,
@@ -80,9 +81,9 @@ const updateVersionAP = async (req, res = response) => {
 
 const deleteVersionAP = async (req, res = response) => {
   try {
-    const versionId = req.params.id;
+    const codigoVersion = req.params.id;
     const version = await PTLVersionesAP.findOne({
-      where: { versionId },
+      where: { codigoVersion },
     });
     if (!version) {
       return res.status(404).json({
@@ -91,7 +92,7 @@ const deleteVersionAP = async (req, res = response) => {
       });
     }
     const versionAPEliminado = await PTLVersionesAP.destroy({
-      where: { versionId }
+      where: { codigoVersion }
     });
     return res.status(201).json({
       ok: true,

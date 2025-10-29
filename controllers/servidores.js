@@ -1,11 +1,11 @@
 /*
     Author: John Castañeda
+    Actualizado: German Valencia
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLServidor = require('../models/servidor')(sequelize);
 
-// Obtener todos los servidores
 const getServidores = async (req, res) => {
   try {
     const servidores = await PTLServidor.findAll();
@@ -20,10 +20,10 @@ const getServidores = async (req, res) => {
 
 const getServidorById = async (req, res) => {
   try {
-    const servidorId = req.params.id;
+    const codigoServidor = req.params.id;
     const servidor = await PTLServidor.findOne({
       where: {
-        servidorId: servidorId,
+        codigoServidor: codigoServidor,
       },
     });
     if (!servidor) {
@@ -41,7 +41,6 @@ const getServidorById = async (req, res) => {
   }
 };
 
-// Crear un nuevo servidor
 const createServidor = async (req, res = response) => {
   try {
     const nuevoServidor = req.body;
@@ -59,12 +58,11 @@ const createServidor = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo servidor
 const updateServidor = async (req, res = response) => {
   try {
-    const { servidorId, ...data } = req.body;
+    const { codigoServidor, ...data } = req.body;
     const servidorDB = await PTLServidor.findOne({
-      where: { servidorId }
+      where: { codigoServidor }
     });
     if (!servidorDB) {
       return res.status(404).json({
@@ -73,9 +71,9 @@ const updateServidor = async (req, res = response) => {
       });
     }
     await PTLServidor.update(data, {
-      where: { servidorId }
+      where: { codigoServidor }
     });
-    const servidorActualizado = await PTLServidor.findOne({ where: { servidorId } });
+    const servidorActualizado = await PTLServidor.findOne({ where: { codigoServidor } });
     return res.status(200).json({
       ok: true,
       servidor: servidorActualizado
@@ -89,12 +87,11 @@ const updateServidor = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo servidor
 const deleteServidor = async (req, res = response) => {
   try {
-    const servidorId = req.params.id;
+    const codigoServidor = req.params.id;
     const servidorDB = await PTLServidor.findOne({
-      where: { servidorId }
+      where: { codigoServidor }
     });
     if (!servidorDB) {
       return res.status(404).json({
@@ -103,7 +100,7 @@ const deleteServidor = async (req, res = response) => {
       });
     }
     servidorEliminado = await PTLServidor.destroy({
-      where: { servidorId }
+      where: { codigoServidor }
     });
 
     return res.status(200).json({
