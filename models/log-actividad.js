@@ -22,11 +22,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    usuarioId: {
-      type: DataTypes.INTEGER,
-      default: 0,
-      allowNull: false
-    },
     codigoRespuesta: {
       type: DataTypes.STRING,
       allowNull: false

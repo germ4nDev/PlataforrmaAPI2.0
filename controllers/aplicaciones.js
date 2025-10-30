@@ -67,7 +67,9 @@ const getAplicacionByCode = async (req, res) => {
 
 const createAplicacion = async (req, res = response) => {
   try {
-    const nuevaAplicacion = req.body.data;
+    const nuevaAplicacion = req.body;
+    console.log('data aplicacion', nuevaAplicacion);
+    
     const existente = await PTLAplicaciones.findOne({
       where: { codigoAplicacion: nuevaAplicacion.codigoAplicacion }
     });
@@ -86,24 +88,26 @@ const createAplicacion = async (req, res = response) => {
         msg: 'Ya existe una aplicación con ese nombre'
       });
     }
-    nuevaAplicacion.codigoUsuarioCreacion = req.usuario?.id || 0;
-    nuevaAplicacion.fechaCreacion = new Date().toISOString();
+    nuevaAplicacion.codigoUsuarioCreacion = nuevaAplicacion.codigoUsuarioCreacion;
+    nuevaAplicacion.fechaCreacion = new Date().toDateString();
+    nuevaAplicacion.codigoUsuarioModificacion = nuevaAplicacion.codigoUsuarioCreacion;
+    nuevaAplicacion.fechaModificacion = new Date().toDateString();
     const aplicacionDB = await PTLAplicaciones.create(nuevaAplicacion);
-    if (aplicacionDB) {
-      const logData = {
-        codigoAplicacin: req.body.codigoAplicacion,
-        codigoSuite: req.body.codigoSuite,
-        codigoModulo: req.body.codigoModulo,
-        usuarioId: req.usuario?.id || 0,
-        codigoRespuesta: '200',
-        fechaLog: new Date().toISOString(),
-        descripcionLog: `Se insertó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
-        idUsuario: req.usuario?.id || 0,
-        codigoUsuarioCreacion: req.usuario?.id || 0,
-        fechaCreacion: new Date().toISOString(),
-      };
-      await createLogActividad(logData);
-    }
+    // if (aplicacionDB) {
+    //   const logData = {
+    //     codigoAplicacin: req.body.codigoAplicacion,
+    //     codigoSuite: req.body.codigoSuite,
+    //     codigoModulo: req.body.codigoModulo,
+    //     usuarioId: req.usuario?.id || 0,
+    //     codigoRespuesta: '200',
+    //     fechaLog: new Date().toISOString(),
+    //     descripcionLog: `Se insertó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
+    //     idUsuario: req.usuario?.id || 0,
+    //     codigoUsuarioCreacion: req.usuario?.id || 0,
+    //     fechaCreacion: new Date().toISOString(),
+    //   };
+    //   await createLogActividad(logData);
+    // }
     return res.status(201).json({
       ok: true,
       aplicacion: aplicacionDB

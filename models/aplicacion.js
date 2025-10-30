@@ -35,20 +35,16 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         codigoUsuarioCreacion: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         fechaCreacion: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         codigoUsuarioModificacion: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         fechaModificacion: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         }
     }, {
         tableName: 'PTLAplicaciones',
