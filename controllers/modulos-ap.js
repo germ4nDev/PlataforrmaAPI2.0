@@ -73,8 +73,8 @@ const createModulo = async (req, res = response) => {
 };
 
 const updateModulo = async (req, res = response) => {
+  const { codigoModulo, ...data } = req.body;
   try {
-    const { codigoModulo, ...data } = req.body;
     const moduloOg = await PTModulosAP.findOne({
       where: { codigoModulo },
     });

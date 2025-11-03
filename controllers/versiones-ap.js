@@ -40,9 +40,9 @@ const getVersionesAPById = async (req, res) => {
 };
 
 const createVersionAP = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
+  console.log('datos version', newRegistro);
   try {
-    const { ...newRegistro } = req.body;
-    console.log('datos version', newRegistro);
     const nuevo = await PTLVersionesAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
@@ -54,9 +54,9 @@ const createVersionAP = async (req, res = response) => {
 };
 
 const updateVersionAP = async (req, res = response) => {
+  const { codigoVersion, ...data } = req.body;
   try {
-    const codigoVersion = req.params.id;
-    const { ...data } = req.body;
+    // const codigoVersion = req.params.id;
     const version = await PTLVersionesAP.findOne({
       where: { codigoVersion },
     });
@@ -66,7 +66,21 @@ const updateVersionAP = async (req, res = response) => {
         msg: "No existe un versionAP por ese id",
       });
     }
-    await PTLVersionesAP.update(data, {
+    const newVersion = {
+      codigoVersion: codigoVersion,
+      codigoAplicacion: data.codigoAplicacion,
+      fechaVersion: data.fechaVersion,
+      nombreVersion: data.nombreVersion,
+      version: data.version,
+      descripcionVersion: data.descripcionVersion,
+      estadoVersion: data.estadoVersion,
+      codigoUsuarioCreacion: data.codigoUsuarioCreacion,
+      fechaCreacion: data.fechaCreacion,
+      codigoUsuarioModificacion: data.codigoUsuarioModificacion,
+      fechaModificacion: data.fechaModificacion
+    }
+    console.log('data de la version', newVersion);
+    await PTLVersionesAP.update(newVersion, {
       where: { codigoVersion }
     });
     const versionAPActualizado = await PTLVersionesAP.findOne({ where: { codigoVersion } });
