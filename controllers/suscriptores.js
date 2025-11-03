@@ -46,9 +46,9 @@ const getSuscriptoresById = async (req, res) => {
 // Crear un nuevo rol
 const createSuscriptor = async (req, res = response) => {
   try {
-    const nuevoSuscriptor = req.body;
+    const { ...newRegistro } = req.body;
     const existeNombre = await PTLSuscriptores.findOne({
-      where: { nombreSuscriptor: nuevoSuscriptor.nombreSuscriptor }
+      where: { nombreSuscriptor: newRegistro.nombreSuscriptor }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -56,7 +56,7 @@ const createSuscriptor = async (req, res = response) => {
         msg: 'Ya existe un suscriptor con ese nombre'
       });
     }
-    const suscriptorDB = await PTLSuscriptores.create(nuevoSuscriptor);
+    const suscriptorDB = await PTLSuscriptores.create(newRegistro);
     return res.status(201).json({
       ok: true,
       suscriptor: suscriptorDB

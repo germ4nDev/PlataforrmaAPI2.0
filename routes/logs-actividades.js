@@ -16,8 +16,8 @@ const router = Router();
 
 router.get("/", geLogsActividades);
 
-router.post( "/",  validarJWT, createLogActividad);
+router.post( "/", createLogActividad);
 
-router.get("/:id", validarJWT, geLogActividadById);
+router.get("/:id", geLogActividadById);
 
 module.exports = router;

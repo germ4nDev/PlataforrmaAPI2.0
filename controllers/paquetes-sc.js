@@ -45,8 +45,8 @@ const getPaquetesSCById = async (req, res) => {
 // Crear un nuevo rol
 const createPaqueteSC = async (req, res = response) => {
   try {
-    const nuevoPaqueteSC = req.body;
-    const paqueteSCDB = await PTLPaquetesSC.create(nuevoPaqueteSC);
+    const { ...newRegistro } = req.body;
+    const paqueteSCDB = await PTLPaquetesSC.create(newRegistro);
     return res.status(201).json({
       ok: true,
       suscriptorPaquete: paqueteSCDB

@@ -38,8 +38,8 @@ const getEmpresaSCById = async (req, res) => {
 
 const createEmpresaSC = async (req, res = response) => {
   try {
-    const empresaSC = req.body;
-    const nuevo = await PTLEmpresasSC.create(empresaSC);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLEmpresasSC.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear la empresaSC' });
@@ -48,8 +48,7 @@ const createEmpresaSC = async (req, res = response) => {
 
 const updateEmpresaSC = async (req, res = response) => {
   try {
-    const { codigoEmpresaSC } = req.body;
-    const empresaSC = req.body;
+    const { codigoEmpresaSC, ...data } = req.body;
     const EmpresaSCDB = await PTLEmpresasSC.find(codigoEmpresaSC);
     if (!EmpresaSCDB) {
       return res.status(404).json({
@@ -57,7 +56,7 @@ const updateEmpresaSC = async (req, res = response) => {
         msg: "No existe una empresaSC por ese id",
       });
     }
-    const empresaSCActualizado = await PTLEmpresasSC.findByIdAndUpdate({ codigoEmpresaSC, empresaSC });
+    const empresaSCActualizado = await PTLEmpresasSC.findByIdAndUpdate({ data, empresaSC });
     return res.status(201).json({
       ok: true,
       empresaSC: empresaSCActualizado,

@@ -19,7 +19,7 @@ const router = Router();
 
 router.get("/", getAplicaciones);
 
-router.post( "/", createAplicacion);
+router.post("/", createAplicacion);
 
 router.put("/:id", updateAplicacion);
 

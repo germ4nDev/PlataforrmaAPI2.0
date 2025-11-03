@@ -40,8 +40,8 @@ const getIdiomaById = async (req, res) => {
 // Crear un nuevo rol
 const createIdioma = async (req, res = response) => {
   try {
-    const idioma = req.body;
-    const nuevo = await PTLIdiomas.create(idioma);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLIdiomas.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear la idioma' });
@@ -51,8 +51,7 @@ const createIdioma = async (req, res = response) => {
 // Actualizar un nuevo rol
 const updateIdioma = async (req, res = response) => {
   try {
-    const { idiomaId } = req.body;
-    const idioma = req.body;
+    const { idiomaId, ...data } = req.body;
     const IdiomaDB = await PTLIdiomas.find(idiomaId);
     if (!IdiomaDB) {
       return res.status(404).json({

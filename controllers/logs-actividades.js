@@ -39,16 +39,17 @@ const geLogActividadById = async (req, res) => {
 
 const createLogActividad = async (req, res = response) => {
   try {
-    const log = req.body;
-    console.log('cuerpo del log', log);
-    const nuevo = await PTLLogActividadesAP.create(log);
-    res.status(201).json(nuevo);
+    const { ...newRegistro } = req.body;
+    console.log('cuerpo del log', newRegistro);
+    const nuevo = await PTLLogActividadesAP.create(newRegistro);
+    return res.status(201).json({
+      ok: true,
+      log: nuevo
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el log' });
   }
 };
-
-
 
 module.exports = {
   geLogsActividades,

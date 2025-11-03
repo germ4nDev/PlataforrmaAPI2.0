@@ -43,8 +43,8 @@ const getServidorById = async (req, res) => {
 
 const createServidor = async (req, res = response) => {
   try {
-    const nuevoServidor = req.body;
-    const servidorDB = await PTLServidor.create(nuevoServidor);
+    const { ...newRegistro } = req.body;
+    const servidorDB = await PTLServidor.create(newRegistro);
     return res.status(201).json({
       ok: true,
       servidor: servidorDB

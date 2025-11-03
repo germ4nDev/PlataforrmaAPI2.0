@@ -43,8 +43,8 @@ const getTiposValorById = async (req, res) => {
 // Crear un nuevo tipoValor
 const createTkipoValor = async (req, res = response) => {
   try {
-    const nuevoTkipoValor = req.body;
-    const tipoValorDB = await PTLTiposValor.create(nuevoTkipoValor);
+    const { ...newRegistro } = req.body;
+    const tipoValorDB = await PTLTiposValor.create(newRegistro);
     return res.status(201).json({
       ok: true,
       tipoValor: tipoValorDB

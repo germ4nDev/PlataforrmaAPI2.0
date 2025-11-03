@@ -20,32 +20,36 @@ module.exports = (sequelize) => {
         },
         descripcionAplicacion: {
             type: DataTypes.STRING,
+            allowNull: true
+        },
+        estadoAplicacion: {
+            type: DataTypes.BOOLEAN,
             allowNull: false
         },
         translateKey: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        estadoAplicacion: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false
-        },
         imagenInicio: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         codigoUsuarioCreacion: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: true
         },
         fechaCreacion: {
-            type: DataTypes.DATE
+            type: DataTypes.STRING,
+            allowNull: true
         },
         codigoUsuarioModificacion: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: true
         },
         fechaModificacion: {
-            type: DataTypes.DATE
-        }
+            type: DataTypes.STRING,
+            allowNull: true
+        },
     }, {
         tableName: 'PTLAplicaciones',
         timestamps: false

@@ -46,8 +46,8 @@ const getSeguimientoRQById = async (req, res) => {
 // Crear un nuevo seguimiento
 const createSeguimientoRQ = async (req, res = response) => {
   try {
-    const nuevoSeguimiento = req.body;
-    const seguimientoDB = await PTLSeguimientosRQ.create(nuevoSeguimiento);
+    const { ...newRegistro } = req.body;
+    const seguimientoDB = await PTLSeguimientosRQ.create(newRegistro);
     return res.status(201).json({
       ok: true,
       seguimiento: seguimientoDB

@@ -42,8 +42,8 @@ const getModuloById = async (req, res) => {
 
 const createModulo = async (req, res = response) => {
   try {
-    const modulo = req.body;
-    const nuevo = await PTModulosAP.create(modulo);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTModulosAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       modulo: nuevo,
@@ -55,8 +55,7 @@ const createModulo = async (req, res = response) => {
 
 const updateModulo = async (req, res = response) => {
   try {
-    const codigoModulo = req.params.id;
-    const modulo = req.body;
+    const { codigoModulo, ...data } = req.body;
     const moduloOg = await PTModulosAP.findOne({
       where: { codigoModulo },
     });

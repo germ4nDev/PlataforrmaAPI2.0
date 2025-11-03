@@ -43,9 +43,9 @@ const getEnlaceById = async (req, res) => {
 
 const createEnlace = async (req, res = response) => {
   try {
-    const nuevoEnlace = req.body;
+    const { ...newRegistro } = req.body;
     const existeNombre = await PTLEnlacesST.findOne({
-      where: { nombreEnlace: nuevoEnlace.nombreEnlace }
+      where: { nombreEnlace: newRegistro.nombreEnlace }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -53,7 +53,7 @@ const createEnlace = async (req, res = response) => {
         msg: 'Ya existe un enlace con ese nombre'
       });
     }
-    const enlaceDB = await PTLEnlacesST.create(nuevoEnlace);
+    const enlaceDB = await PTLEnlacesST.create(newRegistro);
     return res.status(201).json({
       ok: true,
       enlace: enlaceDB

@@ -4,8 +4,9 @@
 */
 const express = require("express");
 const sequelize = require("../database/connection");
-const { createLogActividad } = require("./logs-actividades");
+// const { createLogActividad } = require("./logs-actividades");
 const PTLAplicaciones = require("../models/aplicacion")(sequelize);
+// const PTLLogActividad = require("../models/log-actividad")(sequelize);
 
 const getAplicaciones = async (req, res) => {
   try {
@@ -66,15 +67,14 @@ const getAplicacionByCode = async (req, res) => {
 };
 
 const createAplicacion = async (req, res = response) => {
+  const { ...data } = req.body;
+  console.log('crear aplicaicon', data);
   try {
-    const nuevaAplicacion = req.body;
-    console.log('data aplicacion', nuevaAplicacion);
-    
     const existente = await PTLAplicaciones.findOne({
-      where: { codigoAplicacion: nuevaAplicacion.codigoAplicacion }
+      where: { codigoAplicacion: data.codigoAplicacion }
     });
     const existeNombre = await PTLAplicaciones.findOne({
-      where: { nombreAplicacion: nuevaAplicacion.nombreAplicacion }
+      where: { nombreAplicacion: data.nombreAplicacion }
     });
     if (existente) {
       return res.status(400).json({
@@ -88,26 +88,8 @@ const createAplicacion = async (req, res = response) => {
         msg: 'Ya existe una aplicación con ese nombre'
       });
     }
-    nuevaAplicacion.codigoUsuarioCreacion = nuevaAplicacion.codigoUsuarioCreacion;
-    nuevaAplicacion.fechaCreacion = new Date().toDateString();
-    nuevaAplicacion.codigoUsuarioModificacion = nuevaAplicacion.codigoUsuarioCreacion;
-    nuevaAplicacion.fechaModificacion = new Date().toDateString();
-    const aplicacionDB = await PTLAplicaciones.create(nuevaAplicacion);
-    // if (aplicacionDB) {
-    //   const logData = {
-    //     codigoAplicacin: req.body.codigoAplicacion,
-    //     codigoSuite: req.body.codigoSuite,
-    //     codigoModulo: req.body.codigoModulo,
-    //     usuarioId: req.usuario?.id || 0,
-    //     codigoRespuesta: '200',
-    //     fechaLog: new Date().toISOString(),
-    //     descripcionLog: `Se insertó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
-    //     idUsuario: req.usuario?.id || 0,
-    //     codigoUsuarioCreacion: req.usuario?.id || 0,
-    //     fechaCreacion: new Date().toISOString(),
-    //   };
-    //   await createLogActividad(logData);
-    // }
+    console.log('nueva aplicacon', data);
+    const aplicacionDB = await PTLAplicaciones.create(data);
     return res.status(201).json({
       ok: true,
       aplicacion: aplicacionDB
@@ -124,6 +106,7 @@ const createAplicacion = async (req, res = response) => {
 const updateAplicacion = async (req, res = response) => {
   try {
     const { codigoAplicacion, ...data } = req.body;
+    console.log('body', req.body);
     const aplicacionDB = await PTLAplicaciones.findOne({
       where: { codigoAplicacion }
     });
@@ -139,21 +122,6 @@ const updateAplicacion = async (req, res = response) => {
       where: { codigoAplicacion }
     });
     const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { codigoAplicacion } });
-    if (aplicacionDB) {
-      const logData = {
-        codigoAplicacin: data.codigoAplicacion,
-        codigoSuite: data.codigoSuite,
-        codigoModulo: data.codigoModulo,
-        usuarioId: req.usuario?.id || 0,
-        codigoRespuesta: '200',
-        fechaLog: new Date().toISOString(),
-        descripcionLog: `Se actualizó la Aplicación ${aplicacionDB.nombreAplicacion}, correctamente.`,
-        idUsuario: req.usuario?.id || 0,
-        codigoUsuarioCreacion: req.usuario?.id || 0,
-        fechaCreacion: new Date().toISOString(),
-      };
-      await createLogActividad(logData);
-    }
     return res.status(200).json({
       ok: true,
       aplicacion: aplicacionActualizada

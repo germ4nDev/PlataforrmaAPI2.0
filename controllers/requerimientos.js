@@ -43,8 +43,8 @@ const getRequerimientoTKById = async (req, res) => {
 
 const createRequerimientoTK = async (req, res = response) => {
   try {
-    const nuevoRequerimiento = req.body;
-    const requerimientoDB = await PTLRequerimientosTK.create(nuevoRequerimiento);
+    const { ...newRegistro } = req.body;
+    const requerimientoDB = await PTLRequerimientosTK.create(newRegistro);
     return res.status(201).json({
       ok: true,
       requerimiento: requerimientoDB

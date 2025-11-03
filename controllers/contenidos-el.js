@@ -43,9 +43,9 @@ const getContenidoById = async (req, res) => {
 
 const createContenido = async (req, res = response) => {
   try {
-    const nuevoContenido = req.body;
+    const { ...newRegistro } = req.body;
     const existeNombre = await PTLContenidosEL.findOne({
-      where: { nombreContenido: nuevoContenido.nombreContenido }
+      where: { nombreContenido: newRegistro.nombreContenido }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -53,7 +53,7 @@ const createContenido = async (req, res = response) => {
         msg: 'Ya existe un contenido con ese nombre'
       });
     }
-    const contenidoDB = await PTLContenidosEL.create(nuevoContenido);
+    const contenidoDB = await PTLContenidosEL.create(newRegistro);
     return res.status(201).json({
       ok: true,
       contenido: contenidoDB

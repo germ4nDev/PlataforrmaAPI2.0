@@ -40,8 +40,8 @@ const getUsuariosEmpresasById = async (req, res) => {
 // Crear un nuevo rol
 const createUsuarioEmpresa = async (req, res = response) => {
   try {
-    const usuarioEmpresa = req.body;
-    const nuevo = await PTLUsuariosEmpresasSC.create(usuarioEmpresa);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLUsuariosEmpresasSC.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usurioEmpresa' });
@@ -51,9 +51,8 @@ const createUsuarioEmpresa = async (req, res = response) => {
 // Actualizar un nuevo rol
 const updateUsuarioEmpresa = async (req, res = response) => {
   try {
-    const usuarioEmpresaId = req.body.usuarioEmpresId;
-    const UsusarioEmpresa = req.body;
-    const usuarioEmpresaDB = await PTLUsuariosEmpresasSC.find(usuarioEmpresaId);
+    const { ...data } = req.body;
+    const usuarioEmpresaDB = await PTLUsuariosEmpresasSC.find(data.usuarioEmpresa);
     if (!usuarioEmpresaDB) {
       return res.status(404).json({
         ok: false,

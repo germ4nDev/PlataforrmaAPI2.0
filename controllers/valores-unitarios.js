@@ -41,9 +41,9 @@ const getValoresUnitariosById = async (req, res) => {
 
 const createValorUnitario = async (req, res = response) => {
   try {
-    const valorUnitario = req.body;
-    console.log('datos valorUnitario', valorUnitario);
-    const nuevo = await PTKValoresUnitarios.create(valorUnitario);
+    const { ...newRegistro } = req.body;
+    console.log('datos valorUnitario', newRegistro);
+    const nuevo = await PTKValoresUnitarios.create(newRegistro);
     return res.status(201).json({
       ok: true,
       valorUnitario: nuevo,
@@ -56,7 +56,7 @@ const createValorUnitario = async (req, res = response) => {
 const updateValorUnitario = async (req, res = response) => {
   try {
     const codigoValor = req.params.id;
-    const data = req.body;
+    const { ...data } = req.body;
     const valorUnitario = await PTKValoresUnitarios.findOne({
       where: { codigoValor },
     });

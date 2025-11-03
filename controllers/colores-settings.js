@@ -45,7 +45,7 @@ const getColorSettingById = async (req, res) => {
 // Crear un nuevo rol
 const createColorSetting = async (req, res = response) => {
   try {
-    const nuevaColorSetting = req.body;
+    const { ...nuevaColorSetting } = req.body;
     const colorNavDB = await PTLColorSettings.create(nuevaColorSetting);
     return res.status(201).json({
       ok: true,

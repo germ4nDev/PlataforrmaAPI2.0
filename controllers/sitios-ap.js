@@ -42,9 +42,9 @@ const getSitioById = async (req, res) => {
 
 const createSitio = async (req, res = response) => {
   try {
-    const nuevoSitio = req.body;
+    const { ...newRegistro } = req.body;
     const existeNombre = await PTLSitiosAP.findOne({
-      where: { nombreSitio: nuevoSitio.nombreSitio }
+      where: { nombreSitio: newRegistro.nombreSitio }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -52,7 +52,7 @@ const createSitio = async (req, res = response) => {
         msg: 'Ya existe un sitio con ese nombre'
       });
     }
-    const sitioDB = await PTLSitiosAP.create(nuevoSitio);
+    const sitioDB = await PTLSitiosAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       sitio: sitioDB

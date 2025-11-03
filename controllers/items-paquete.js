@@ -40,8 +40,8 @@ const getItemsPaqueteById = async (req, res) => {
 
 const createItemsPaquete = async (req, res = response) => {
   try {
-    const itemsPaquete = req.body;
-    const nuevo = await PTLItemsPaquete.create(itemsPaquete);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLItemsPaquete.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el itemsPaquete' });
@@ -50,8 +50,7 @@ const createItemsPaquete = async (req, res = response) => {
 
 const updateItemsPaquete = async (req, res = response) => {
   try {
-    const codigoItem = req.params.id;
-    const itemsPaquete = req.body;
+    const { codigoItem, ...data } = req.body;
     const itemsPaqueteOg = await PTLItemsPaquete.findOne({
       where: { codigoItem },
     });
@@ -61,7 +60,7 @@ const updateItemsPaquete = async (req, res = response) => {
         msg: "No existe un paquete con ese id",
       });
     }
-    await PTLItemsPaquete.update(itemsPaquete, {
+    await PTLItemsPaquete.update(data, {
       where: { codigoItem },
     });
     const itemsPaqueteActualizado = await PTLItemsPaquete.findOne({

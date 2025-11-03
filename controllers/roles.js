@@ -43,8 +43,8 @@ const getRoleAPById = async (req, res) => {
 
 const createRoleAP = async (req, res = response) => {
   try {
-    const nuevoRole = req.body;
-    const roleDB = await PTLRolesAP.create(nuevoRole);
+    const { ...newRegistro } = req.body;
+    const roleDB = await PTLRolesAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       role: roleDB

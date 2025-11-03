@@ -40,8 +40,8 @@ const getLogTransaccionById = async (req, res) => {
 // Crear un nuevo rol
 const createLogTransaccion = async (req, res = response) => {
   try {
-    const log = req.body;
-    const nuevo = await PTLLogsTransaccionesAP.create(log);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLLogsTransaccionesAP.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el log' });

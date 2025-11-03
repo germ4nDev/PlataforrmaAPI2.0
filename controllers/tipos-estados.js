@@ -44,8 +44,8 @@ const getTiposEstadosById = async (req, res) => {
 // Crear un nuevo tipoEstado
 const createTipoEstado = async (req, res = response) => {
   try {
-    const nuevoTipoEstado = req.body;
-    const tipoEstadoDB = await PTLTiposEstados.create(nuevoTipoEstado);
+    const { ...newRegistro } = req.body;
+    const tipoEstadoDB = await PTLTiposEstados.create(newRegistro);
     return res.status(201).json({
       ok: true,
       tipoEstado: tipoEstadoDB

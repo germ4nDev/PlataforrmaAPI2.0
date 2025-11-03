@@ -45,9 +45,9 @@ const getUsuariosById = async (req, res) => {
 
 const createUsuario = async (req, res = response) => {
   try {
-    const nuevoUsuario = req.body;
+    const { ...newRegistro } = req.body;
     const existeIdentificacion = await PTLUsuarios.findOne({
-      where: { nombreUsuario: nuevoUsuario.identificacionUsuario }
+      where: { nombreUsuario: newRegistro.identificacionUsuario }
     });
     if (existeIdentificacion) {
       return res.status(400).json({
@@ -56,7 +56,7 @@ const createUsuario = async (req, res = response) => {
       });
     }
     const existeNombre = await PTLUsuarios.findOne({
-      where: { nombreUsuario: nuevoUsuario.nombreUsuario }
+      where: { nombreUsuario: newRegistro.nombreUsuario }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -65,10 +65,10 @@ const createUsuario = async (req, res = response) => {
       });
     }
     const salt = bcrypt.genSaltSync();
-    const password = await bcrypt.hash(nuevoUsuario.claveUsuario, salt);
-    nuevoUsuario.claveUsuario = password;
-    nuevoUsuario.fotoUsuario = 'no-foto.png';
-    const usuarioDB = await PTLUsuarios.create(nuevoUsuario);
+    const password = await bcrypt.hash(newRegistro.claveUsuario, salt);
+    newRegistro.claveUsuario = password;
+    newRegistro.fotoUsuario = 'no-foto.png';
+    const usuarioDB = await PTLUsuarios.create(newRegistro);
     return res.status(201).json({
       ok: true,
       usuario: usuarioDB

@@ -43,8 +43,8 @@ const getConexionById = async (req, res) => {
 
 const createConexion = async (req, res = response) => {
   try {
-    const nuevaConexion = req.body;
-    const conexionDB = await PTLConexionesBD.create(nuevaConexion);
+    const { ...newRegistro } = req.body;
+    const conexionDB = await PTLConexionesBD.create(newRegistro);
     return res.status(201).json({
       ok: true,
       conexion: conexionDB

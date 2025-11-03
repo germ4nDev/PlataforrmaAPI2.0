@@ -39,8 +39,8 @@ const getUsuariosSCById = async (req, res) => {
 
 const createUsuarioSC = async (req, res = response) => {
   try {
-    const usuarioSC = req.body;
-    const nuevo = await PTLUsuariosSC.create(usuarioSC);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLUsuariosSC.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuarioSC' });
@@ -49,8 +49,7 @@ const createUsuarioSC = async (req, res = response) => {
 
 const updateUsuarioSC = async (req, res = response) => {
   try {
-    const { codigoUsuarioSC } = req.body;
-    const Ususario = req.body;
+    const { codigoUsuarioSC, ...data } = req.body;
     const usuarioDB = await PTLUsuariosSC.find(codigoUsuarioSC);
     if (!usuarioDB) {
       return res.status(404).json({

@@ -37,26 +37,6 @@ const fileUpload = (req, res = response) => {
   const file = req.files.foto;
   const nombreCortado = file.name.split("."); // wolverine.1.3.jpg
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
-  // const extensionesValidas = [
-  //   "png",
-  //   "jpg",
-  //   "jpeg",
-  //   "gif",
-  //   "pdf",
-  //   "doc",
-  //   "docx",
-  //   "xls",
-  //   "xlsx",
-  //   "ppt",
-  //   "pptx",
-  //   "zip",
-  // ];
-  // if (!extensionesValidas.includes(extensionArchivo)) {
-  //   return res.status(400).json({
-  //     ok: false,
-  //     msg: "No es una extensión permitida",
-  //   });
-  // }
 
   // Generar el nombre del archivo
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;

@@ -44,8 +44,8 @@ const getUsuariosRolesById = async (req, res) => {
 
 const createUsuarioRole = async (req, res = response) => {
   try {
-    const usurioRole = req.body;
-    const nuevo = await PTLUsuarioRoleAP.create(usurioRole);
+    const { ...newRegistro } = req.body;
+    const nuevo = await PTLUsuarioRoleAP.create(newRegistro);
     res.status(201).json(nuevo);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuario role' });

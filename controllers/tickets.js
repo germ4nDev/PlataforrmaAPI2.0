@@ -45,8 +45,8 @@ const getTicketsAPById = async (req, res) => {
 // Crear un nuevo ticket
 const createTicketAP = async (req, res = response) => {
   try {
-    const nuevoTicket = req.body;
-    const ticketDB = await PTLTicketsAP.create(nuevoTicket);
+    const { ...newRegistro } = req.body;
+    const ticketDB = await PTLTicketsAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       ticket: ticketDB

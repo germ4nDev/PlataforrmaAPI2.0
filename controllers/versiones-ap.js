@@ -41,9 +41,9 @@ const getVersionesAPById = async (req, res) => {
 
 const createVersionAP = async (req, res = response) => {
   try {
-    const versionAP = req.body;
-    console.log('datos version', versionAP);
-    const nuevo = await PTLVersionesAP.create(versionAP);
+    const { ...newRegistro } = req.body;
+    console.log('datos version', newRegistro);
+    const nuevo = await PTLVersionesAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       version: nuevo,
@@ -56,7 +56,7 @@ const createVersionAP = async (req, res = response) => {
 const updateVersionAP = async (req, res = response) => {
   try {
     const codigoVersion = req.params.id;
-    const data = req.body;
+    const { ...data } = req.body;
     const version = await PTLVersionesAP.findOne({
       where: { codigoVersion },
     });

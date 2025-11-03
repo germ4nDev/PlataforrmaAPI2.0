@@ -45,8 +45,8 @@ const getSliderInicioById = async (req, res) => {
 // Crear un nuevo rol
 const createSliderInicio = async (req, res = response) => {
   try {
-    const nuevaSliderInicio = req.body;
-    const sliderInicioDB = await PTLSliderInicio.create(nuevaSliderInicio);
+    const { ...newRegistro } = req.body;
+    const sliderInicioDB = await PTLSliderInicio.create(newRegistro);
     return res.status(201).json({
       ok: true,
       sliderInicio: sliderInicioDB

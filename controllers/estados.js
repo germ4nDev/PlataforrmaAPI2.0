@@ -44,8 +44,8 @@ const getEstadosById = async (req, res) => {
 // Crear un nuevo estado
 const createEstado = async (req, res = response) => {
   try {
-    const nuevoEstado = req.body;
-    const estadoDB = await PTLEstados.create(nuevoEstado);
+    const { ...newRegistro } = req.body;
+    const estadoDB = await PTLEstados.create(newRegistro);
     return res.status(201).json({
       ok: true,
       estado: estadoDB

@@ -1,28 +1,25 @@
 /*
-    Author: German Valencia
+    Author: John Castañeda
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLLogActividadesAP', {
-    logId: {
+  return sequelize.define('PTLTiposLogs', {
+    tipoLogId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    codigoAplicacion: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    codigoSuite: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    codigoModulo: {
-      type: DataTypes.STRING,
+      autoIncrement: true,
       allowNull: false
     },
     codigoTipoLog: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false
+    },
+    nombreTipo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    descripcionTipo: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -30,17 +27,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    codigoTipoLog: {
+    descripcionTipo: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    fechaLog: {
-      type: DataTypes.STRING,
+    estadoTipo: {
+      type: DataTypes.BOOLEAN,
       allowNull: false
-    },
-    descripcionLog: {
-      type: DataTypes.STRING,
-      allowNull: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -48,12 +41,19 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaCreacion: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    codigoUsuarioModificacion: {
       type: DataTypes.STRING,
+      allowNull: false
+    },
+    fechaModificacion: {
+      type: DataTypes.DATE,
       allowNull: false
     }
   }, {
-    tableName: 'PTLLogActividadesAP',
+    tableName: 'PTLTiposLogs',
     timestamps: false
   });
 };
-

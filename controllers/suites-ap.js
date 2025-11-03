@@ -43,9 +43,9 @@ const getSuitesAPById = async (req, res) => {
 
 const createSuiteAP = async (req, res = response) => {
   try {
-    const newSuite = req.body;
+    const { ...newRegistro } = req.body;
     const existeNombre = await PTLSuitesAP.findOne({
-      where: { nombresuite: newSuite.nombreSuite }
+      where: { nombresuite: newRegistro.nombreSuite }
     });
     if (existeNombre) {
       return res.status(400).json({
@@ -53,7 +53,7 @@ const createSuiteAP = async (req, res = response) => {
         msg: 'Ya existe un suite con ese nombre'
       });
     }
-    const suiteDB = await PTLSuitesAP.create(newSuite);
+    const suiteDB = await PTLSuitesAP.create(newRegistro);
     return res.status(201).json({
       ok: true,
       suite: suiteDB

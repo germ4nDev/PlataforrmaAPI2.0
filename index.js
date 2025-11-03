@@ -1,7 +1,8 @@
 /*
     index.js
     Author: German Valencia
-    Actualización: German Valencia, John Castañeda
+    Actualización: German Valencia, John Castañeda,
+    Actualización: Gerard Valencia, 20251101
 */
 require('dotenv').config();
 const path = require('path');
@@ -9,26 +10,18 @@ const express = require('express');
 const sequelize = require('./database/connection');
 const cors = require('cors');
 
-// Crear el servidor de express
 const app = express();
-
-// Configurar CORS
-app.use( cors() );
-
-// Lectura y parseo del body
 app.use( express.json() );
+app.use( express.urlencoded({ extended: true }) ); 
 
-// Directorio público
+app.use( cors() );
 app.use( express.static('public') );
 
-/*
-*   TODO
-*/
 
 // PLATAFORMA
-app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
+// app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
 app.use('/api/usuarios', require('./routes/usuarios') );
-app.use('/api/roles', require('./routes/roles') );
+// app.use('/api/roles', require('./routes/roles') );
 app.use('/api/auth', require('./routes/auth') );
 app.use('/api/upload', require('./routes/uploads') );
 app.use('/api/sliders', require('./routes/sliders-inicio') );
@@ -49,7 +42,7 @@ app.use('/api/servidores', require('./routes/servidores') );
 app.use('/api/suscriptores', require('./routes/suscriptores') );
 app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
-app.use('/api/usuarios-empresas', require('./routes/usuaios-empresas') );
+app.use('/api/usuarios-em', require('./routes/usuaios-empresas') );
 app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
 // ESTADOS
 app.use('/api/tipos-estados', require('./routes/tipos-estados') );
@@ -66,9 +59,11 @@ app.use('/api/enlaces-st', require('./routes/enlaces-st') );
 app.use('/api/idiomas', require('./routes/idiomas') );
 app.use('/api/textos-id', require('./routes/textos-id') );
 // LOGS
+app.use('/api/tios-logs', require('./routes/tipos-logs') );
 app.use('/api/logs-actividades', require('./routes/logs-actividades') );
 app.use('/api/logs-actualizaciones', require('./routes/logs-actualizaciones') );
 app.use('/api/logs-transacciones', require('./routes/logs-transacciones') );
+app.use('/api/tipos-logs', require('./routes/tipos-logs') );
 // app.use('/api/pla-adjuntos', require('./routes/pla_adjuntos') );
 
 app.get('*', (req, res) => {
