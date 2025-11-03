@@ -17,17 +17,17 @@ app.use( express.urlencoded({ extended: true }) );
 app.use( cors() );
 app.use( express.static('public') );
 
-
 // PLATAFORMA
-// app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
+app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
 app.use('/api/usuarios', require('./routes/usuarios') );
-// app.use('/api/roles', require('./routes/roles') );
+app.use('/api/roles', require('./routes/roles') );
 app.use('/api/auth', require('./routes/auth') );
 app.use('/api/upload', require('./routes/uploads') );
 app.use('/api/sliders', require('./routes/sliders-inicio') );
 app.use('/api/colores', require('./routes/colores-settings') );
 app.use('/api/tipos-valor', require('./routes/tipos-valor') );
 app.use('/api/valores-unitarios', require('./routes/valores-unitarios') );
+app.use('/api/db-setup', require('./routes/db-setup') );
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones') );
 app.use('/api/versiones', require('./routes/versiones-ap') );

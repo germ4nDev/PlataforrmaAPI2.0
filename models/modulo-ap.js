@@ -64,19 +64,19 @@ module.exports = (sequelize) => {
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaCreacion: {
-      type: DataTypes.DATE,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: true
     },
     codigoUsuarioModificacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaModificacion: {
-      type: DataTypes.DATE,
-      allowNull: false
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     tableName: 'PTLModulosAP',

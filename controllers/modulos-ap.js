@@ -41,9 +41,28 @@ const getModuloById = async (req, res) => {
 };
 
 const createModulo = async (req, res = response) => {
+  const { ...data } = req.body;
+  console.log('data modulo', data);
   try {
-    const { ...newRegistro } = req.body;
-    const nuevo = await PTModulosAP.create(newRegistro);
+    const existente = await PTModulosAP.findOne({
+      where: { codigoModulo: data.codigoModulo }
+    });
+    const existeNombre = await PTModulosAP.findOne({
+      where: { nombreModulo: data.nombreModulo }
+    });
+    if (existente) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe una modulo con ese código'
+      });
+    }
+    if (existeNombre) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Ya existe una modulo con ese nombre'
+      });
+    }
+    const nuevo = await PTModulosAP.create(data);
     return res.status(201).json({
       ok: true,
       modulo: nuevo,
@@ -65,7 +84,7 @@ const updateModulo = async (req, res = response) => {
         msg: "No existe un modulo por ese id",
       });
     }
-    await PTModulosAP.update(modulo, {
+    await PTModulosAP.update(data, {
       where: { codigoModulo },
     });
     const moduloActualizado = await PTModulosAP.findOne({
