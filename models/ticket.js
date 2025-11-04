@@ -16,15 +16,15 @@ module.exports = (sequelize) => {
     },
     codioAplicacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     codigosuite: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     codigoModulo: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     nombreTicket: {
       type: DataTypes.STRING,
@@ -32,44 +32,56 @@ module.exports = (sequelize) => {
     },
     codigoUsuarioSender: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     codigoUsuarioAsignado: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaAsignacion: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     prioridad: {
       type: DataTypes.NUMBER,
-      allowNull: false
+      allowNull: true
+    },
+    colorPrioridad: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     descripcionTicket: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    definicionRequerimiento: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    capturaTicket: {
       type: DataTypes.STRING,
       allowNull: false
     },
     estadoTicket: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaCreacion: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     codigoUsuarioModificacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaModificacion: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   }, {
     tableName: 'PTLTicketsAP',
