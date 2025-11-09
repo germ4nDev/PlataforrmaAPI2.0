@@ -44,13 +44,13 @@ app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
 app.use('/api/usuarios-em', require('./routes/usuaios-empresas') );
 app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
-// ESTADOS
+// TICKETS
 app.use('/api/tipos-estados', require('./routes/tipos-estados') );
 app.use('/api/estados', require('./routes/estados') );
-// TICKETS
-app.use('/api/tickets', require('./routes/tickets') );
+app.use('/api/tickets-ap', require('./routes/tickets-ap') );
 app.use('/api/requerimientos-tk', require('./routes/requerimientos') );
 app.use('/api/seguimientos-tk', require('./routes/seguimientos') );
+app.use('/api/clases-ticket', require('./routes/clases-ticket') );
 // SITIOS
 app.use('/api/sitios-ap', require('./routes/sitios-ap') );
 app.use('/api/contenidos-el', require('./routes/contenidos-el') );

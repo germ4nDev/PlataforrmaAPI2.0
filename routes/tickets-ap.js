@@ -1,7 +1,7 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
-    Ruta: /api/suscriptores
+    Ruta: /api/tickets
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
@@ -13,7 +13,7 @@ const {
     createTicketAP,
     updateTicketAP,
     deleteTicketAP,
-} = require("../controllers/tickets");
+} = require("../controllers/tickets-ap");
 
 const router = Router();
 

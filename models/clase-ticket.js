@@ -22,10 +22,6 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        buttonsHoverColor: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         estadoClase: {
             type: DataTypes.BOOLEAN,
             allowNull: false

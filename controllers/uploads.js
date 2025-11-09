@@ -20,6 +20,7 @@ const fileUpload = (req, res = response) => {
     "sitios",
     "suites",
     "sliders",
+    "tickets",
     "firmas"
   ];
   if (!tiposValidos.includes(tipo)) {
@@ -70,7 +71,31 @@ const retornaImagen = (req, res = response) => {
   }
 };
 
+const eliminarArchivo = (req, res = response) => {
+  const folder = req.params.tipo;
+  const archivo = req.params.foto;
+  const rutaCompleta = path.join(rootDir, 'uploads/' + folder, archivo);
+  try {
+    if (fs.existsSync(rutaCompleta)) {
+      fs.unlinkSync(rutaCompleta);
+      console.log(`Archivo borrado exitosamente: ${rutaCompleta}`);
+      return { ok: true, mensaje: `Archivo ${nombreArchivo} eliminado.` };
+    } else {
+      console.log(`Error al borrar: Archivo no encontrado en la ruta ${rutaCompleta}`);
+      return { ok: false, mensaje: `Archivo ${nombreArchivo} no encontrado.` };
+    }
+  } catch (error) {
+    console.error('Error al intentar borrar el archivo:', error);
+    return {
+      ok: false,
+      mensaje: `No se pudo eliminar el archivo ${nombreArchivo}.`,
+      error: error.message
+    };
+  }
+};
+
 module.exports = {
   fileUpload,
   retornaImagen,
+  eliminarArchivo,
 };
