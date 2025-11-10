@@ -1,22 +1,25 @@
 /*
     Author: German Valencia
-    Actualización: German Valencia
-
+    Actualización: German Valencia / 20251109
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLSeguimientosRQ', {
+  return sequelize.define('PTLSeguimientosTK', {
     seguimientoId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true
     },
-    codigoRequerimiento: {
+    codigoSeguimiento: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false
+    },
+    codigoTicket: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nombreSeguimiento: {
+    fechaSeguimiento: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -28,7 +31,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    estadoRequerimiento: {
+    estadoTicket: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    capturaSeguimiento: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -50,7 +57,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLSeguimientosRQ',
+    tableName: 'PTLSeguimientosTK',
     timestamps: false
   });
 };
