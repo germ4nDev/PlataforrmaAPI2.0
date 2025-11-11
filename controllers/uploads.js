@@ -80,8 +80,10 @@ const retornaImagen = (req, res = response) => {
 };
 
 const eliminarArchivo = (req, res = response) => {
-  const folder = req.params.tipo;
-  const archivo = req.params.foto;
+  var folder = req.params.tipo;
+  var archivo = req.params.foto;
+  console.log('folder', folder);
+  console.log('archivo', archivo);
   if (folder == 'seguimientos') {
     folder = `tickets/${folder}`
   } else if (folder == 'empresas' || folder == 'usuarios-sc') {
