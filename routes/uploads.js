@@ -15,6 +15,6 @@ router.put("/:tipo/:id", fileUpload);
 
 router.get("/:tipo/:foto", retornaImagen);
 
-router.get("/delete/:tipo/:foto", eliminarArchivo);
+router.delete("/delete/:tipo/:foto", eliminarArchivo);
 
 module.exports = router;

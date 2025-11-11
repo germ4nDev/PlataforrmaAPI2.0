@@ -5,27 +5,27 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const PTLSeguimientosRQ = require('../models/seguimiento')(sequelize);
+const PTLSeguimientosTK = require('../models/seguimiento')(sequelize);
 
 // Obtener todos los seguimientos
-const getSeguimientosRQ = async (req, res) => {
+const getSeguimientosTK = async (req, res) => {
   try {
-    const seguimientos = await PTLSeguimientosRQ.findAll();
+    const seguimientos = await PTLSeguimientosTK.findAll();
     return res.status(201).json({
       ok: true,
       seguimientos: seguimientos,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener SeguimientosRQ' });
+    res.status(500).json({ error: 'Error al obtener SeguimientosTK' });
   }
 };
 
-const getSeguimientoRQById = async (req, res) => {
+const getSeguimientoTKById = async (req, res) => {
   try {
-    const seguimientoId = req.params.id;
-    const seguimiento = await PTLSeguimientosRQ.findOne({
+    const codigoSeguimiento = req.params.id;
+    const seguimiento = await PTLSeguimientosTK.findOne({
       where: {
-        seguimientoId: seguimientoId,
+        codigoSeguimiento: codigoSeguimiento,
       },
     });
     if (!seguimiento) {
@@ -43,11 +43,28 @@ const getSeguimientoRQById = async (req, res) => {
   }
 };
 
-// Crear un nuevo seguimiento
-const createSeguimientoRQ = async (req, res = response) => {
+const getSeguimientoTKByTicket = async (req, res) => {
   try {
-    const { ...newRegistro } = req.body;
-    const seguimientoDB = await PTLSeguimientosRQ.create(newRegistro);
+    const codigoTicket = req.params.id;
+    const seguimientos = await PTLSeguimientosTK.findAll({
+      where: {
+        codigoTicket: codigoTicket,
+      },
+    });
+    return res.status(201).json({
+      ok: true,
+      seguimientos: seguimientos,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Error al obtener seguimiento" });
+  }
+};
+
+// Crear un nuevo seguimiento
+const createSeguimientoTK = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
+  try {
+    const seguimientoDB = await PTLSeguimientosTK.create(newRegistro);
     return res.status(201).json({
       ok: true,
       seguimiento: seguimientoDB
@@ -62,11 +79,11 @@ const createSeguimientoRQ = async (req, res = response) => {
 };
 
 // Actualizar un nuevo seguimiento
-const updateSeguimientoRQ = async (req, res = response) => {
+const updateSeguimientoTK = async (req, res = response) => {
   try {
-    const { seguimientoId, ...data } = req.body;
-    const seguimientoDB = await PTLSeguimientosRQ.findOne({
-      where: { seguimientoId }
+    const { codigoSeguimiento, ...data } = req.body;
+    const seguimientoDB = await PTLSeguimientosTK.findOne({
+      where: { codigoSeguimiento }
     });
     if (!seguimientoDB) {
       return res.status(404).json({
@@ -74,10 +91,10 @@ const updateSeguimientoRQ = async (req, res = response) => {
         msg: 'No existe un seguimiento con ese ID'
       });
     }
-    await PTLSeguimientosRQ.update(data, {
-      where: { seguimientoId }
+    await PTLSeguimientosTK.update(data, {
+      where: { codigoSeguimiento }
     });
-    const seguimientoActualizado = await PTLSeguimientosRQ.findOne({ where: { seguimientoId } });
+    const seguimientoActualizado = await PTLSeguimientosTK.findOne({ where: { codigoSeguimiento } });
     return res.status(200).json({
       ok: true,
       seguimiento: seguimientoActualizado
@@ -92,11 +109,11 @@ const updateSeguimientoRQ = async (req, res = response) => {
 };
 
 // Borrar un nuevo seguimiento
-const deleteSeguimientoRQ = async (req, res = response) => {
+const deleteSeguimientoTK = async (req, res = response) => {
   try {
-    const seguimientoId = req.params.id;
-    const seguimientoDB = await PTLSeguimientosRQ.findOne({
-      where: { seguimientoId }
+    const codigoSeguimiento = req.params.id;
+    const seguimientoDB = await PTLSeguimientosTK.findOne({
+      where: { codigoSeguimiento }
     });
     if (!seguimientoDB) {
       return res.status(404).json({
@@ -104,13 +121,12 @@ const deleteSeguimientoRQ = async (req, res = response) => {
         msg: 'No existe un seguimiento con ese ID'
       });
     }
-    seguimientoEliminado = await PTLSeguimientosRQ.destroy({
-      where: { seguimientoId }
+    seguimientoEliminado = await PTLSeguimientosTK.destroy({
+      where: { codigoSeguimiento }
     });
-
     return res.status(200).json({
       ok: true,
-      usuario: seguimientoEliminado,
+      seguimiento: seguimientoEliminado,
       msg: 'seguimiento eliminado correctamente'
     });
   } catch (err) {
@@ -123,9 +139,10 @@ const deleteSeguimientoRQ = async (req, res = response) => {
 };
 
 module.exports = {
-  getSeguimientosRQ,
-  getSeguimientoRQById,
-  createSeguimientoRQ,
-  updateSeguimientoRQ,
-  deleteSeguimientoRQ,
+  getSeguimientosTK,
+  getSeguimientoTKById,
+  getSeguimientoTKByTicket,
+  createSeguimientoTK,
+  updateSeguimientoTK,
+  deleteSeguimientoTK,
 };

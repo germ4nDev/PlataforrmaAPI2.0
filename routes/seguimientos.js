@@ -8,23 +8,26 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getSeguimientosRQ,
-    getSeguimientoRQById,
-    createSeguimientoRQ,
-    updateSeguimientoRQ,
-    deleteSeguimientoRQ,
+    getSeguimientosTK,
+    getSeguimientoTKById,
+    getSeguimientoTKByTicket,
+    createSeguimientoTK,
+    updateSeguimientoTK,
+    deleteSeguimientoTK,
 } = require("../controllers/seguimientos");
 
 const router = Router();
 
-router.get("/", getSeguimientosRQ);
+router.get("/", getSeguimientosTK);
 
-router.post( "/", createSeguimientoRQ);
+router.post("/", createSeguimientoTK);
 
-router.put("/:id", updateSeguimientoRQ);
+router.put("/:id", updateSeguimientoTK);
 
-router.delete("/:id", deleteSeguimientoRQ);
+router.delete("/:id", deleteSeguimientoTK);
 
-router.get("/:id", getSeguimientoRQById);
+router.get("/:id", getSeguimientoTKById);
+
+router.get("/ticket/:id", getSeguimientoTKByTicket);
 
 module.exports = router;

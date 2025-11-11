@@ -7,8 +7,8 @@ const { response } = require("express");
 const { v4: uuidv4 } = require("uuid");
 
 const fileUpload = (req, res = response) => {
-  const tipo = req.params.tipo;
-  const id = req.params.id;
+  var tipo = req.params.tipo;
+  var id = req.params.id;
   const tiposValidos = [
     "suscriptores",
     "aplicaciones",
@@ -21,12 +21,13 @@ const fileUpload = (req, res = response) => {
     "suites",
     "sliders",
     "tickets",
+    "seguimientos",
     "firmas"
   ];
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
       ok: false,
-      msg: "No es de suscriptores, aplicaciones, usuarios, documentosss, adjuntos, sitios, firmas (tipo)",
+      msg: "No es de suscriptores, aplicaciones, usuarios, documentos, informes, empresas, adjuntos, sitios, suites, sliders, tickets, seguimientos, firmas (tipo)",
     });
   }
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -39,7 +40,9 @@ const fileUpload = (req, res = response) => {
   const nombreCortado = file.name.split("."); // wolverine.1.3.jpg
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
 
-  // Generar el nombre del archivo
+  if (tipo == 'seguimientos') {
+    tipo = 'tickets/seguimientos'
+  }
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
   const path = `./uploads/${tipo}/${nombreArchivo}`;
   file.mv(path, (err) => {
@@ -59,8 +62,13 @@ const fileUpload = (req, res = response) => {
 };
 
 const retornaImagen = (req, res = response) => {
-  const tipo = req.params.tipo;
+  var tipo = req.params.tipo;
   const foto = req.params.foto;
+  if (tipo == 'seguimientos') {
+    tipo = `tickets/${tipo}`
+  } else if (tipo == 'empresas' || tipo == 'usuarios-sc') {
+    tipo = `suscriptores/${folder}`;
+  }
   const pathImg = path.join(__dirname, `../uploads/${tipo}/${foto}`);
   console.log('pathimg', pathImg);
   if (fs.existsSync(pathImg)) {
@@ -74,18 +82,20 @@ const retornaImagen = (req, res = response) => {
 const eliminarArchivo = (req, res = response) => {
   const folder = req.params.tipo;
   const archivo = req.params.foto;
-  const rutaCompleta = path.join(rootDir, 'uploads/' + folder, archivo);
+  if (folder == 'seguimientos') {
+    folder = `tickets/${folder}`
+  } else if (folder == 'empresas' || folder == 'usuarios-sc') {
+    folder = `suscriptores/${folder}`;
+  }
+  const path = `./uploads/${folder}/${archivo}`;
   try {
-    if (fs.existsSync(rutaCompleta)) {
-      fs.unlinkSync(rutaCompleta);
-      console.log(`Archivo borrado exitosamente: ${rutaCompleta}`);
+    if (fs.existsSync(path)) {
+      fs.unlinkSync(path);
       return { ok: true, mensaje: `Archivo ${nombreArchivo} eliminado.` };
     } else {
-      console.log(`Error al borrar: Archivo no encontrado en la ruta ${rutaCompleta}`);
       return { ok: false, mensaje: `Archivo ${nombreArchivo} no encontrado.` };
     }
   } catch (error) {
-    console.error('Error al intentar borrar el archivo:', error);
     return {
       ok: false,
       mensaje: `No se pudo eliminar el archivo ${nombreArchivo}.`,
