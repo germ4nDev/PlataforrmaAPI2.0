@@ -15,12 +15,56 @@ module.exports = (sequelize) => {
       primaryKey: true,
       allowNull: false
     },
+    identificacionSuscriptor: {
+      type: DataTypes.NUMBER,
+      allowNull: false
+    },
     nombreSuscriptor: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    dereccionSuscriptor: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    telefonoContacto: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    numeroEmpresas: {
+      type: DataTypes.NUMBER,
+      allowNull: false
+    },
+    numeroUsuarios: {
+      type: DataTypes.NUMBER,
+      allowNull: false
+    },
+    usuarioAdministrador: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    claveAdministrador: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    logoSuscriptor: {
       type: DataTypes.STRING,
       allowNull: false
     },
     descripcionSuscriptor: {
       type: DataTypes.STRING,
+      allowNull: false
+    },
+    envioCorreosSuscriptor: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    envioMensajesSuscriptor: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    envioPublicidadSuscriptor: {
+      type: DataTypes.BOOLEAN,
       allowNull: false
     },
     estadoSuscriptor: {

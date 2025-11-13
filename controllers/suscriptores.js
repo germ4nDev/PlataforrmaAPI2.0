@@ -11,6 +11,8 @@ const PTLSuscriptores = require('../models/suscriptor')(sequelize);
 const getSuscriptores = async (req, res) => {
   try {
     const suscriptores = await PTLSuscriptores.findAll();
+    console.log('los suscriptores', suscriptores);
+    
     return res.status(201).json({
       ok: true,
       suscriptores: suscriptores,
@@ -45,8 +47,9 @@ const getSuscriptoresById = async (req, res) => {
 
 // Crear un nuevo rol
 const createSuscriptor = async (req, res = response) => {
-  try {
     const { ...newRegistro } = req.body;
+    console.log('newRegistro', newRegistro);
+  try {
     const existeNombre = await PTLSuscriptores.findOne({
       where: { nombreSuscriptor: newRegistro.nombreSuscriptor }
     });

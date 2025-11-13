@@ -11,10 +11,10 @@ const router = Router();
 
 router.use(expressFileUpload());
 
-router.put("/:tipo/:id", fileUpload);
+router.put("/:codigo/:tipo/:id", fileUpload);
 
-router.get("/:tipo/:foto", retornaImagen);
+router.get("/:codigo/:tipo/:foto", retornaImagen);
 
-router.delete("/delete/:tipo/:foto", eliminarArchivo);
+router.delete("/delete/:codigo/:tipo/:foto", eliminarArchivo);
 
 module.exports = router;

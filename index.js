@@ -42,7 +42,6 @@ app.use('/api/servidores', require('./routes/servidores') );
 app.use('/api/suscriptores', require('./routes/suscriptores') );
 app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
-app.use('/api/usuarios-em', require('./routes/usuaios-empresas') );
 app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
 // TICKETS
 app.use('/api/tipos-estados', require('./routes/tipos-estados') );

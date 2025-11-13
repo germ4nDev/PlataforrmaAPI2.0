@@ -19,6 +19,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    codigoRequerimiento: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     fechaSeguimiento: {
       type: DataTypes.STRING,
       allowNull: false
