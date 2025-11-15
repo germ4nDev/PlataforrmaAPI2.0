@@ -42,6 +42,7 @@ app.use('/api/servidores', require('./routes/servidores') );
 app.use('/api/suscriptores', require('./routes/suscriptores') );
 app.use('/api/empresas-sc', require('./routes/empresas-sc') );
 app.use('/api/usuarios-sc', require('./routes/usuarios-sc') );
+app.use('/api/usuarios-empresas-sc', require('./routes/usuarios-empresas-sc') );
 app.use('/api/paquetes-sc', require('./routes/paquetes-sc') );
 // TICKETS
 app.use('/api/tipos-estados', require('./routes/tipos-estados') );
@@ -62,7 +63,6 @@ app.use('/api/tios-logs', require('./routes/tipos-logs') );
 app.use('/api/logs-actividades', require('./routes/logs-actividades') );
 app.use('/api/logs-actualizaciones', require('./routes/logs-actualizaciones') );
 app.use('/api/logs-transacciones', require('./routes/logs-transacciones') );
-app.use('/api/tipos-logs', require('./routes/tipos-logs') );
 // app.use('/api/pla-adjuntos', require('./routes/pla_adjuntos') );
 
 app.get('*', (req, res) => {

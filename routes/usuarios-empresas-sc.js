@@ -12,7 +12,7 @@ const {
     createUsuarioEmpresa,
     updateUsuarioEmpresa,
     deleteUsuarioEmpresa,
-} = require("../controllers/usuarios-empresas");
+} = require("../controllers/usuarios-empresas-sc");
 
 const router = Router();
 

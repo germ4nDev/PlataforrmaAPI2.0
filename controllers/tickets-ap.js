@@ -70,27 +70,6 @@ const updateTicketAP = async (req, res = response) => {
                 msg: 'No existe un ticket con ese ID'
             });
         }
-        const newTicket = {
-            codigoTicket: codigoTicket,
-            codigoAplicacion: data.codigoAplicacion,
-            codigoSuite: data.codigoSuite,
-            codigoModulo: data.codigoModulo,
-            fechaTicket: data.fechaTicket,
-            nombreTicket: data.nombreTicket,
-            codigoUsuarioSender: data.codigoUsuarioSender,
-            codigoUsuarioAsignado: data.codigoUsuarioAsignado,
-            fechaAsignacion: data.fechaAsignacion,
-            prioridad: data.prioridad,
-            colorPrioridad: data.colorPrioridad,
-            descripcionTicket: data.descripcionTicket,
-            definicionRequerimiento: data.definicionRequerimiento,
-            estadoTicket: data.estadoTicket,
-            capturaTicket: data.capturaTicket,
-            codigoUsuarioCreacion: data.codigoUsuarioCreacion,
-            fechaCreacion: data.fechaCreacion,
-            codigoUsuarioModificacion: data.codigoUsuarioModificacion,
-            fechaModificacion: data.fechaModificacion
-        }
         await PTLTickestAP.update(data, {
             where: { codigoTicket }
         });

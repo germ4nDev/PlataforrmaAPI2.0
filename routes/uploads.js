@@ -13,7 +13,7 @@ router.use(expressFileUpload());
 
 router.put("/:codigo/:tipo/:id", fileUpload);
 
-router.get("/:codigo/:tipo/:foto", retornaImagen);
+router.get("/:susc/:tipo/:foto", retornaImagen);
 
 router.delete("/delete/:codigo/:tipo/:foto", eliminarArchivo);
 

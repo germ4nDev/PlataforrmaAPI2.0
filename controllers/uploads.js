@@ -138,30 +138,35 @@ const fileUpload = (req, res = response) => {
 };
 
 const retornaImagen = (req, res = response) => {
-  var susc = req.params.susc;
-  var tipo = req.params.tipo;
-  const foto = req.params.foto;
-  let rutaInterna = tipo;
-  if (tipo == 'seguimientos') {
-    rutaInterna = path.join('tickets', 'seguimientos');
-  } else if (tipo == 'empresas' || tipo == 'usuarios-sc') {
-    tipo = `suscriptores/${folder}`;
-  }
-  const pathImg = path.join(
-    __dirname,
-    '..',
-    'uploads',
-    susc,
-    rutaInterna,
-    foto
-  );
-  console.log('pathimg', pathImg);
-  if (fs.existsSync(pathImg)) {
-    res.sendFile(pathImg);
-  } else {
-    const pathImg = path.join(__dirname, `../uploads/no-img.jpg`);
-    res.sendFile(pathImg);
-  }
+    const { susc, tipo, foto } = req.params;
+    if (!susc || !tipo || !foto) {
+        console.error("ERROR 400: Parámetro de ruta faltante. Verifique la URL.");
+        return res.status(400).send('Parámetro de ruta faltante. Verifique que la URL contenga /susc/tipo/foto.');
+    }
+    let rutaInterna = tipo;
+    if (tipo === 'seguimientos') {
+        rutaInterna = path.join('tickets', 'seguimientos');
+    } 
+    const pathImg = path.join(
+        __dirname,
+        '..',
+        'uploads',
+        susc,
+        rutaInterna,
+        foto
+    );
+    // console.log('Ruta de imagen buscada:', pathImg);
+    if (fs.existsSync(pathImg)) {
+        res.sendFile(pathImg);
+    } else {
+        const pathNoImg = path.join(__dirname, '..', 'uploads', 'no-imagen.png');
+        if (fs.existsSync(pathNoImg)) {
+             res.sendFile(pathNoImg);
+        } else {
+            console.error("ERROR 404: No se encontró la imagen solicitada y tampoco el fallback 'no-imagen.png'");
+            res.status(404).send('Archivo no encontrado.');
+        }
+    }
 };
 
 const eliminarArchivo = (req, res = response) => {

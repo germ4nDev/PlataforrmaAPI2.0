@@ -4,35 +4,27 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLEmpresasSC', {
-    empresaId: {
+  return sequelize.define('PTLUsuariosEmpresasSC', {
+    usuarioEmpresaSCId: {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
-    codigoEmpresaSC: {
+    codigoUsuarioEmpresaSC: {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false
     },
-    codigoSuscriptor: {
+    codigoEmpresaSC: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nombreEmpresa: {
+    codigoUsuairoSC: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    descripcionEmpresa: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    estadoEmpresa: {
+    estadoUsuairoEmpresaSC: {
       type: DataTypes.BOOLEAN,
-      default: false,
-    },
-    logoEmpresa: {
-      type: DataTypes.STRING,
-      allowNull: false
+      default: false
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -52,7 +44,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLEmpresasSC',
+    tableName: 'PTLUsuariosEmpresasSC',
     timestamps: false
   });
 };

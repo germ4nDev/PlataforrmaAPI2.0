@@ -10,7 +10,7 @@ const getEmpresasSC = async (req, res) => {
     const empresasSC = await PTLEmpresasSC.findAll();
     return res.status(201).json({
       ok: true,
-      empresasS: empresasSC,
+      empresasSC: empresasSC,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener empresasSC' });

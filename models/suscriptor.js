@@ -16,14 +16,18 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     identificacionSuscriptor: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.STRING,
       allowNull: false
     },
     nombreSuscriptor: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    dereccionSuscriptor: {
+    correoSuscriptor: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    direccionSuscriptor: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -32,11 +36,11 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     numeroEmpresas: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     numeroUsuarios: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     usuarioAdministrador: {
@@ -77,7 +81,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaCreacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     codigoUsuarioModificacion: {
@@ -85,7 +89,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaModificacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     }
   }, {

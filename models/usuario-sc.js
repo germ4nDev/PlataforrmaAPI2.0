@@ -5,7 +5,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   return sequelize.define('PTLUsuariosSC', {
-    usuarioSTId: {
+    usuarioSCId: {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
@@ -14,11 +14,11 @@ module.exports = (sequelize) => {
       primaryKey: true,
       allowNull: false
     },
-    codigoUsuario: {
+    codigoUsuairo: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    codigoEmpresaSC: {
+    codigoSuscriptor: {
       type: DataTypes.STRING,
       allowNull: false
     },

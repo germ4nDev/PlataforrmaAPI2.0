@@ -5,23 +5,22 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
-const suscriptor = require('../models/suscriptor');
 const PTLSuscriptores = require('../models/suscriptor')(sequelize);
 
 const getSuscriptores = async (req, res) => {
   try {
+    console.log('aca');
     const suscriptores = await PTLSuscriptores.findAll();
-    console.log('los suscriptores', suscriptores);
-    
+    console.log('todos los suscriptores', suscriptores);
     return res.status(201).json({
       ok: true,
-      suscriptores: suscriptores,
+      suscriptores: suscriptores
     });
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener Suscriptores' });
+    res.status(500).json({ error: 'Error al obtener suscriptores', err });
   }
 };
- 
+
 const getSuscriptoresById = async (req, res) => {
   try {
     const codigoSuscriptor = req.params.id;
@@ -47,8 +46,8 @@ const getSuscriptoresById = async (req, res) => {
 
 // Crear un nuevo rol
 const createSuscriptor = async (req, res = response) => {
-    const { ...newRegistro } = req.body;
-    console.log('newRegistro', newRegistro);
+  const { ...newRegistro } = req.body;
+  console.log('newRegistro', newRegistro);
   try {
     const existeNombre = await PTLSuscriptores.findOne({
       where: { nombreSuscriptor: newRegistro.nombreSuscriptor }
