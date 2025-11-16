@@ -11,6 +11,23 @@ const sequelize = require('./database/connection');
 const cors = require('cors');
 
 const app = express();
+// Crear el servidor HTTP base a partir de la app de Express
+const server = http.createServer(app); 
+
+// Configuración de CORS
+// Es CRUCIAL configurar CORS para el cliente de Angular que se conectará al socket
+const io = new Server(server, {
+    cors: {
+        origin: process.env.ANGULAR_URL || "*", // Define la URL de tu cliente Angular (ej: http://localhost:4200)
+        methods: ["GET", "POST"]
+    }
+});
+
+// 3. Exportar la instancia de IO para usarla en otras partes de la aplicación (e.g., Rutas/Controladores)
+// Una forma común es adjuntarla a la request, pero para simplicidad, la exportaremos como módulo.
+// Podrías crear un módulo 'socket.js' y exportar 'io' desde allí, pero por ahora la dejamos disponible.
+module.exports = { io }; 
+
 app.use( express.json() );
 app.use( express.urlencoded({ extended: true }) ); 
 
@@ -69,12 +86,28 @@ app.get('*', (req, res) => {
     res.sendFile( path.resolve( __dirname, 'public/index.html' ) );
 });
 
+// =======================================================
+// === INICIALIZACIÓN DE SOCKETS Y BASE DE DATOS ===
+// =======================================================
+
+// Lógica de conexión de Socket.IO
+io.on('connection', (socket) => {
+    console.log('Cliente conectado:', socket.id);
+
+    // Puedes añadir lógica para unir a salas, manejar desconexiones, etc.
+    // socket.on('disconnect', () => {
+    //     console.log('Cliente desconectado:', socket.id);
+    // });
+});
+
+// Inicialización de la BD y arranque del servidor HTTP/Sockets
 sequelize.authenticate().then(() => {
     console.log('Conexión establecida con SQL Server.');
     return sequelize.sync(); // crea tabla si no existe
 }).then(() => {
-    app.listen(process.env.PORT, () => {
-        console.log('Servidor escuchando en puerto ' + process.env.PORT);
+    // Usamos 'server' en lugar de 'app' para escuchar las conexiones
+    server.listen(process.env.PORT, () => {
+        console.log('Servidor HTTP y Sockets escuchando en puerto ' + process.env.PORT);
     });
 }).catch(err => {
     console.error('Error al conectar con la base de datos:', err);
