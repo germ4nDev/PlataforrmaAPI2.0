@@ -5,8 +5,8 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSliderInicio = require('../models/slider')(sequelize);
+const { io } = require('../index');
 
-// Obtener todos los roles
 const getSlidersInicio = async (req, res) => {
   try {
     const slidersInicio = await PTLSliderInicio.findAll();
@@ -44,9 +44,13 @@ const getSliderInicioById = async (req, res) => {
 
 // Crear un nuevo rol
 const createSliderInicio = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const sliderInicioDB = await PTLSliderInicio.create(newRegistro);
+    io.emit('sliders-actualizados', {
+      action: 'create',
+      msg: `Sllider creado: ${sliderInicioDB.nombreSlider}`
+    });
     return res.status(201).json({
       ok: true,
       sliderInicio: sliderInicioDB
@@ -62,8 +66,8 @@ const createSliderInicio = async (req, res = response) => {
 
 // Actualizar un nuevo rol
 const updateSliderInicio = async (req, res = response) => {
+  const { sliderId, ...data } = req.body;
   try {
-    const { sliderId, ...data } = req.body;
     const sliderInicioDB = await PTLSliderInicio.findOne({
       where: { sliderId }
     });
@@ -77,6 +81,10 @@ const updateSliderInicio = async (req, res = response) => {
       where: { sliderId }
     });
     const sliderInicioActualizado = await PTLSliderInicio.findOne({ where: { sliderId } });
+    io.emit('sliders-actualizados', {
+      action: 'update',
+      msg: `Sllider actualizado: ${sliderInicioActualizado.nombreSlider}`
+    });
     return res.status(200).json({
       ok: true,
       sliderInicio: sliderInicioActualizado
@@ -106,7 +114,10 @@ const deleteSliderInicio = async (req, res = response) => {
     sliderInicioEliminado = await PTLSliderInicio.destroy({
       where: { sliderId }
     });
-
+    io.emit('sliders-actualizados', {
+      action: 'delete',
+      msg: `Sllider eliminado: ${sliderInicioEliminado.nombreSlider}`
+    });
     return res.status(200).json({
       ok: true,
       sliderInicio: sliderInicioEliminado,

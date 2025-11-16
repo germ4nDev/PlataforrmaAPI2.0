@@ -5,8 +5,8 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLClasesTicket = require('../models/clase-ticket')(sequelize);
+const { io } = require('../index');
 
-// Obtener todos los roles
 const getClasesTicket = async (req, res) => {
   try {
     const clasesTicket = await PTLClasesTicket.findAll();
@@ -42,11 +42,14 @@ const getClaseTicketById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
 const createClaseTicket = async (req, res = response) => {
   try {
     const { ...nuevaClaseTicket } = req.body;
     const claseTicketDB = await PTLClasesTicket.create(nuevaClaseTicket);
+    io.emit('clases-tickets-actualizadas', {
+      action: 'create',
+      msg: `Ckase Tiicket creada: ${claseTicketDB.claseTicket}`
+    });
     return res.status(201).json({
       ok: true,
       claseTicket: claseTicketDB
@@ -60,7 +63,6 @@ const createClaseTicket = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
 const updateClaseTicket = async (req, res = response) => {
   try {
     const { codigoClase, ...data } = req.body;
@@ -77,6 +79,10 @@ const updateClaseTicket = async (req, res = response) => {
       where: { codigoClase }
     });
     const claseTicketActualizado = await PTLClasesTicket.findOne({ where: { codigoClase } });
+    io.emit('clases-tickets-actualizadas', {
+      action: 'update',
+      msg: `Clase Ticket actualizada: ${claseTicketActualizado.claseTicket}`
+    });
     return res.status(200).json({
       ok: true,
       claseTicket: claseTicketActualizado
@@ -90,7 +96,6 @@ const updateClaseTicket = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
 const deleteClaseTicket = async (req, res = response) => {
   try {
     const codigoClase = req.params.id;
@@ -106,7 +111,10 @@ const deleteClaseTicket = async (req, res = response) => {
     claseTicketEliminado = await PTLClasesTicket.destroy({
       where: { codigoClase }
     });
-
+    io.emit('clases-tickets-actualizadas', {
+      action: 'delete',
+      msg: `Clase Ticket eliminada correctamente`
+    });
     return res.status(200).json({
       ok: true,
       claseTicket: claseTicketEliminado,

@@ -5,8 +5,8 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLColorSettings = require('../models/color-setting')(sequelize);
+const { io } = require('../index');
 
-// Obtener todos los roles
 const getColoresSettings = async (req, res) => {
   try {
     const coloresNav = await PTLColorSettings.findAll();
@@ -42,11 +42,14 @@ const getColorSettingById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
 const createColorSetting = async (req, res = response) => {
   try {
     const { ...nuevaColorSetting } = req.body;
     const colorNavDB = await PTLColorSettings.create(nuevaColorSetting);
+    io.emit('colores-settings-actualizadas', {
+      action: 'create',
+      msg: `Color Settings creado: ${colorNavDB.colorNavId}`
+    });
     return res.status(201).json({
       ok: true,
       colorNav: colorNavDB
@@ -60,7 +63,6 @@ const createColorSetting = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
 const updateColorSetting = async (req, res = response) => {
   try {
     const { colorNavId, ...data } = req.body;
@@ -77,6 +79,10 @@ const updateColorSetting = async (req, res = response) => {
       where: { colorNavId }
     });
     const colorNavActualizado = await PTLColorSettings.findOne({ where: { colorNavId } });
+    io.emit('colores-settings-actualizadas', {
+      action: 'update',
+      msg: `Color Settings actualizado: ${colorNavDB.colorNavId}`
+    });
     return res.status(200).json({
       ok: true,
       colorNav: colorNavActualizado
@@ -90,7 +96,6 @@ const updateColorSetting = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
 const deleteColorSetting = async (req, res = response) => {
   try {
     const colorNavId = req.params.id;
@@ -106,7 +111,10 @@ const deleteColorSetting = async (req, res = response) => {
     colorNavEliminado = await PTLColorSettings.destroy({
       where: { colorNavId }
     });
-
+    io.emit('colores-settings-actualizadas', {
+      action: 'delete',
+      msg: `Color Settings eliminado correctamente`
+    });
     return res.status(200).json({
       ok: true,
       colorNav: colorNavEliminado,

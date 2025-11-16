@@ -7,6 +7,7 @@ const sequelize = require('../database/connection');
 const PTLUsuarios = require('../models/usuario')(sequelize);
 const { generarJWT } = require("../helpers/jwt");
 const bcrypt = require("bcryptjs");
+const { io } = require('../index');
 
 const getUsuarios = async (req, res) => {
   try {

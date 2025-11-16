@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLRequerimientosTK = require('../models/requerimiento')(sequelize);
+const { io } = require('../index');
 
 const getRequerimientosTK = async (req, res) => {
   try {
@@ -42,9 +43,13 @@ const getRequerimientoTKById = async (req, res) => {
 };
 
 const createRequerimientoTK = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const requerimientoDB = await PTLRequerimientosTK.create(newRegistro);
+    io.emit('requerimientos-actualizados', {
+      action: 'create',
+      msg: `Requerimineto creado: ${requerimientoDB.nombreRequerimiento}`
+    });
     return res.status(201).json({
       ok: true,
       requerimiento: requerimientoDB
@@ -59,8 +64,8 @@ const createRequerimientoTK = async (req, res = response) => {
 };
 
 const updateRequerimientoTK = async (req, res = response) => {
+  const { codigoRequerimiento, ...data } = req.body;
   try {
-    const { codigoRequerimiento, ...data } = req.body;
     const requerimientoDB = await PTLRequerimientosTK.findOne({
       where: { codigoRequerimiento }
     });
@@ -74,6 +79,10 @@ const updateRequerimientoTK = async (req, res = response) => {
       where: { codigoRequerimiento }
     });
     const requerimientoActualizado = await PTLRequerimientosTK.findOne({ where: { codigoRequerimiento } });
+    io.emit('requerimientos-actualizados', {
+      action: 'update',
+      msg: `Requerimineto actualizado: ${requerimientoActualizado.nombreRequerimiento}`
+    });
     return res.status(200).json({
       ok: true,
       requerimiento: requerimientoActualizado
@@ -83,40 +92,6 @@ const updateRequerimientoTK = async (req, res = response) => {
     return res.status(500).json({
       ok: false,
       error: 'Error al actualizar el requerimiento'
-    });
-  }
-};
-
-const updateEstadoRequerimiento = async (req, res = response) => {
-  try {
-    const codigoRequerimiento = req.params.id;
-    const { estadoRequerimiento } = req.body;
-
-    const requerimientoDB = await PTLRequerimientosTK.findOne({
-      where: { codigoRequerimiento }
-    });
-
-    if (!requerimientoDB) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'No existe un requerimiento con ese ID'
-      });
-    }
-
-    await PTLRequerimientosTK.update(
-      { estadoRequerimiento },
-      { where: { codigoRequerimiento } }
-    );
-
-    return res.status(200).json({
-      ok: true,
-      msg: 'Estado actualizado correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar el estado del requerimiento'
     });
   }
 };
@@ -136,11 +111,13 @@ const deleteRequerimientoTK = async (req, res = response) => {
     requerimientoEliminado = await PTLRequerimientosTK.destroy({
       where: { codigoRequerimiento }
     });
-
+    io.emit('requerimientos-actualizados', {
+      action: 'delete',
+      msg: `Requerimineto eliminado: ${requerimientoDB.nombreRequerimiento}`
+    });
     return res.status(200).json({
       ok: true,
-      usuario: requerimientoEliminado,
-      msg: 'requerimiento eliminado correctamente'
+      requerimiento: requerimientoEliminado
     });
   } catch (err) {
     console.error(err);

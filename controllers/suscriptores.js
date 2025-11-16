@@ -6,6 +6,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSuscriptores = require('../models/suscriptor')(sequelize);
+const { io } = require('../index');
 
 const getSuscriptores = async (req, res) => {
   try {
@@ -44,7 +45,6 @@ const getSuscriptoresById = async (req, res) => {
   }
 };
 
-// Crear un nuevo rol
 const createSuscriptor = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   console.log('newRegistro', newRegistro);
@@ -59,6 +59,10 @@ const createSuscriptor = async (req, res = response) => {
       });
     }
     const suscriptorDB = await PTLSuscriptores.create(newRegistro);
+    io.emit('suscriptores-actualizados', {
+      action: 'create',
+      msg: `Suscriptor creada: ${suscriptorDB.nombreSuscriptor}`
+    });
     return res.status(201).json({
       ok: true,
       suscriptor: suscriptorDB
@@ -72,7 +76,6 @@ const createSuscriptor = async (req, res = response) => {
   }
 };
 
-// Actualizar un nuevo rol
 const updateSuscriptor = async (req, res = response) => {
   try {
     const { codigoSuscriptor, ...data } = req.body;
@@ -89,6 +92,10 @@ const updateSuscriptor = async (req, res = response) => {
       where: { codigoSuscriptor }
     });
     const suscriptorActualizado = await PTLSuscriptores.findOne({ where: { codigoSuscriptor } });
+    io.emit('suscriptores-actualizados', {
+      action: 'update',
+      msg: `Suscriptor actualizado: ${suscriptorActualizado.nombreSuscriptor}`
+    });
     return res.status(200).json({
       ok: true,
       suscriptor: suscriptorActualizado
@@ -102,7 +109,6 @@ const updateSuscriptor = async (req, res = response) => {
   }
 };
 
-// Borrar un nuevo rol
 const deleteSuscriptor = async (req, res = response) => {
   try {
     const codigoSuscriptor = req.params.id;
@@ -118,7 +124,10 @@ const deleteSuscriptor = async (req, res = response) => {
     suscriptorEliminado = await PTLSuscriptores.destroy({
       where: { codigoSuscriptor }
     });
-
+    io.emit('suscriptores-actualizados', {
+      action: 'delete',
+      msg: `Suscriptor eliminado correctamente`
+    });
     return res.status(200).json({
       ok: true,
       suscriptor: suscriptorEliminado,

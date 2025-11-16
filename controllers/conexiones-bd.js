@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLConexionesBD = require('../models/conexion-bd')(sequelize);
+const { io } = require('../index');
 
 const getConexionesBD = async (req, res) => {
   try {
@@ -42,9 +43,13 @@ const getConexionById = async (req, res) => {
 };
 
 const createConexion = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const conexionDB = await PTLConexionesBD.create(newRegistro);
+    io.emit('conexiones=db-actualizadas', {
+      action: 'create',
+      msg: `Conexión BD creada: ${conexionDB.nombreConexion}`
+    });
     return res.status(201).json({
       ok: true,
       conexion: conexionDB
@@ -74,6 +79,10 @@ const updateConexion = async (req, res = response) => {
       where: { codigoConexion }
     });
     const conexionActualizado = await PTLConexionesBD.findOne({ where: { codigoConexion } });
+    io.emit('conexiones=db-actualizadas', {
+      action: 'update',
+      msg: `Conexión BD actualizado: ${conexionActualizado.nombreConexion}`
+    });
     return res.status(200).json({
       ok: true,
       conexion: conexionActualizado
@@ -102,7 +111,10 @@ const deleteConexion = async (req, res = response) => {
     conexionEliminado = await PTLConexionesBD.destroy({
       where: { codigoConexion }
     });
-
+    io.emit('conexiones=db-actualizadas', {
+      action: 'delete',
+      msg: `Conexión BD eliminada correctamente`
+    });
     return res.status(200).json({
       ok: true,
       usuario: conexionEliminado,

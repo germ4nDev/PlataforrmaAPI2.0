@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLServidor = require('../models/servidor')(sequelize);
+const { io } = require('../index');
 
 const getServidores = async (req, res) => {
   try {
@@ -42,9 +43,13 @@ const getServidorById = async (req, res) => {
 };
 
 const createServidor = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const servidorDB = await PTLServidor.create(newRegistro);
+    io.emit('servidores-actualizados', {
+      action: 'create',
+      msg: `Servidor creado: ${servidorDB.nombreServidor}`
+    });
     return res.status(201).json({
       ok: true,
       servidor: servidorDB
@@ -59,8 +64,8 @@ const createServidor = async (req, res = response) => {
 };
 
 const updateServidor = async (req, res = response) => {
+  const { codigoServidor, ...data } = req.body;
   try {
-    const { codigoServidor, ...data } = req.body;
     const servidorDB = await PTLServidor.findOne({
       where: { codigoServidor }
     });
@@ -74,6 +79,10 @@ const updateServidor = async (req, res = response) => {
       where: { codigoServidor }
     });
     const servidorActualizado = await PTLServidor.findOne({ where: { codigoServidor } });
+    io.emit('servidores-actualizados', {
+      action: 'update',
+      msg: `Servidor actualizado: ${servidorActualizado.nombreServidor}`
+    });
     return res.status(200).json({
       ok: true,
       servidor: servidorActualizado
@@ -102,7 +111,10 @@ const deleteServidor = async (req, res = response) => {
     servidorEliminado = await PTLServidor.destroy({
       where: { codigoServidor }
     });
-
+    io.emit('servidores-actualizados', {
+      action: 'delete',
+      msg: `Servidor eliminado: ${servidorDB.nombreServidor}`
+    });
     return res.status(200).json({
       ok: true,
       usuario: servidorEliminado,

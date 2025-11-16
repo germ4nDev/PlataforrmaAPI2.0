@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLItemsPaquete = require('../models/items-paquete')(sequelize);
+const { io } = require('../index');
 
 const getItemsPaquete = async (req, res) => {
   try {
@@ -39,18 +40,25 @@ const getItemsPaqueteById = async (req, res) => {
 };
 
 const createItemsPaquete = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const nuevo = await PTLItemsPaquete.create(newRegistro);
-    res.status(201).json(nuevo);
+    io.emit('items-paquete-actualizados', {
+      action: 'create',
+      msg: `Item creado: ${nuevo.nombreItem}`
+    });
+    return res.status(201).json({
+      ok: true,
+      estado: estadoDB
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el itemsPaquete' });
   }
 };
 
 const updateItemsPaquete = async (req, res = response) => {
+  const { codigoItem, ...data } = req.body;
   try {
-    const { codigoItem, ...data } = req.body;
     const itemsPaqueteOg = await PTLItemsPaquete.findOne({
       where: { codigoItem },
     });
@@ -65,6 +73,10 @@ const updateItemsPaquete = async (req, res = response) => {
     });
     const itemsPaqueteActualizado = await PTLItemsPaquete.findOne({
       where: { codigoItem },
+    });
+    io.emit('items-paquete-actualizados', {
+      action: 'update',
+      msg: `Item actualizado: ${itemsPaqueteActualizado.nombreItem}`
     });
     return res.status(201).json({
       ok: true,
@@ -89,6 +101,10 @@ const deleteItemsPaquete = async (req, res = response) => {
     }
     const itemsPaqueteEliminado = await PTLItemsPaquete.destroy({
       where: { codigoItem },
+    });
+    io.emit('items-paquete-actualizados', {
+      action: 'delete',
+      msg: `Item eliminado: ${itemsPaquete.nombreItem}`
     });
     return res.status(201).json({
       ok: true,

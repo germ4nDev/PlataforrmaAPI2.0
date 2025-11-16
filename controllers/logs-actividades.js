@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLLogActividadesAP = require('../models/log-actividad')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los roles
 const geLogsActividades = async (req, res) => {
@@ -38,10 +39,14 @@ const geLogActividadById = async (req, res) => {
 };
 
 const createLogActividad = async (req, res = response) => {
-  try {
     const { ...newRegistro } = req.body;
+  try {
     console.log('cuerpo del log', newRegistro);
     const nuevo = await PTLLogActividadesAP.create(newRegistro);
+    io.emit('log-actividades-actualizados', {
+      action: 'create',
+      msg: `Log Actividad creado: ${nuevo.codigoUsuarioCreacion}`
+    });
     return res.status(201).json({
       ok: true,
       log: nuevo

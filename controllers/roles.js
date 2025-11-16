@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLRolesAP = require('../models/role')(sequelize);
+const { io } = require('../index');
 
 const getRolesAP = async (req, res) => {
   try {
@@ -42,9 +43,13 @@ const getRoleAPById = async (req, res) => {
 };
 
 const createRoleAP = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const roleDB = await PTLRolesAP.create(newRegistro);
+    io.emit('roles-actualizados', {
+      action: 'create',
+      msg: `Role creado: ${roleDB.nombreRole}`
+    });
     return res.status(201).json({
       ok: true,
       role: roleDB
@@ -59,8 +64,8 @@ const createRoleAP = async (req, res = response) => {
 };
 
 const updateRoleAP = async (req, res = response) => {
+  const { codigoRole, ...data } = req.body;
   try {
-    const { codigoRole, ...data } = req.body;
     const roleDB = await PTLRolesAP.findOne({
       where: { codigoRole }
     });
@@ -74,6 +79,10 @@ const updateRoleAP = async (req, res = response) => {
       where: { codigoRole }
     });
     const roleActualizado = await PTLRolesAP.findOne({ where: { codigoRole } });
+    io.emit('roles-actualizados', {
+      action: 'update',
+      msg: `Role actualizado: ${roleActualizado.nombreRole}`
+    });
     return res.status(200).json({
       ok: true,
       role: roleActualizado
@@ -102,11 +111,13 @@ const deleteRoleAP = async (req, res = response) => {
     roleEliminado = await PTLRolesAP.destroy({
       where: { rolId }
     });
-
+    io.emit('roles-actualizados', {
+      action: 'delete',
+      msg: `Role emiminado: ${roleEliminado.nombreRole}`
+    });
     return res.status(200).json({
       ok: true,
-      usuario: roleEliminado,
-      msg: 'Role eliminado correctamente'
+      role: roleEliminado
     });
   } catch (err) {
     console.error(err);

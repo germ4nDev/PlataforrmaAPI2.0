@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLPaquetes = require('../models/paquete')(sequelize);
+const { io } = require('../index');
 
 const getPaquetes = async (req, res) => {
   try {
@@ -39,18 +40,25 @@ const getPaqueteById = async (req, res) => {
 };
 
 const createPaquete = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const nuevo = await PTLPaquetes.create(newRegistro);
-    res.status(201).json(nuevo);
+    io.emit('paquetes-actualizados', {
+      action: 'create',
+      msg: `Paquete creado: ${nuevo.nombrePaquete}`
+    });
+    return res.status(201).json({
+      ok: true,
+      suscriptorPaquete: paqueteSCDB
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el paquete' });
   }
 };
 
 const updatePaquete = async (req, res = response) => {
+  const { codigoPaquete, ...data } = req.body;
   try {
-    const { codigoPaquete, ...data } = req.body;
     const paqueteOg = await PTLPaquetes.findOne({
       where: { codigoPaquete },
     });
@@ -63,7 +71,11 @@ const updatePaquete = async (req, res = response) => {
     await PTLPaquetes.update(data, {
       where: { codigoPaquete }
     });
-    const paqueteActualizado = await PTLPaquetes.findOne({ where: { versionId } });
+    const paqueteActualizado = await PTLPaquetes.findOne({ where: { codigoPaquete } });
+    io.emit('paquetes-actualizados', {
+      action: 'update',
+      msg: `Paquete actualizado: ${paqueteActualizado.nombrePaquete}`
+    });
     return res.status(201).json({
       ok: true,
       paquete: paqueteActualizado,
@@ -87,6 +99,10 @@ const deletePaquete = async (req, res = response) => {
     }
     const paqueteEliminado = await PTLPaquetes.destroy({
       where: { codigoPaquete }
+    });
+    io.emit('paquetes-actualizados', {
+      action: 'delete',
+      msg: `Paquete eliminado: ${paqueteEliminado.nombrePaquete}`
     });
     return res.status(201).json({
       ok: true,

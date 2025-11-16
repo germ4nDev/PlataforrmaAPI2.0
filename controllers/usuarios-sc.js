@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuariosSC = require('../models/usuario-sc')(sequelize);
+const { io } = require('../index');
 
 const getUsuariosSC = async (req, res) => {
   try {

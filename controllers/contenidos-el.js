@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLContenidosEL = require('../models/contenido-el')(sequelize);
+const { io } = require('../index');
 
 const getContenidos = async (req, res) => {
   try {
@@ -54,6 +55,10 @@ const createContenido = async (req, res = response) => {
       });
     }
     const contenidoDB = await PTLContenidosEL.create(newRegistro);
+    io.emit('contenidos-actualizadas', {
+      action: 'create',
+      msg: `Conternido creada: ${contenidoDB.nombreContenido}`
+    });
     return res.status(201).json({
       ok: true,
       contenido: contenidoDB
@@ -83,6 +88,10 @@ const updateContenido = async (req, res = response) => {
       where: { codigoContenido }
     });
     const contenidoActualizado = await PTLContenidosEL.findOne({ where: { codigoContenido } });
+    io.emit('contenidos-actualizadas', {
+      action: 'update',
+      msg: `Conternido actualizado: ${contenidoActualizado.nombreContenido}`
+    });
     return res.status(200).json({
       ok: true,
       contenido: contenidoActualizado
@@ -111,7 +120,10 @@ const deleteContenido = async (req, res = response) => {
     contenidoEliminado = await PTLContenidosEL.destroy({
       where: { codigoContenido }
     });
-
+    io.emit('contenidos-actualizadas', {
+      action: 'delete',
+      msg: `Conternido eliminado correctamente`
+    });
     return res.status(200).json({
       ok: true,
       contenido: contenidoEliminado,
@@ -127,9 +139,9 @@ const deleteContenido = async (req, res = response) => {
 };
 
 module.exports = {
-    getContenidos,
-    getContenidoById,
-    createContenido,
-    updateContenido,
-    deleteContenido,
+  getContenidos,
+  getContenidoById,
+  createContenido,
+  updateContenido,
+  deleteContenido,
 };

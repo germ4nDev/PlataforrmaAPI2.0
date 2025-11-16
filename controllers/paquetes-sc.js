@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLPaquetesSC = require('../models/paquete-sc')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los roles
 const getPaquetesSC = async (req, res) => {
@@ -44,9 +45,13 @@ const getPaquetesSCById = async (req, res) => {
 
 // Crear un nuevo rol
 const createPaqueteSC = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const paqueteSCDB = await PTLPaquetesSC.create(newRegistro);
+    io.emit('paquetes-sc-actualizados', {
+      action: 'create',
+      msg: `Paquete SC creado: ${paqueteSCDB.suscriptoPaqueteId}`
+    });
     return res.status(201).json({
       ok: true,
       suscriptorPaquete: paqueteSCDB
@@ -77,6 +82,10 @@ const updatePaqueteSC = async (req, res = response) => {
       where: { suscriptorPaqueteId }
     });
     const suscrptorPaqueteActualizado = await PTLPaquetesSC.findOne({ where: { suscriptorPaqueteId } });
+    io.emit('paquetes-sc-actualizados', {
+      action: 'update',
+      msg: `Paquete SC acturalizados: ${suscrptorPaqueteActualizado.suscriptoPaqueteId}`
+    });
     return res.status(200).json({
       ok: true,
       suscrptorPaquete: suscrptorPaqueteActualizado
@@ -106,7 +115,10 @@ const deletePaqueteSC = async (req, res = response) => {
     suscriptorPaqueteEliminado = await PTLPaquetesSC.destroy({
       where: { suscriptorPaqueteId }
     });
-
+    io.emit('paquetes-sc-actualizados', {
+      action: 'delete',
+      msg: `Paquete SC eliminado: ${suscriptorPaqueteEliminado.suscriptoPaqueteId}`
+    });
     return res.status(200).json({
       ok: true,
       usuario: suscriptorPaqueteEliminado,

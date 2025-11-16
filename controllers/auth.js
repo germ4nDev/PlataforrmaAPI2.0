@@ -6,53 +6,50 @@ const { generarJWT } = require("../helpers/jwt");
 const bcrypt = require("bcryptjs");
 const sequelize = require('../database/connection');
 const PTLUsuarios = require('../models/usuario')(sequelize);
+const { io } = require('../index');
 
 const login = async (req, res = response) => {
-    console.log('login Usuario', req.body);
-    const dataUser = req.body;
-    try {
-      const usuarioDB = await PTLUsuarios.findOne({ 
-        where: {
-          userNameUsuario: dataUser.username
-        } 
+  const dataUser = req.body;
+  try {
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: {
+        userNameUsuario: dataUser.username
+      }
+    });
+    if (!usuarioDB) {
+      res.json({
+        ok: false,
+        msg: "UserName no encontrado",
       });
-      if (!usuarioDB) {
+    } else {
+      // const salt = bcrypt.genSaltSync();
+      // const password = await bcrypt.hash(dataUser.password, salt);
+      const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
+      if (isMatch) {
+        const token = await generarJWT(usuarioDB.codigoUsuairo, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
+        io.emit('autenticaciones-actualizadas', {
+          action: 'login',
+          msg: `Login exitoso: ${usuarioDB.codigoUsuairo}`
+        });
         res.json({
-          ok: false,
-          msg: "UserName no encontrado",
+          ok: true,
+          token,
+          usuario: usuarioDB,
         });
       } else {
-        console.log('Usuario Encontrado', usuarioDB);
-
-        const salt = bcrypt.genSaltSync();
-        const password = await bcrypt.hash(dataUser.password, salt);
-        console.log('password digitado', password);
-
-        const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
-
-        if (isMatch) {
-          console.log('✅ Login exitoso');
-          const token = await generarJWT(usuarioDB.codigoUsuairo, usuarioDB.userNameUsuario, usuarioDB.correoUsuario);
-          console.log('token Usuario', token);
-          res.json({
-            ok: true,
-            token,
-            usuario: usuarioDB,
-          });    
-        } else {
-          return res.json({
-            ok: false,
-            msg: "Contraseña no válida",
-          });
-        }       
+        return res.json({
+          ok: false,
+          msg: "Contraseña no válida",
+        });
       }
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        ok: false,
-        msg: "Error de sistema, Hable con el administrador",
-      });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error de sistema, Hable con el administrador",
+    });
+  }
 };
 
 const verificarUserInRole = async (req, res = response) => {
@@ -73,43 +70,43 @@ const verificarUserInRole = async (req, res = response) => {
 };
 
 const verificaarClaveActual = async (req, res = response) => {
-    console.log('login Usuario', req.body);
-    const dataUser = req.body;
-    try {
-      const usuarioDB = await PTLUsuarios.findOne({ 
-        where: {
-          userNameUsuario: dataUser.username
-        } 
+  console.log('login Usuario', req.body);
+  const dataUser = req.body;
+  try {
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: {
+        userNameUsuario: dataUser.username
+      }
+    });
+    if (!usuarioDB) {
+      res.json({
+        ok: false,
+        msg: "UserName no encontrado",
       });
-      if (!usuarioDB) {
+    } else {
+      console.log('Usuario Encontrado', usuarioDB);
+
+      const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
+
+      if (isMatch) {
         res.json({
-          ok: false,
-          msg: "UserName no encontrado",
+          ok: true,
+          usuario: usuarioDB,
         });
       } else {
-        console.log('Usuario Encontrado', usuarioDB);
-
-        const isMatch = await bcrypt.compare(dataUser.password, usuarioDB.claveUsuario);
-
-        if (isMatch) {
-          res.json({
-            ok: true,
-            usuario: usuarioDB,
-          });    
-        } else {
-          return res.json({
-            ok: false,
-            msg: "Contraseña no válida",
-          });
-        }       
+        return res.json({
+          ok: false,
+          msg: "Contraseña no válida",
+        });
       }
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        ok: false,
-        msg: "Error de sistema, Hable con el administrador",
-      });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error de sistema, Hable con el administrador",
+    });
+  }
 };
 
 const renewToken = async (req, res = response) => {

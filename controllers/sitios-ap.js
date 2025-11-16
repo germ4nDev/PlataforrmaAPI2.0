@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSitiosAP = require('../models/sitio-ap')(sequelize);
+const { io } = require('../index');
 
 const getSitios = async (req, res) => {
   try {
@@ -41,8 +42,8 @@ const getSitioById = async (req, res) => {
 };
 
 const createSitio = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const existeNombre = await PTLSitiosAP.findOne({
       where: { nombreSitio: newRegistro.nombreSitio }
     });
@@ -53,6 +54,10 @@ const createSitio = async (req, res = response) => {
       });
     }
     const sitioDB = await PTLSitiosAP.create(newRegistro);
+    io.emit('sitios-ap-actualizados', {
+      action: 'create',
+      msg: `Sitio creado: ${sitioDB.nombreSitio}`
+    });
     return res.status(201).json({
       ok: true,
       sitio: sitioDB
@@ -67,8 +72,8 @@ const createSitio = async (req, res = response) => {
 };
 
 const updateSitio = async (req, res = response) => {
+  const { codigoSitio, ...data } = req.body;
   try {
-    const { codigoSitio, ...data } = req.body;
     const sitioDB = await PTLSitiosAP.findOne({
       where: { codigoSitio }
     });
@@ -82,6 +87,10 @@ const updateSitio = async (req, res = response) => {
       where: { codigoSitio }
     });
     const sitioActualizado = await PTLSitiosAP.findOne({ where: { codigoSitio } });
+    io.emit('sitios-ap-actualizados', {
+      action: 'update',
+      msg: `Sitio actualizado: ${sitioActualizado.nombreSitio}`
+    });
     return res.status(200).json({
       ok: true,
       sitio: sitioActualizado
@@ -110,7 +119,10 @@ const deleteSitio = async (req, res = response) => {
     sitioEliminado = await PTLSitiosAP.destroy({
       where: { codigoSitio }
     });
-
+    io.emit('sitios-ap-actualizados', {
+      action: 'delete',
+      msg: `Sitio eliminado: ${sitioDB.nombreSitio}`
+    });
     return res.status(200).json({
       ok: true,
       sitio: sitioEliminado,

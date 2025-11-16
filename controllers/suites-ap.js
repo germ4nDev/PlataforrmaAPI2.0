@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSuitesAP = require('../models/suites-ap')(sequelize);
+const { io } = require('../index');
 
 const getSuitesAP = async (req, res) => {
   try {

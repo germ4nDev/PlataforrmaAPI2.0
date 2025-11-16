@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTiposValor = require('../models/tipo-valor')(sequelize);
+const { io } = require('../index');
 
 const getTiposValor = async (req, res) => {
   try {

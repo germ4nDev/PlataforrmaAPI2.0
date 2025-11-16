@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLIdiomas = require('../models/idioma')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los roles
 const getIdiomas = async (req, res) => {

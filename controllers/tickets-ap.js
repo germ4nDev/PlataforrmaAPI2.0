@@ -6,6 +6,7 @@ const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTickestAP = require('../models/ticket-ap')(sequelize);
 // const PTLAplicaciones = require("../models/aplicacion")(sequelize);
+const { io } = require('../index');
 
 const getTicketsAP = async (req, res) => {
     try {

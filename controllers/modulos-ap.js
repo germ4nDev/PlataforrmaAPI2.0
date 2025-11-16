@@ -4,6 +4,7 @@
 const express = require("express");
 const sequelize = require("../database/connection");
 const PTModulosAP = require("../models/modulo-ap")(sequelize);
+const { io } = require('../index');
 
 const getModulos = async (req, res) => {
   try {
@@ -63,6 +64,10 @@ const createModulo = async (req, res = response) => {
       });
     }
     const nuevo = await PTModulosAP.create(data);
+    io.emit('modulos-actualizados', {
+      action: 'create',
+      msg: `Modulo creado: ${nuevo.nombreModulo}`
+    });
     return res.status(201).json({
       ok: true,
       modulo: nuevo,
@@ -90,6 +95,10 @@ const updateModulo = async (req, res = response) => {
     const moduloActualizado = await PTModulosAP.findOne({
       where: { codigoModulo },
     });
+    io.emit('modulos-actualizados', {
+      action: 'update',
+      msg: `Modulo actualozado: ${moduloActualizado.nombreModulo}`
+    });
     return res.status(201).json({
       ok: true,
       modulo: moduloActualizado,
@@ -113,6 +122,10 @@ const deleteModulo = async (req, res = response) => {
     }
     const moduloEliminado = await PTModulosAP.destroy({
       where: { codigoModulo },
+    });
+    io.emit('modulos-actualizados', {
+      action: 'delete',
+      msg: `Modulo eliminado: ${modulo.nombreModulo}`
     });
     return res.status(201).json({
       ok: true,

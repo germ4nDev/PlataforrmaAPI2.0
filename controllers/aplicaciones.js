@@ -67,105 +67,6 @@ const getAplicacionByCode = async (req, res) => {
   }
 };
 
-// const createAplicacion = async (req, res = response) => {
-//   const { ...data } = req.body;
-//   console.log('crear aplicaicon', data);
-//   try {
-//     const existente = await PTLAplicaciones.findOne({
-//       where: { codigoAplicacion: data.codigoAplicacion }
-//     });
-//     const existeNombre = await PTLAplicaciones.findOne({
-//       where: { nombreAplicacion: data.nombreAplicacion }
-//     });
-//     if (existente) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'Ya existe una aplicación con ese código'
-//       });
-//     }
-//     if (existeNombre) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'Ya existe una aplicación con ese nombre'
-//       });
-//     }
-//     console.log('nueva aplicacon', data);
-//     const aplicacionDB = await PTLAplicaciones.create(data);
-//     return res.status(201).json({
-//       ok: true,
-//       aplicacion: aplicacionDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear la aplicación'
-//     });
-//   }
-// };
-
-// const updateAplicacion = async (req, res = response) => {
-//   try {
-//     const { codigoAplicacion, ...data } = req.body;
-//     console.log('body', req.body);
-//     const aplicacionDB = await PTLAplicaciones.findOne({
-//       where: { codigoAplicacion }
-//     });
-//     if (!aplicacionDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe una aplicación con ese ID'
-//       });
-//     }
-//     data.codigoUsuarioModificacion = req.usuario?.id || 0;
-//     data.fechaModificacion = new Date().toISOString();
-//     await PTLAplicaciones.update(data, {
-//       where: { codigoAplicacion }
-//     });
-//     const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { codigoAplicacion } });
-//     return res.status(200).json({
-//       ok: true,
-//       aplicacion: aplicacionActualizada
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar la aplicación'
-//     });
-//   }
-// };
-
-// const deleteAplicacion = async (req, res = response) => {
-//   try {
-//     const codigoAplicacion = req.params.id;
-//     const aplicacionDB = await PTLAplicaciones.findOne({
-//       where: { codigoAplicacion }
-//     });
-//     if (!aplicacionDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe una aplicación con ese ID'
-//       });
-//     }
-//     const aplicacionEliminada = await PTLAplicaciones.destroy({
-//       where: { codigoAplicacion }
-//     });
-
-//     return res.status(200).json({
-//       ok: true,
-//       aplicacion: aplicacionEliminada,
-//       msg: 'Aplicación eliminada correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar la aplicación'
-//     });
-//   }
-// };
-
 const createAplicacion = async (req, res = response) => {
     const { ...data } = req.body;
     console.log('crear aplicacion', data);
@@ -176,7 +77,6 @@ const createAplicacion = async (req, res = response) => {
         const existeNombre = await PTLAplicaciones.findOne({
             where: { nombreAplicacion: data.nombreAplicacion }
         });
-        
         if (existente) {
             return res.status(400).json({
                 ok: false,
@@ -189,15 +89,12 @@ const createAplicacion = async (req, res = response) => {
                 msg: 'Ya existe una aplicación con ese nombre'
             });
         }
-        
         console.log('nueva aplicacon', data);
         const aplicacionDB = await PTLAplicaciones.create(data);
-        
         io.emit('aplicaciones-actualizadas', {
             action: 'create',
             msg: `Aplicación creada: ${aplicacionDB.nombreAplicacion}`
         });
-
         return res.status(201).json({
             ok: true,
             aplicacion: aplicacionDB
@@ -225,14 +122,11 @@ const updateAplicacion = async (req, res = response) => {
                 msg: 'No existe una aplicación con ese ID'
             });
         }
-        
         data.codigoUsuarioModificacion = req.usuario?.id || 0;
         data.fechaModificacion = new Date().toISOString();
-        
         await PTLAplicaciones.update(data, {
             where: { codigoAplicacion }
         });
-        
         const aplicacionActualizada = await PTLAplicaciones.findOne({ where: { codigoAplicacion } });
         
         io.emit('aplicaciones-actualizadas', {
@@ -259,26 +153,20 @@ const deleteAplicacion = async (req, res = response) => {
         const aplicacionDB = await PTLAplicaciones.findOne({
             where: { codigoAplicacion }
         });
-        
         if (!aplicacionDB) {
             return res.status(404).json({
                 ok: false,
                 msg: 'No existe una aplicación con ese ID'
             });
         }
-        
-        // Guardar el nombre antes de eliminar para el mensaje de notificación
-        const nombreAplicacion = aplicacionDB.nombreAplicacion; 
-
+        const nombreAplicacion = aplicacionDB.nombreAplicacion;
         const aplicacionEliminada = await PTLAplicaciones.destroy({
             where: { codigoAplicacion }
         });
-
         io.emit('aplicaciones-actualizadas', {
             action: 'delete',
             msg: `Aplicación eliminada: ${nombreAplicacion}`
         });
-        
         return res.status(200).json({
             ok: true,
             aplicacion: aplicacionEliminada,

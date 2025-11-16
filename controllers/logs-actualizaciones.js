@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLLogsActualizacionesAP = require('../models/log-actualizacion')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los roles
 const getLogsActualizaciones = async (req, res) => {
@@ -39,10 +40,17 @@ const getLogActualizacionById = async (req, res) => {
 
 // Crear un nuevo rol
 const createLogActualizacion = async (req, res = response) => {
-  try {
     const { ...newRegistro } = req.body;
+  try {
     const nuevo = await PTLLogsActualizacionesAP.create(newRegistro);
-    res.status(201).json(nuevo);
+    io.emit('log-actualizaciones-actualizados', {
+      action: 'create',
+      msg: `Log Actualización creado: ${nuevo.codigoUsuarioCreacion}`
+    });
+    return res.status(201).json({
+      ok: true,
+      log: nuevo
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el log' });
   }

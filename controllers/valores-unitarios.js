@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTKValoresUnitarios = require('../models/valor-unitario')(sequelize);
+const { io } = require('../index');
 
 const getValoresUnitarios = async (req, res) => {
   try {

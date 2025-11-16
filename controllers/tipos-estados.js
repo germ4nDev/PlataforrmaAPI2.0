@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTiposEstados = require('../models/tipo-estado')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los tiposEstados
 const getTiposEstados = async (req, res) => {

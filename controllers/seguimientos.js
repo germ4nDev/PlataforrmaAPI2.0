@@ -1,13 +1,12 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
-
 */
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLSeguimientosTK = require('../models/seguimiento')(sequelize);
+const { io } = require('../index');
 
-// Obtener todos los seguimientos
 const getSeguimientosTK = async (req, res) => {
   try {
     const seguimientos = await PTLSeguimientosTK.findAll();
@@ -65,6 +64,10 @@ const createSeguimientoTK = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   try {
     const seguimientoDB = await PTLSeguimientosTK.create(newRegistro);
+    io.emit('seguijmientos-tk-actualizados', {
+      action: 'create',
+      msg: `Seguimiento creado: ${seguimientoDB.codigoSeguimiento}`
+    });
     return res.status(201).json({
       ok: true,
       seguimiento: seguimientoDB
@@ -80,8 +83,8 @@ const createSeguimientoTK = async (req, res = response) => {
 
 // Actualizar un nuevo seguimiento
 const updateSeguimientoTK = async (req, res = response) => {
+  const { codigoSeguimiento, ...data } = req.body;
   try {
-    const { codigoSeguimiento, ...data } = req.body;
     const seguimientoDB = await PTLSeguimientosTK.findOne({
       where: { codigoSeguimiento }
     });
@@ -95,6 +98,10 @@ const updateSeguimientoTK = async (req, res = response) => {
       where: { codigoSeguimiento }
     });
     const seguimientoActualizado = await PTLSeguimientosTK.findOne({ where: { codigoSeguimiento } });
+    io.emit('seguijmientos-tk-actualizados', {
+      action: 'update',
+      msg: `Seguimiento actualizado: ${seguimientoActualizado.codigoSeguimiento}`
+    });
     return res.status(200).json({
       ok: true,
       seguimiento: seguimientoActualizado
@@ -123,6 +130,10 @@ const deleteSeguimientoTK = async (req, res = response) => {
     }
     seguimientoEliminado = await PTLSeguimientosTK.destroy({
       where: { codigoSeguimiento }
+    });
+    io.emit('seguijmientos-tk-actualizados', {
+      action: 'delete',
+      msg: `Seguimiento eliminado: ${seguimientoDB.codigoSeguimiento}`
     });
     return res.status(200).json({
       ok: true,

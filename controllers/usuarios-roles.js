@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLUsuarioRoleAP = require('../models/usuario-role')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los roles
 const getUsuariosRoles = async (req, res) => {

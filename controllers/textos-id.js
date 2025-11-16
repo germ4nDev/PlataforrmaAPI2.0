@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTextosID = require('../models/texto-id')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los textoIDes
 const getTextosID = async (req, res) => {

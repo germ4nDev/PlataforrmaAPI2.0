@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLVersionesAP = require('../models/version-ap')(sequelize);
+const { io } = require('../index');
 
 const getVersionesAP = async (req, res) => {
   try {

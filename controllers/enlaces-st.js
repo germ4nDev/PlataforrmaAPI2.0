@@ -5,6 +5,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLEnlacesST = require('../models/enlace-st')(sequelize);
+const { io } = require('../index');
 
 const getEnlaces = async (req, res) => {
   try {
@@ -42,8 +43,8 @@ const getEnlaceById = async (req, res) => {
 };
 
 const createEnlace = async (req, res = response) => {
-  try {
     const { ...newRegistro } = req.body;
+  try {
     const existeNombre = await PTLEnlacesST.findOne({
       where: { nombreEnlace: newRegistro.nombreEnlace }
     });
@@ -54,6 +55,10 @@ const createEnlace = async (req, res = response) => {
       });
     }
     const enlaceDB = await PTLEnlacesST.create(newRegistro);
+    io.emit('enlaces-st-actualizadas', {
+      action: 'create',
+      msg: `Enlace ST creado: ${enlaceDB.nombreEnlace}`
+    });
     return res.status(201).json({
       ok: true,
       enlace: enlaceDB
@@ -68,8 +73,8 @@ const createEnlace = async (req, res = response) => {
 };
 
 const updateEnlace = async (req, res = response) => {
-  try {
     const { codigoEnlace, ...data } = req.body;
+  try {
     const enlaceDB = await PTLEnlacesST.findOne({
       where: { codigoEnlace }
     });
@@ -83,6 +88,10 @@ const updateEnlace = async (req, res = response) => {
       where: { codigoEnlace }
     });
     const enlaceActualizado = await PTLEnlacesST.findOne({ where: { codigoEnlace } });
+    io.emit('enlaces-st-actualizadas', {
+      action: 'update',
+      msg: `Enlace ST actualizado: ${enlaceActualizado.nombreEnlace}`
+    });
     return res.status(200).json({
       ok: true,
       enlace: enlaceActualizado
@@ -111,7 +120,10 @@ const deleteEnlace = async (req, res = response) => {
     enlaceEliminado = await PTLEnlacesST.destroy({
       where: { codigoEnlace }
     });
-
+    io.emit('enlaces-st-actualizadas', {
+      action: 'delete',
+      msg: `Enlace ST eliminado: ${enlaceDB.nombreEnlace}`
+    });
     return res.status(200).json({
       ok: true,
       enlace: enlaceEliminado,

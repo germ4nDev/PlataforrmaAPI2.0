@@ -6,61 +6,6 @@ const fs = require("fs");
 const { response } = require("express");
 const { v4: uuidv4 } = require("uuid");
 
-// const fileUpload = (req, res = response) => {
-//   var susc = req.params.codigo;
-//   var tipo = req.params.tipo;
-//   var id = req.params.id;
-//   const tiposValidos = [
-//     "suscriptores",
-//     "aplicaciones",
-//     "usuarios",
-//     "documentos",
-//     "informes",
-//     "empresas",
-//     "adjuntos",
-//     "sitios",
-//     "suites",
-//     "sliders",
-//     "tickets",
-//     "seguimientos",
-//     "firmas"
-//   ];
-//   if (!tiposValidos.includes(tipo)) {
-//     return res.status(400).json({
-//       ok: false,
-//       msg: "No es de suscriptores, aplicaciones, usuarios, documentos, informes, empresas, adjuntos, sitios, suites, sliders, tickets, seguimientos, firmas (tipo)",
-//     });
-//   }
-//   if (!req.files || Object.keys(req.files).length === 0) {
-//     return res.status(400).json({
-//       ok: false,
-//       msg: "No hay ningún archivo",
-//     });
-//   }
-//   const file = req.files.foto;
-//   const nombreCortado = file.name.split("."); // wolverine.1.3.jpg
-//   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
-//   if (tipo == 'seguimientos') {
-//     tipo = 'tickets/seguimientos'
-//   }
-//   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
-//   const path = `./uploads//${susc}${tipo}/${nombreArchivo}`;
-//   file.mv(path, (err) => {
-//     if (err) {
-//       console.log(err);
-//       return res.status(500).json({
-//         ok: false,
-//         msg: "Error al mover el archivo",
-//       });
-//     }
-//     res.json({
-//       ok: true,
-//       msg: "Archivo cargado",
-//       nombreArchivo,
-//     });
-//   });
-// };
-
 const fileUpload = (req, res = response) => {
   const { susc, tipo, id } = req.params;
   const tiposValidos = [

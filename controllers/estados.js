@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLEstados = require('../models/estado')(sequelize);
+const { io } = require('../index');
 
 // Obtener todos los estados
 const getEstados = async (req, res) => {
@@ -43,9 +44,13 @@ const getEstadosById = async (req, res) => {
 
 // Crear un nuevo estado
 const createEstado = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const estadoDB = await PTLEstados.create(newRegistro);
+    io.emit('estados-actualizadas', {
+      action: 'create',
+      msg: `Estado creado: ${estadoDB.nombreEstado}`
+    });
     return res.status(201).json({
       ok: true,
       estado: estadoDB
@@ -76,6 +81,10 @@ const updateEstado = async (req, res = response) => {
       where: { estadoId }
     });
     const estadoActualizado = await PTLEstados.findOne({ where: { estadoId } });
+    io.emit('estados-actualizadas', {
+      action: 'update',
+      msg: `Estado actualizado: ${estadoActualizado.nombreEstado}`
+    });
     return res.status(200).json({
       ok: true,
       estado: estadoActualizado
@@ -105,7 +114,10 @@ const deleteEstado = async (req, res = response) => {
     estadoEliminado = await PTLEstados.destroy({
       where: { estadoId }
     });
-
+    io.emit('estados-actualizadas', {
+      action: 'delete',
+      msg: `Estado eliminadp: ${estadoDB.nombreEstado}`
+    });
     return res.status(200).json({
       ok: true,
       usuario: estadoEliminado,

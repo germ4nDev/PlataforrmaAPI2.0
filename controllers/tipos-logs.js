@@ -4,6 +4,7 @@
 const express = require('express');
 const sequelize = require('../database/connection');
 const PTLTiposLogs = require('../models/tipo-log')(sequelize);
+const { io } = require('../index');
 
 const getTiposLogs = async (req, res) => {
   try {
