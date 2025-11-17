@@ -44,6 +44,8 @@ const getRoleAPById = async (req, res) => {
 
 const createRoleAP = async (req, res = response) => {
   const { ...newRegistro } = req.body;
+  console.log('data role', newRegistro);
+  
   try {
     const roleDB = await PTLRolesAP.create(newRegistro);
     io.emit('roles-actualizados', {

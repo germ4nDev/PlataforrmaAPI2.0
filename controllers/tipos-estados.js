@@ -44,9 +44,13 @@ const getTiposEstadosById = async (req, res) => {
 
 // Crear un nuevo tipoEstado
 const createTipoEstado = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const tipoEstadoDB = await PTLTiposEstados.create(newRegistro);
+    io.emit('tipos-estadps-actualizados', {
+      action: 'create',
+      msg: `TipoEstado creado: ${tipoEstadoDB.nombreTipo}`
+    });
     return res.status(201).json({
       ok: true,
       tipoEstado: tipoEstadoDB
@@ -62,8 +66,8 @@ const createTipoEstado = async (req, res = response) => {
 
 // Actualizar un nuevo tipoEstado
 const updateTipoEstado = async (req, res = response) => {
+  const { tipoEstadoId, ...data } = req.body;
   try {
-    const { tipoEstadoId, ...data } = req.body;
     const tipoEstadoDB = await PTLTiposEstados.findOne({
       where: { tipoEstadoId }
     });
@@ -77,6 +81,10 @@ const updateTipoEstado = async (req, res = response) => {
       where: { tipoEstadoId }
     });
     const tipoEstadoActualizado = await PTLTiposEstados.findOne({ where: { tipoEstadoId } });
+    io.emit('tipos-estadps-actualizados', {
+      action: 'update',
+      msg: `TipoEstado actualizado: ${tipoEstadoActualizado.nombreTipo}`
+    });
     return res.status(200).json({
       ok: true,
       tipoEstado: tipoEstadoActualizado
@@ -106,7 +114,10 @@ const deleteTipoEstado = async (req, res = response) => {
     tipoEstadoEliminado = await PTLTiposEstados.destroy({
       where: { tipoEstadoId }
     });
-
+    io.emit('tipos-estadps-actualizados', {
+      action: 'delete',
+      msg: `TipoEstado eliminado: ${tipoEstadoDB.nombreTipo}`
+    });
     return res.status(200).json({
       ok: true,
       usuario: tipoEstadoEliminado,

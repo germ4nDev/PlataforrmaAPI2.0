@@ -77,8 +77,8 @@ const createSuscriptor = async (req, res = response) => {
 };
 
 const updateSuscriptor = async (req, res = response) => {
-  try {
     const { codigoSuscriptor, ...data } = req.body;
+  try {
     const suscriptorDB = await PTLSuscriptores.findOne({
       where: { codigoSuscriptor }
     });

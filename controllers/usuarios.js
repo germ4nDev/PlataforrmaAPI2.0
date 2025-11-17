@@ -45,8 +45,8 @@ const getUsuariosById = async (req, res) => {
 };
 
 const createUsuario = async (req, res = response) => {
-  try {
     const { ...newRegistro } = req.body;
+  try {
     const existeIdentificacion = await PTLUsuarios.findOne({
       where: { nombreUsuario: newRegistro.identificacionUsuario }
     });
@@ -70,6 +70,10 @@ const createUsuario = async (req, res = response) => {
     newRegistro.claveUsuario = password;
     newRegistro.fotoUsuario = 'no-foto.png';
     const usuarioDB = await PTLUsuarios.create(newRegistro);
+    io.emit("usuarios-actualizados", {
+      action: "create",
+      msg: `Usuario creado: ${usuarioDB.nombreUsuario}`,
+    });
     return res.status(201).json({
       ok: true,
       usuario: usuarioDB
@@ -84,8 +88,8 @@ const createUsuario = async (req, res = response) => {
 };
 
 const updateUsuario = async (req, res = response) => {
-  try {
     const { codigoUsuario, ...data } = req.body;
+  try {
     const usuarioDB = await PTLUsuarios.findOne({
       where: { codigoUsuario }
     });
@@ -99,6 +103,10 @@ const updateUsuario = async (req, res = response) => {
       where: { codigoUsuario }
     });
     const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
+    io.emit("usuarios-actualizados", {
+      action: "update",
+      msg: `Usuario actualizado: ${usuarioActualizado.nombreUsuario}`,
+    });
     return res.status(200).json({
       ok: true,
       usuario: usuarioActualizado
@@ -113,8 +121,8 @@ const updateUsuario = async (req, res = response) => {
 };
 
 const updateUsuarioClave = async (req, res = response) => {
-  try {
     const { codigoUsuario, ...data } = req.body;
+  try {
     const usuarioDB = await PTLUsuarios.findOne({
       where: { codigoUsuario }
     });
@@ -127,11 +135,14 @@ const updateUsuarioClave = async (req, res = response) => {
     const salt = bcrypt.genSaltSync();
     const password = await bcrypt.hash(nuevoUsuario.claveUsuario, salt);
     nuevoUsuario.claveUsuario = password;
-
     await PTLUsuarios.update(data, {
       where: { codigoUsuario }
     });
     const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
+    io.emit("usuarios-actualizados", {
+      action: "update",
+      msg: `Usuario Clave actualizado: ${usuarioActualizado.nombreUsuario}`,
+    });
     return res.status(200).json({
       ok: true,
       usuario: usuarioActualizado
@@ -160,7 +171,10 @@ const deleteUsuario = async (req, res = response) => {
     usuarioEliminado = await PTLUsuarios.destroy({
       where: { codigoUsuario }
     });
-
+    io.emit("usuarios-actualizados", {
+      action: "delete",
+      msg: `Usuario eliminado: ${usuarioEliminado.nombreUsuario}`,
+    });
     return res.status(200).json({
       ok: true,
       usuario: usuarioEliminado,

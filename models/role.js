@@ -18,10 +18,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    codigoSuite: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     nombreRole: {
       type: DataTypes.STRING,
       allowNull: false
@@ -37,19 +33,19 @@ module.exports = (sequelize) => {
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaCreacion: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     codigoUsuarioModificacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaModificacion: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   }, {
     tableName: 'PTLRolesAP',

@@ -42,9 +42,13 @@ const getTipoLogById = async (req, res) => {
 };
 
 const createTipoLog = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const tipoLogDB = await PTLTiposLogs.create(newRegistro);
+    io.emit('tipos-estadps-actualizados', {
+      action: 'create',
+      msg: `TipoLog creado: ${tipoEstadoDB.nombreTipo}`
+    });
     return res.status(201).json({
       ok: true,
       tipoLog: tipoLogDB
@@ -59,8 +63,8 @@ const createTipoLog = async (req, res = response) => {
 };
 
 const updateTipoLog = async (req, res = response) => {
+  const { codigoTipoLog, ...data } = req.body;
   try {
-    const { codigoTipoLog, ...data } = req.body;
     const tipoLogDB = await PTLTiposLogs.findOne({
       where: { codigoTipoLog }
     });
@@ -74,6 +78,10 @@ const updateTipoLog = async (req, res = response) => {
       where: { codigoTipoLog }
     });
     const tipoLogActualizado = await PTLTiposLogs.findOne({ where: { codigoTipoLog } });
+    io.emit('tipos-estadps-actualizados', {
+      action: 'update',
+      msg: `TipoLog creado: ${tipoLogActualizado.nombreTipo}`
+    });
     return res.status(200).json({
       ok: true,
       tipoLog: tipoLogActualizado
@@ -101,6 +109,10 @@ const deleteTipoLog = async (req, res = response) => {
     }
     tipoLogEliminado = await PTLTiposLogs.destroy({
       where: { codigoTipoLog }
+    });
+    io.emit('tipos-estadps-actualizados', {
+      action: 'delete',
+      msg: `TipoLog eliminado: ${tipoLogEliminado.nombreTipo}`
     });
     return res.status(200).json({
       ok: true,

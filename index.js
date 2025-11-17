@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: process.env.ANGULAR_URL || "*",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
 
@@ -85,7 +85,6 @@ app.get('*', (req, res) => {
 // =======================================================
 // === INICIALIZACIÓN DE SOCKETS Y BASE DE DATOS ===
 // =======================================================
-
 io.on('connection', (socket) => {
     console.log('Cliente conectado:', socket.id);
     socket.on('disconnect', () => {

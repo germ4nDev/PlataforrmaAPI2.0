@@ -43,9 +43,13 @@ const getTiposValorById = async (req, res) => {
 
 // Crear un nuevo tipoValor
 const createTkipoValor = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const tipoValorDB = await PTLTiposValor.create(newRegistro);
+    io.emit('tipos-valores-actualizados', {
+      action: 'create',
+      msg: `TipoValor creado: ${tipoValorDB.nombreTipo}`
+    });
     return res.status(201).json({
       ok: true,
       tipoValor: tipoValorDB
@@ -61,8 +65,8 @@ const createTkipoValor = async (req, res = response) => {
 
 // Actualizar un nuevo tipoValor
 const updateTkipoValor = async (req, res = response) => {
+  const { tipoValorId, ...data } = req.body;
   try {
-    const { tipoValorId, ...data } = req.body;
     const tipoValorDB = await PTLTiposValor.findOne({
       where: { tipoValorId }
     });
@@ -76,6 +80,10 @@ const updateTkipoValor = async (req, res = response) => {
       where: { tipoValorId }
     });
     const tipoValorActualizado = await PTLTiposValor.findOne({ where: { tipoValorId } });
+    io.emit('tipos-valores-actualizados', {
+      action: 'update',
+      msg: `TipoValor actualizado: ${tipoValorActualizado.nombreTipo}`
+    });
     return res.status(200).json({
       ok: true,
       tipoValor: tipoValorActualizado
@@ -105,7 +113,10 @@ const deleteTkipoValor = async (req, res = response) => {
     tipoValorEliminado = await PTLTiposValor.destroy({
       where: { tipoValorId }
     });
-
+    io.emit('tipos-valores-actualizados', {
+      action: 'delete',
+      msg: `TipoValor eliminado: ${tipoValorDB.nombreTipo}`
+    });
     return res.status(200).json({
       ok: true,
       usuario: tipoValorEliminado,

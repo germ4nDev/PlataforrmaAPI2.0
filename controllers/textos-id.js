@@ -20,8 +20,8 @@ const getTextosID = async (req, res) => {
 };
 
 const getTextosIDById = async (req, res) => {
+  const { textoId } = req.body;
   try {
-    const { textoId } = req.body;
     const textoID = await PTLTextosID.findById(textoId);
     if (!textoID) {
       return res.status(404).json({
@@ -40,10 +40,17 @@ const getTextosIDById = async (req, res) => {
 
 // Crear un nuevo textoID
 const createTextoID = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const nuevo = await PTLTextosID.create(newRegistro);
-    res.status(201).json(nuevo);
+    io.emit('textos-actualizados', {
+      action: 'create',
+      msg: `Texto creado: ${nuevo.anclaTexto}`
+    });
+    return res.status(201).json({
+      ok: true,
+      texto: textoDB
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el textoID' });
   }
@@ -51,20 +58,28 @@ const createTextoID = async (req, res = response) => {
 
 // Actualizar un nuevo textoID
 const updateTextoID = async (req, res = response) => {
+  const { textoId, ...data } = req.body;
   try {
-    const { textoId } = req.body;
-    const textoID = req.body;
-    const textoIDDB = await PTLTextosID.find(textoId);
-    if (!textoIDDB) {
+    const textoDB = await PTLTextosID.findOne({
+      where: { textoId }
+    });
+    if (!textoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un textoID con ese id",
+        msg: 'No existe un texto con ese ID'
       });
     }
-    const textoIDActualizado = await PTLTextosID.findByIdAndUpdate({ textoId, textoID });
-    return res.status(201).json({
+    await PTLTextosID.update(data, {
+      where: { textoId }
+    });
+    const textoActualizado = await PTLTextosID.findOne({ where: { textoId } });
+    io.emit('textos-actualizados', {
+      action: 'update',
+      msg: `Texto actualizado: ${textoActualizado.anclaTexto}`
+    });
+    return res.status(200).json({
       ok: true,
-      textoID: textoIDActualizado,
+      texto: textoActualizado
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar el textoID' });
@@ -74,18 +89,27 @@ const updateTextoID = async (req, res = response) => {
 // Borrar un nuevo textoID
 const deleteTextoID = async (req, res = response) => {
   try {
-    const { textoId } = req.body;
-    const textoIDDB = await PTLTextosID.findOne(textoId);
-    if (!textoIDDB) {
+    const textoId = req.params.id;
+    const textoDB = await PTLTextosID.findOne({
+      where: { textoId }
+    });
+    if (!textoDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un textoID con ese id",
+        msg: 'No existe un texto con ese ID'
       });
     }
-    const textoIDEliminado = await PTLTextosID.findByIdAndDelete({ textoId });
-    return res.status(201).json({
+    textoEliminado = await PTLTextosID.destroy({
+      where: { textoId }
+    });
+    io.emit('textos-actualizados', {
+      action: 'delete',
+      msg: `Tecto eliminado correctamente`
+    });
+    return res.status(200).json({
       ok: true,
-      textoID: textoIDEliminado,
+      texto: textoEliminado,
+      msg: 'Tecto eliminado correctamente'
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al eliminar textoID' });

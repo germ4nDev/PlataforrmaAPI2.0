@@ -133,6 +133,5 @@ module.exports = {
   getRequerimientoTKById,
   createRequerimientoTK,
   updateRequerimientoTK,
-  updateEstadoRequerimiento,
   deleteRequerimientoTK,
 };

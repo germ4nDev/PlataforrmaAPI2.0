@@ -39,29 +39,43 @@ const getUsuariosSCById = async (req, res) => {
 };
 
 const createUsuarioSC = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const nuevo = await PTLUsuariosSC.create(newRegistro);
-    res.status(201).json(nuevo);
+    io.emit("usuarios-sc-actualizados", {
+      action: "create",
+      msg: `Usuario Suscriptor creado: ${nuevo.codigoUsuarioSC}`,
+    });
+    return res.status(201).json({
+      ok: true,
+      usuarioSC: nuevo,
+    });
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuarioSC' });
   }
 };
 
 const updateUsuarioSC = async (req, res = response) => {
+  const { codigoUsuarioSC, ...data } = req.body;
   try {
-    const { codigoUsuarioSC, ...data } = req.body;
-    const usuarioDB = await PTLUsuariosSC.find(codigoUsuarioSC);
-    if (!usuarioDB) {
+    const usuarioSCDB = await PTLUsuariosSC.findOne({
+      where: { codigoUsuarioSC },
+    });
+    if (!usuarioSCDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuario por ese codigo",
       });
     }
-    const usuarioActualizado = await PTLUsuariosSC.findByIdAndUpdate({ codigoUsuarioSC, Ususario });
-    return res.status(201).json({
-      ok: true,
-      usuarioSC: usuarioActualizado,
+    await PTLUsuariosSC.update(data, {
+      where: { codigoUsuarioSC },
+    });
+    const usuarioSCActualizado = await PTLUsuariosSC.findOne({
+      where: { codigoUsuarioSC },
+    });
+    io.emit('usuarios-empresas-actualizados', {
+      action: 'update',
+      msg: `Usuario Suscriptor actualizado: ${usuarioSCActualizado.codigoUsuarioSC}`
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al actualizar el usuario' });
@@ -70,18 +84,27 @@ const updateUsuarioSC = async (req, res = response) => {
 
 const deleteUsuarioSC = async (req, res = response) => {
   try {
-    const { codigoUsuarioSC } = req.body;
-    const usuarioDB = await PTLUsuariosSC.findOne(codigoUsuarioSC);
-    if (!usuarioDB) {
+    const codigoUsuarioSC = req.params.id;
+    const usuarioSCDB = await PTLUsuariosSC.findOne({
+      where: { codigoUsuarioSC },
+    });
+    if (!usuarioSCDB) {
       return res.status(404).json({
         ok: false,
-        msg: "No existe un usuario por ese id",
+        msg: "No existe un usuarioSC con ese ID",
       });
     }
-    const usuarioEliminado = await PTLUsuariosSC.findByIdAndDelete({ codigoUsuarioSC });
-    return res.status(201).json({
+    const usuarioSCEliminado = await PTLUsuariosSC.destroy({
+      where: { codigoUsuarioSC },
+    });
+    io.emit('usuarios-empresas-actualizados', {
+      action: 'delete',
+      msg: `Usuario Suscriptor eliminado: ${usuarioSCEliminado.codigoUsuarioSC}`
+    });
+    return res.status(200).json({
       ok: true,
-      usuarioSC: usuarioEliminado,
+      usuarioSC: usuarioSCEliminado,
+      msg: "usuarioSC eliminado correctamente",
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al eliminar usuario' });

@@ -21,7 +21,7 @@ const getSuitesAP = async (req, res) => {
 const getSuitesAPById = async (req, res) => {
   try {
     const codigoSuite = req.params.id;
-        console.log('suite', codigoSuite);
+    console.log('suite', codigoSuite);
     const suite = await PTLSuitesAP.findOne({
       where: { codigoSuite },
     });
@@ -32,7 +32,7 @@ const getSuitesAPById = async (req, res) => {
       });
     }
     console.log('suite', suite);
-    
+
     return res.status(201).json({
       ok: true,
       suite: suite,
@@ -43,8 +43,8 @@ const getSuitesAPById = async (req, res) => {
 };
 
 const createSuiteAP = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
     const existeNombre = await PTLSuitesAP.findOne({
       where: { nombresuite: newRegistro.nombreSuite }
     });
@@ -55,6 +55,10 @@ const createSuiteAP = async (req, res = response) => {
       });
     }
     const suiteDB = await PTLSuitesAP.create(newRegistro);
+    io.emit('suites-actualizados', {
+      action: 'create',
+      msg: `Suite creada: ${suiteDB.nombreSuite}`
+    });
     return res.status(201).json({
       ok: true,
       suite: suiteDB
@@ -69,8 +73,8 @@ const createSuiteAP = async (req, res = response) => {
 };
 
 const updateSuiteAP = async (req, res = response) => {
+  const { codigoSuite, ...data } = req.body;
   try {
-    const { codigoSuite, ...data } = req.body;
     const suiteDB = await PTLSuitesAP.findOne({
       where: { codigoSuite }
     });
@@ -84,6 +88,10 @@ const updateSuiteAP = async (req, res = response) => {
       where: { codigoSuite }
     });
     const suiteActualizado = await PTLSuitesAP.findOne({ where: { codigoSuite } });
+    io.emit('suites-actualizados', {
+      action: 'update',
+      msg: `Suite actualizada: ${suiteActualizado.nombreSuite}`
+    });
     return res.status(200).json({
       ok: true,
       suite: suiteActualizado
@@ -112,7 +120,10 @@ const deleteSuiteAP = async (req, res = response) => {
     suiteEliminado = await PTLSuitesAP.destroy({
       where: { codigoSuite }
     });
-
+    io.emit('suites-actualizados', {
+      action: 'delete',
+      msg: `Suite eliminada: ${suiteDB.nombreSuite}`
+    });
     return res.status(200).json({
       ok: true,
       suite: suiteEliminado,

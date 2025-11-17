@@ -42,9 +42,12 @@ const getVersionesAPById = async (req, res) => {
 
 const createVersionAP = async (req, res = response) => {
   const { ...newRegistro } = req.body;
-  console.log('datos version', newRegistro);
   try {
     const nuevo = await PTLVersionesAP.create(newRegistro);
+    io.emit("versiones-actualizados", {
+      action: "create",
+      msg: `Version creado: ${nuevo.nombreVersion}`,
+    });
     return res.status(201).json({
       ok: true,
       version: nuevo,
@@ -57,7 +60,6 @@ const createVersionAP = async (req, res = response) => {
 const updateVersionAP = async (req, res = response) => {
   const { codigoVersion, ...data } = req.body;
   try {
-    // const codigoVersion = req.params.id;
     const version = await PTLVersionesAP.findOne({
       where: { codigoVersion },
     });
@@ -85,6 +87,10 @@ const updateVersionAP = async (req, res = response) => {
       where: { codigoVersion }
     });
     const versionAPActualizado = await PTLVersionesAP.findOne({ where: { codigoVersion } });
+    io.emit("versiones-actualizados", {
+      action: "update",
+      msg: `Version actulozada: ${versionAPActualizado.nombreVersion}`,
+    });
     return res.status(201).json({
       ok: true,
       version: versionAPActualizado,
@@ -108,6 +114,10 @@ const deleteVersionAP = async (req, res = response) => {
     }
     const versionAPEliminado = await PTLVersionesAP.destroy({
       where: { codigoVersion }
+    });
+    io.emit("versiones-actualizados", {
+      action: "delete",
+      msg: `Version eliminada: ${versionAPEliminado.nombreVersion}`,
     });
     return res.status(201).json({
       ok: true,

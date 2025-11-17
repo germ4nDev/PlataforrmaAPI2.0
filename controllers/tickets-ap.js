@@ -49,6 +49,10 @@ const createTicketAP = async (req, res = response) => {
     const { ...data } = req.body;
     try {
         const nuevo = await PTLTickestAP.create(data);
+        io.emit('textos-actualizados', {
+            action: 'create',
+            msg: `Ticket creado: ${nuevo.nombreTicket}`
+        });
         return res.status(201).json({
             ok: true,
             ticketAP: nuevo,
@@ -76,6 +80,10 @@ const updateTicketAP = async (req, res = response) => {
         });
         const ticketActualizado = await PTLTickestAP.findOne({
             where: { codigoTicket },
+        });
+        io.emit('textos-actualizados', {
+            action: 'update',
+            msg: `Ticket actualozado: ${ticketActualizado.nombreTicket}`
         });
         return res.status(201).json({
             ok: true,
@@ -106,7 +114,10 @@ const deleteTicketAP = async (req, res = response) => {
         const ticketEliminado = await PTLTickestAP.destroy({
             where: { codigoTicket }
         });
-
+        io.emit('textos-actualizados', {
+            action: 'delete',
+            msg: `Ticket eliminado: ${ticketEliminado.nombreTicket}`
+        });
         return res.status(200).json({
             ok: true,
             ticketAP: ticketEliminado,

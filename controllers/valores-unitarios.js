@@ -41,10 +41,13 @@ const getValoresUnitariosById = async (req, res) => {
 };
 
 const createValorUnitario = async (req, res = response) => {
+  const { ...newRegistro } = req.body;
   try {
-    const { ...newRegistro } = req.body;
-    console.log('datos valorUnitario', newRegistro);
     const nuevo = await PTKValoresUnitarios.create(newRegistro);
+    io.emit("valores-unitarios-actualizados", {
+      action: "create",
+      msg: `Valor Unitario creado: ${nuevo.nombreValor}`,
+    });
     return res.status(201).json({
       ok: true,
       valorUnitario: nuevo,
@@ -55,9 +58,8 @@ const createValorUnitario = async (req, res = response) => {
 };
 
 const updateValorUnitario = async (req, res = response) => {
+  const { codigoValor, ...data } = req.body;
   try {
-    const codigoValor = req.params.id;
-    const { ...data } = req.body;
     const valorUnitario = await PTKValoresUnitarios.findOne({
       where: { codigoValor },
     });
@@ -71,6 +73,10 @@ const updateValorUnitario = async (req, res = response) => {
       where: { codigoValor }
     });
     const valorUnitarioActualizado = await PTKValoresUnitarios.findOne({ where: { codigoValor } });
+    io.emit("valores-unitarios-actualizados", {
+      action: "update",
+      msg: `Valor Unitario actualizado: ${valorUnitarioActualizado.nombreValor}`,
+    });
     return res.status(201).json({
       ok: true,
       valorUnitario: valorUnitarioActualizado,
@@ -94,6 +100,10 @@ const deleteValorUnitario = async (req, res = response) => {
     }
     const valorUnitarioEliminado = await PTKValoresUnitarios.destroy({
       where: { codigoValor }
+    });
+    io.emit("valores-unitarios-actualizados", {
+      action: "delete",
+      msg: `Valor Unitario eliminado: ${valorUnitarioEliminado.nombreValor}`,
     });
     return res.status(201).json({
       ok: true,
