@@ -10,7 +10,6 @@ const { io } = require('../index');
 const getRolesAP = async (req, res) => {
   try {
     const roles = await PTLRolesAP.findAll();
-    console.log('roles api', roles);
     return res.status(201).json({
       ok: true,
       roles,

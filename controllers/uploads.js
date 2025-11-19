@@ -6,23 +6,42 @@ const fs = require("fs");
 const { response } = require("express");
 const { v4: uuidv4 } = require("uuid");
 
-const fileUpload = (req, res = response) => {
+const FOLDER_MAP = {
+  //PLATAFORMA
+  'aplicaciones': path.join('plataforma', 'aplicaciones'),
+  'sitios': path.join('plataforma', 'sitios'),
+  'sliders': path.join('plataforma', 'sliders'),
+  'suites': path.join('plataforma', 'suites'),
+  'suscriptores': path.join('plataforma', 'suscriptores'),
+  'usuarios': path.join('plataforma', 'usuarios'),
+  'media': path.join('content', 'uploads', 'images'),
+  // SUSCRIPTOR
+  'tickets': path.join('tickets', 'tickets'),
+  'requerimientos': path.join('tickets', 'requerimientos'),
+  'seguimientos': path.join('tickets', 'seguimientos'),
+};
+
+const tiposValidos = Object.keys(FOLDER_MAP);
+
+const moveFilePromise = (file, pathAbsoluto) => {
+  return new Promise((resolve, reject) => {
+    // file.mv es el método de express-fileupload para mover el archivo.
+    file.mv(pathAbsoluto, (err) => {
+      if (err) {
+        // Console.error aquí es útil para debug.
+        console.error("Error moviendo archivo:", err);
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+};
+
+// =================================================================
+// MÉTODO DE CARGA DE ARCHIVO (fileUpload)
+// =================================================================
+const fileUpload = async (req, res = response) => {
   const { susc, tipo, id } = req.params;
-  const tiposValidos = [
-    "suscriptores",
-    "aplicaciones",
-    "usuarios",
-    "documentos",
-    "informes",
-    "empresas",
-    "adjuntos",
-    "sitios",
-    "suites",
-    "sliders",
-    "tickets",
-    "seguimientos",
-    "firmas"
-  ];
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
       ok: false,
@@ -35,118 +54,160 @@ const fileUpload = (req, res = response) => {
       msg: "No se ha subido ningún archivo. Se esperaba el campo 'foto'.",
     });
   }
-  const file = req.files.foto;
+  const file = req.files.file;
   const nombreCortado = file.name.split(".");
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
-  let rutaInterna = tipo;
-  if (tipo === 'seguimientos') {
-    rutaInterna = path.join('tickets', 'seguimientos');
-  }
+  const relativePath = FOLDER_MAP[tipo];
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
   const pathAbsoluto = path.join(
     __dirname,
     '..',
     'uploads',
     susc,
-    rutaInterna,
+    relativePath,
     nombreArchivo
   );
   const directorioDestino = path.dirname(pathAbsoluto);
   try {
-    if (!fs.existsSync(directorioDestino)) {
-      fs.mkdirSync(directorioDestino, { recursive: true });
-    }
-  } catch (err) {
-    console.error('Error al crear el directorio:', err);
-    return res.status(500).json({
-      ok: false,
-      msg: "Error interno al intentar crear el directorio de destino.",
-      error: err.message
-    });
-  }
-  file.mv(pathAbsoluto, (err) => {
-    if (err) {
-      console.error('Error al mover el archivo:', err);
-      return res.status(500).json({
-        ok: false,
-        msg: "Error al mover el archivo al servidor",
-        error: err.message
-      });
-    }
+    await fs.promises.mkdir(directorioDestino, { recursive: true });
+    await moveFilePromise(file, pathAbsoluto);
+
     res.json({
       ok: true,
       msg: "Archivo cargado exitosamente",
       nombreArchivo,
       pathGuardado: pathAbsoluto
     });
-  });
-};
-
-const retornaImagen = (req, res = response) => {
-    const { susc, tipo, foto } = req.params;
-    if (!susc || !tipo || !foto) {
-        console.error("ERROR 400: Parámetro de ruta faltante. Verifique la URL.");
-        return res.status(400).send('Parámetro de ruta faltante. Verifique que la URL contenga /susc/tipo/foto.');
-    }
-    let rutaInterna = tipo;
-    if (tipo === 'seguimientos') {
-        rutaInterna = path.join('tickets', 'seguimientos');
-    } 
-    const pathImg = path.join(
-        __dirname,
-        '..',
-        'uploads',
-        susc,
-        rutaInterna,
-        foto
-    );
-    // console.log('Ruta de imagen buscada:', pathImg);
-    if (fs.existsSync(pathImg)) {
-        res.sendFile(pathImg);
-    } else {
-        const pathNoImg = path.join(__dirname, '..', 'uploads', 'no-imagen.png');
-        if (fs.existsSync(pathNoImg)) {
-             res.sendFile(pathNoImg);
-        } else {
-            console.error("ERROR 404: No se encontró la imagen solicitada y tampoco el fallback 'no-imagen.png'");
-            res.status(404).send('Archivo no encontrado.');
-        }
-    }
-};
-
-const eliminarArchivo = (req, res = response) => {
-  var susc = req.params.susc;
-  var folder = req.params.tipo;
-  var archivo = req.params.foto;
-  console.log('folder', folder);
-  console.log('archivo', archivo);
-  let rutaInterna = tipo;
-  if (tipo == 'seguimientos') {
-    rutaInterna = path.join('tickets', 'seguimientos');
-  } else if (tipo == 'empresas' || tipo == 'usuarios-sc') {
-    tipo = `suscriptores/${folder}`;
+  } catch (err) {
+    console.error('Error durante la carga o movimiento del archivo:', err);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error al cargar/mover el archivo al servidor",
+      error: err.message
+    });
   }
+};
+
+// =================================================================
+// MÉTODO DE LECTURA DE IMAGEN (retornaImagen)
+// =================================================================
+const retornaImagen = (req, res = response) => {
+  const { susc, tipo, foto } = req.params;
+  if (!susc || !tipo || !foto) {
+    console.error("ERROR 400: Parámetro de ruta faltante.");
+    return res.status(400).send('Parámetro de ruta faltante.');
+  }
+  if (!tiposValidos.includes(tipo)) {
+    return res.status(400).send(`Tipo de carpeta no válido: ${tipo}.`);
+  }
+  const relativePath = FOLDER_MAP[tipo];
   const pathImg = path.join(
     __dirname,
     '..',
     'uploads',
     susc,
-    rutaInterna,
-    archivo
+    relativePath,
+    foto
   );
-  try {
-    if (fs.existsSync(pathImg)) {
-      fs.unlinkSync(pathImg);
-      return { ok: true, mensaje: `Archivo ${nombreArchivo} eliminado.` };
+  if (fs.existsSync(pathImg)) {
+    res.sendFile(pathImg);
+  } else {
+    const pathNoImg = path.join(__dirname, '..', 'uploads', 'no-imagen.png');
+    if (fs.existsSync(pathNoImg)) {
+      res.sendFile(pathNoImg);
     } else {
-      return { ok: false, mensaje: `Archivo ${nombreArchivo} no encontrado.` };
+      console.error("ERROR 404: No se encontró la imagen solicitada y tampoco el fallback 'no-imagen.png'");
+      res.status(404).send('Archivo no encontrado.');
     }
-  } catch (error) {
-    return {
+  }
+};
+
+// =================================================================
+// MÉTODO DE ELIMINACIÓN DE ARCHIVO (eliminarArchivo)
+// =================================================================
+const eliminarArchivo = async (req, res = response) => {
+  const { susc, tipo, foto: fileName } = req.params;
+
+  if (!susc || !tipo || !fileName) {
+    return res.status(400).json({
       ok: false,
-      mensaje: `No se pudo eliminar el archivo ${nombreArchivo}.`,
+      msg: 'Faltan parámetros esenciales (susc, tipo, o foto).'
+    });
+  }
+
+  if (!tiposValidos.includes(tipo)) {
+    return res.status(400).json({
+      ok: false,
+      msg: `Tipo de carpeta no válido para eliminación: ${tipo}.`
+    });
+  }
+
+  const relativePath = FOLDER_MAP[tipo];
+
+  const pathFile = path.join(
+    __dirname,
+    '..',
+    'uploads',
+    susc,
+    relativePath,
+    fileName
+  );
+
+  try {
+    // SOLUCIÓN: Usamos fs.promises.stat y fs.promises.unlink explícitamente.
+    await fs.promises.stat(pathFile);
+    await fs.promises.unlink(pathFile);
+
+    return res.json({
+      ok: true,
+      msg: `Archivo ${fileName} eliminado de la ruta: ${relativePath}`
+    });
+
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({
+        ok: false,
+        msg: `Archivo ${fileName} no encontrado en la ruta: ${pathFile}`
+      });
+    }
+
+    return res.status(500).json({
+      ok: false,
+      msg: `No se pudo eliminar el archivo ${fileName}.`,
       error: error.message
-    };
+    });
+  }
+};
+
+// =================================================================
+// MÉTODO DE CREACION CARPETA SUSCRIPTOR (setUploadFolder)
+// =================================================================
+const setUploadFolder = async (req, res = response) => {
+  const { susc } = req.params;
+  const pathAbsoluto = path.join(
+    __dirname,
+    '..',
+    'uploads',
+    susc
+  );
+  const directorioDestino = path.dirname(pathAbsoluto);
+  try {
+    await fs.promises.mkdir(directorioDestino, { recursive: true });
+    await moveFilePromise(file, pathAbsoluto);
+
+    res.json({
+      ok: true,
+      msg: "Carpeta creado exitosamente",
+      susc,
+      pathGuardado: pathAbsoluto
+    });
+  } catch (err) {
+    console.error('Error durante la creacion de la carpeta del suscriptor:', err);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error al crear/mover la carpeta del suscriptor",
+      error: err.message
+    });
   }
 };
 
@@ -154,4 +215,5 @@ module.exports = {
   fileUpload,
   retornaImagen,
   eliminarArchivo,
+  setUploadFolder,
 };

@@ -45,7 +45,8 @@ const getUsuariosById = async (req, res) => {
 };
 
 const createUsuario = async (req, res = response) => {
-    const { ...newRegistro } = req.body;
+  const { ...newRegistro } = req.body;
+  console.log('crear nuevo usuario', newRegistro);
   try {
     const existeIdentificacion = await PTLUsuarios.findOne({
       where: { nombreUsuario: newRegistro.identificacionUsuario }
@@ -68,7 +69,7 @@ const createUsuario = async (req, res = response) => {
     const salt = bcrypt.genSaltSync();
     const password = await bcrypt.hash(newRegistro.claveUsuario, salt);
     newRegistro.claveUsuario = password;
-    newRegistro.fotoUsuario = 'no-foto.png';
+    newRegistro.fotoUsuario = 'no-imagen.png';
     const usuarioDB = await PTLUsuarios.create(newRegistro);
     io.emit("usuarios-actualizados", {
       action: "create",
@@ -88,7 +89,7 @@ const createUsuario = async (req, res = response) => {
 };
 
 const updateUsuario = async (req, res = response) => {
-    const { codigoUsuario, ...data } = req.body;
+  const { codigoUsuario, ...data } = req.body;
   try {
     const usuarioDB = await PTLUsuarios.findOne({
       where: { codigoUsuario }
@@ -121,7 +122,7 @@ const updateUsuario = async (req, res = response) => {
 };
 
 const updateUsuarioClave = async (req, res = response) => {
-    const { codigoUsuario, ...data } = req.body;
+  const { codigoUsuario, ...data } = req.body;
   try {
     const usuarioDB = await PTLUsuarios.findOne({
       where: { codigoUsuario }
