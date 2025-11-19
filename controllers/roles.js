@@ -10,9 +10,10 @@ const { io } = require('../index');
 const getRolesAP = async (req, res) => {
   try {
     const roles = await PTLRolesAP.findAll();
+    console.log('roles api', roles);
     return res.status(201).json({
       ok: true,
-      roles: roles,
+      roles,
     });
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener Roles' });
@@ -100,9 +101,9 @@ const updateRoleAP = async (req, res = response) => {
 
 const deleteRoleAP = async (req, res = response) => {
   try {
-    const rolId = req.params.id;
-    const roleDB = await PTLAplicaciones.findOne({
-      where: { rolId }
+    const codigoRole = req.params.id;
+    const roleDB = await PTLRolesAP.findOne({
+      where: { codigoRole }
     });
     if (!roleDB) {
       return res.status(404).json({
@@ -111,7 +112,7 @@ const deleteRoleAP = async (req, res = response) => {
       });
     }
     roleEliminado = await PTLRolesAP.destroy({
-      where: { rolId }
+      where: { codigoRole }
     });
     io.emit('roles-actualizados', {
       action: 'delete',
