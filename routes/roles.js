@@ -9,6 +9,7 @@ const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getRolesAP,
     getRoleAPById,
+    getRoleAPByCodeApp,
     createRoleAP,
     updateRoleAP,
     deleteRoleAP,
@@ -21,6 +22,8 @@ router.get("/", getRolesAP);
 router.post( "/",  createRoleAP);
 
 router.put("/:id", updateRoleAP);
+
+router.put("/app/:id", getRoleAPByCodeApp);
 
 router.delete("/:id", deleteRoleAP);
 

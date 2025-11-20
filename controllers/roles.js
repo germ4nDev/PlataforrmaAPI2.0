@@ -42,6 +42,23 @@ const getRoleAPById = async (req, res) => {
   }
 };
 
+const getRoleAPByCodeApp = async (req, res) => {
+  try {
+    const codigoAplicacion = req.params.id;
+    const roles = await PTLRolesAP.findAll({
+      where: {
+        codigoAplicacion: codigoAplicacion,
+      },
+    });
+    return res.status(201).json({
+      ok: true,
+      roles,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Error al obtener roles" });
+  }
+};
+
 const createRoleAP = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   console.log('data role', newRegistro);
@@ -133,6 +150,7 @@ const deleteRoleAP = async (req, res = response) => {
 module.exports = {
   getRolesAP,
   getRoleAPById,
+  getRoleAPByCodeApp,
   createRoleAP,
   updateRoleAP,
   deleteRoleAP,
