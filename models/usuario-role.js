@@ -5,7 +5,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/connection');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLUsuarioRoleAP', {
+  return sequelize.define('PTLUsuariosRole', {
     usuarioRoleId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaCreacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     codigoUsuarioModificacion: {
@@ -37,11 +37,11 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaModificacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     }
   }, {
-    tableName: 'PTLUsuarioRoleAP',
+    tableName: 'PTLUsuariosRole',
     timestamps: false
   });
 };

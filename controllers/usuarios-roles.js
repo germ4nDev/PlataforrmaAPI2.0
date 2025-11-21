@@ -3,13 +3,13 @@
 */
 const express = require("express");
 const sequelize = require("../database/connection");
-const PTLUsuarioRoleAP = require("../models/usuario-role")(sequelize);
+const PTLUsuariosRole = require("../models/usuario-role")(sequelize);
 const { io } = require("../index");
 
 // Obtener todos los roles
 const getUsuariosRoles = async (req, res) => {
   try {
-    const usuariosRoles = await PTLUsuarioRoleAP.findAll();
+    const usuariosRoles = await PTLUsuariosRole.findAll();
     console.log("usuarios roles", usuariosRoles);
     return res.status(201).json({
       ok: true,
@@ -23,7 +23,7 @@ const getUsuariosRoles = async (req, res) => {
 const getUsuariosRolesById = async (req, res) => {
   try {
     const usuarioRoleId = req.params.id;
-    const usuarioRole = await PTLUsuarioRoleAP.findOne({
+    const usuarioRole = await PTLUsuariosRole.findOne({
       where: {
         usuarioRoleId: usuarioRoleId,
       },
@@ -46,7 +46,7 @@ const getUsuariosRolesById = async (req, res) => {
 const createUsuarioRole = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   try {
-    const nuevo = await PTLUsuarioRoleAP.create(newRegistro);
+    const nuevo = await PTLUsuariosRole.create(newRegistro);
     io.emit("usuarios-roles-actualizados", {
       action: "create",
       msg: `Usuario Role creado`,
@@ -63,7 +63,7 @@ const createUsuarioRole = async (req, res = response) => {
 const updateUsuarioRole = async (req, res = response) => {
   const { usuarioRoleId, ...data } = req.body;
   try {
-    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne({
+    const usuarioRoleDB = await PTLUsuariosRole.findOne({
       where: { usuarioRoleId },
     });
     if (!usuarioRoleDB) {
@@ -72,10 +72,10 @@ const updateUsuarioRole = async (req, res = response) => {
         msg: "No existe un usuarioRole con ese ID",
       });
     }
-    await PTLUsuarioRoleAP.update(data, {
+    await PTLUsuariosRole.update(data, {
       where: { usuarioRoleId },
     });
-    const usuarioRoleActualizado = await PTLUsuarioRoleAP.findOne({
+    const usuarioRoleActualizado = await PTLUsuariosRole.findOne({
       where: { usuarioRoleId },
     });
     io.emit("usuarios-roles-actualizados", {
@@ -98,7 +98,7 @@ const updateUsuarioRole = async (req, res = response) => {
 const deleteUsuarioRole = async (req, res = response) => {
   try {
     const usuarioRoleId = req.params.id;
-    const usuarioRoleDB = await PTLUsuarioRoleAP.findOne({
+    const usuarioRoleDB = await PTLUsuariosRole.findOne({
       where: { usuarioRoleId },
     });
     if (!usuarioRoleDB) {
@@ -108,7 +108,7 @@ const deleteUsuarioRole = async (req, res = response) => {
       });
     }
     console.log("eliminar el registro", usuarioRoleDB);
-    usuarioRoleDBEliminado = await PTLUsuarioRoleAP.destroy({
+    usuarioRoleDBEliminado = await PTLUsuariosRole.destroy({
       where: { usuarioRoleId },
     });
     io.emit("usuarios-roles-actualizados", {
@@ -131,7 +131,7 @@ const deleteTodosUsuarioRole = async (req, res = response) => {
     const suiteId = Number(req.params.suId);
     console.log("Parametros recibidos:", { usuarioId, aplicacionId, suiteId });
 
-    const usuarioRolesDB = await PTLUsuarioRoleAP.findAll({
+    const usuarioRolesDB = await PTLUsuariosRole.findAll({
       where: { usuarioId, aplicacionId, suiteId },
     });
 
@@ -139,7 +139,7 @@ const deleteTodosUsuarioRole = async (req, res = response) => {
     if (usuarioRolesDB.length > 0) {
       for (const usuRole of usuarioRolesDB) {
         console.log("Eliminando:", usuRole.usuarioRoleId);
-        await PTLUsuarioRoleAP.destroy({
+        await PTLUsuariosRole.destroy({
           where: { usuarioRoleId: usuRole.usuarioRoleId },
         });
       }

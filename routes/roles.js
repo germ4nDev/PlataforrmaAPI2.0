@@ -23,7 +23,7 @@ router.post( "/",  createRoleAP);
 
 router.put("/:id", updateRoleAP);
 
-router.put("/app/:id", getRoleAPByCodeApp);
+router.get("/app/:id", getRoleAPByCodeApp);
 
 router.delete("/:id", deleteRoleAP);
 

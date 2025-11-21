@@ -12,7 +12,7 @@ const getSuscriptores = async (req, res) => {
   try {
     console.log('aca');
     const suscriptores = await PTLSuscriptores.findAll();
-    console.log('todos los suscriptores', suscriptores);
+    // console.log('todos los suscriptores', suscriptores);
     return res.status(201).json({
       ok: true,
       suscriptores: suscriptores
