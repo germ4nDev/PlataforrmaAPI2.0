@@ -1,66 +1,43 @@
 /*
     Author: German Valencia
-    Actualización: German Valencia
 */
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLConexionesBD', {
-        conexionId: {
+    return sequelize.define('PTLActividades', {
+        actividadId: {
             type: DataTypes.INTEGER,
             autoIncrement: true
         },
-        codigoConexion: {
+        codigoActividad: {
             type: DataTypes.STRING,
             primaryKey: true,
-            allowNull: false
-        },
-        codigoSuscriptor: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        codigoPaquete: {
-            type: DataTypes.STRING,
             allowNull: false
         },
         codigoAplicacion: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        nombreConexion: {
+        codigoSuite: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        nombreServidor: {
+        codigoModulo: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        BDNombre: {
+        actividad: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        BDUser: {
+        descripcion: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        BDPassword: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        BDPort: {
-            type: DataTypes.INTEGER,
-            default: 0,
-            allowNull: false
-        },
-        descripcionConexion: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        estadoConexion: {
+        estadoActividad: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        // AUDITORIA ------------
         codigoUsuarioCreacion: {
             type: DataTypes.STRING,
             allowNull: false
@@ -78,7 +55,7 @@ module.exports = (sequelize) => {
             allowNull: false
         }
     }, {
-        tableName: 'PTLConexionesBD',
+        tableName: 'PTLActividades',
         timestamps: false
     });
 };

@@ -4,29 +4,24 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('PTLSliderInicio', {
-        sliderId: {
+    return sequelize.define('PTLActividadesRoles', {
+        actividadRoleId: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        nombreSlider: {
+        codigoActividad: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        urlSlider: {
+        codigoRole: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        descripcionSlider: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        estadoSlider: {
+        permiso: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        // AUDITORIA ------------
         codigoUsuarioCreacion: {
             type: DataTypes.STRING,
             allowNull: false
@@ -44,7 +39,7 @@ module.exports = (sequelize) => {
             allowNull: false
         }
     }, {
-        tableName: 'PTLSliderInicio',
+        tableName: 'PTLActividadesRoles',
         timestamps: false
     });
 };

@@ -31,6 +31,8 @@ app.use( cors() );
 app.use( express.static('public') );
 
 // PLATAFORMA
+app.use('/api/actividades', require('./routes/actividades') );
+app.use('/api/actividades-roles', require('./routes/actividades-roles') );
 app.use('/api/usuarios-roles', require('./routes/usuarios-roles') );
 app.use('/api/usuarios', require('./routes/usuarios') );
 app.use('/api/roles', require('./routes/roles') );

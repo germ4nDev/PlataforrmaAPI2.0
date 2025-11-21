@@ -44,7 +44,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaCreacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     codigoUsuarioModificacion: {
@@ -52,7 +52,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaModificacion: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     }
   }, {
