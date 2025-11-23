@@ -17,16 +17,16 @@ const {
 
 const router = Router();
 
-router.get("/", getAplicaciones);
+router.get("/", validarJWT, getAplicaciones);
 
-router.post("/", createAplicacion);
+router.post("/", validarJWT, createAplicacion);
 
-router.put("/:id", updateAplicacion);
+router.put("/:id", validarJWT, updateAplicacion);
 
-router.delete("/:id", deleteAplicacion);
+router.delete("/:id", validarJWT, deleteAplicacion);
 
-router.get("/:id", getAplicacionById);
+router.get("/:id", validarJWT, getAplicacionById);
 
-router.get("/code/:code", getAplicacionByCode);
+router.get("/code/:code", validarJWT, getAplicacionByCode);
 
 module.exports = router;

@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getVersionesAP);
+router.get("/", validarJWT, getVersionesAP);
 
-router.post( "/",  createVersionAP);
+router.post( "/", validarJWT,  createVersionAP);
 
-router.put("/:id", updateVersionAP);
+router.put("/:id", validarJWT, updateVersionAP);
 
-router.delete("/:id", deleteVersionAP);
+router.delete("/:id", validarJWT, deleteVersionAP);
 
-router.get("/:id", getVersionesAPById);
+router.get("/:id", validarJWT, getVersionesAPById);
 
 module.exports = router;

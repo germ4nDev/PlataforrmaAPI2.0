@@ -14,10 +14,10 @@ const {
 
 const router = Router();
 
-router.get("/", getLogsTransacciones);
+router.get("/", validarJWT, getLogsTransacciones);
 
-router.post( "/",  validarJWT, createLogTransaccion);
+router.post( "/", validarJWT,  validarJWT, createLogTransaccion);
 
-router.get("/:id", validarJWT, getLogTransaccionById);
+router.get("/:id", validarJWT, validarJWT, getLogTransaccionById);
 
 module.exports = router;

@@ -16,7 +16,7 @@ const {
 
 const router = Router();
 
-router.get("/", getUsuariosEmpresas);
+router.get("/", validarJWT, getUsuariosEmpresas);
 
 router.get("/:id", validarJWT, getUsuariosEmpresasById);
 

@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getSuitesAP);
+router.get("/", validarJWT, getSuitesAP);
 
-router.post( "/", createSuiteAP);
+router.post( "/", validarJWT, createSuiteAP);
 
-router.put("/:id", updateSuiteAP);
+router.put("/:id", validarJWT, updateSuiteAP);
 
-router.delete("/:id", deleteSuiteAP);
+router.delete("/:id", validarJWT, deleteSuiteAP);
 
-router.get("/:id", getSuitesAPById);
+router.get("/:id", validarJWT, getSuitesAPById);
 
 module.exports = router;

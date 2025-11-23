@@ -17,16 +17,16 @@ const {
 
 const router = Router();
 
-router.get("/", getUsuariosRoles);
+router.get("/", validarJWT, getUsuariosRoles);
 
-router.get("/:id",  getUsuariosRolesById);
+router.get("/:id", validarJWT,  getUsuariosRolesById);
 
-router.post( "/", createUsuarioRole);
+router.post( "/", validarJWT, createUsuarioRole);
 
-router.put("/:id", updateUsuarioRole);
+router.put("/:id", validarJWT, updateUsuarioRole);
 
-router.delete("/:id", deleteUsuarioRole);
+router.delete("/:id", validarJWT, deleteUsuarioRole);
 
-router.delete("/clean/:usId/:apId/:suId", deleteTodosUsuarioRole);
+router.delete("/clean/:usId/:apId/:suId", validarJWT, deleteTodosUsuarioRole);
 
 module.exports = router;

@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getTiposValor);
+router.get("/", validarJWT, getTiposValor);
 
-router.post( "/", createTkipoValor);
+router.post( "/", validarJWT, createTkipoValor);
 
-router.put("/:id", updateTkipoValor);
+router.put("/:id", validarJWT, updateTkipoValor);
 
-router.delete("/:id", deleteTkipoValor);
+router.delete("/:id", validarJWT, deleteTkipoValor);
 
-router.get("/:id", getTiposValorById);
+router.get("/:id", validarJWT, getTiposValorById);
 
 module.exports = router;

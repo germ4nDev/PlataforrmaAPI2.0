@@ -5,6 +5,8 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
+
 const {
     getSitios,
     getSitioById,
@@ -15,14 +17,14 @@ const {
 
 const router = Router();
 
-router.get("/", getSitios);
+router.get("/", validarJWT, getSitios);
 
-router.get("/:id", getSitioById);
+router.get("/:id", validarJWT, getSitioById);
 
-router.post( "/",  createSitio);
+router.post( "/", validarJWT,  createSitio);
 
-router.put("/:id", updateSitio);
+router.put("/:id", validarJWT, updateSitio);
 
-router.delete("/:id", deleteSitio);
+router.delete("/:id", validarJWT, deleteSitio);
 
 module.exports = router;

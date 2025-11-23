@@ -19,12 +19,12 @@ const router = Router();
 
 router.get("/", getSlidersInicio);
 
-router.post("/", createSliderInicio);
+router.post("/", validarJWT, createSliderInicio);
 
-router.put("/:id", updateSliderInicio);
+router.put("/:id", validarJWT, updateSliderInicio);
 
-router.delete("/:id", deleteSliderInicio);
+router.delete("/:id", validarJWT, deleteSliderInicio);
 
-router.get("/:id", getSliderInicioById);
+router.get("/:id", validarJWT, getSliderInicioById);
 
 module.exports = router;

@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getTextosID);
+router.get("/", validarJWT, getTextosID);
 
-router.get("/:id", validarJWT, getTextosIDById);
+router.get("/:id", validarJWT, validarJWT, getTextosIDById);
 
-router.post( "/",  validarJWT, createTextoID);
+router.post( "/", validarJWT,  validarJWT, createTextoID);
 
-router.put("/:id",validarJWT, updateTextoID);
+router.put("/:id", validarJWT,validarJWT, updateTextoID);
 
-router.delete("/:id", [validarJWT], deleteTextoID);
+router.delete("/:id", validarJWT, [validarJWT], deleteTextoID);
 
 module.exports = router;

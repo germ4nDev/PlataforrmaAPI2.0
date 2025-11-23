@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getTiposEstados);
+router.get("/", validarJWT, getTiposEstados);
 
-router.post( "/", createTipoEstado);
+router.post( "/", validarJWT, createTipoEstado);
 
-router.put("/:id", updateTipoEstado);
+router.put("/:id", validarJWT, updateTipoEstado);
 
-router.delete("/:id", deleteTipoEstado);
+router.delete("/:id", validarJWT, deleteTipoEstado);
 
-router.get("/:id", getTiposEstadosById);
+router.get("/:id", validarJWT, getTiposEstadosById);
 
 module.exports = router;

@@ -38,6 +38,30 @@ const getUsuariosSCById = async (req, res) => {
   }
 };
 
+const getUsuariosSCByCodigos = async (req, res) => {
+  try {
+    const { codigoUsuario, codigoSusucirptor } = req.body;
+    const usuarioSC = await PTLUsuariosSC.findOne({
+      where: {
+        codigoUsuario: codigoUsuario,
+        codigoSusucirptor: codigoSusucirptor
+      },
+    });
+    if (!usuarioSC) {
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe un usuario por ese id",
+      });
+    }
+    return res.status(201).json({
+      ok: true,
+      usuarioSC: usuarioSC,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
+};
+
 const createUsuarioSC = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   try {
@@ -114,6 +138,7 @@ const deleteUsuarioSC = async (req, res = response) => {
 module.exports = {
   getUsuariosSC,
   getUsuariosSCById,
+  getUsuariosSCByCodigos,
   createUsuarioSC,
   updateUsuarioSC,
   deleteUsuarioSC,

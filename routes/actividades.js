@@ -19,20 +19,20 @@ const {
 
 const router = Router();
 
-router.get("/", getActividades);
+router.get("/", validarJWT, getActividades);
 
-router.get("/:id", getActividadById);
+router.get("/:id", validarJWT, getActividadById);
 
-router.get("/app/:id", getActividadByCodeApp);
+router.get("/app/:id", validarJWT, getActividadByCodeApp);
 
-router.get("/suite/:id", getActividadByCodeSuite);
+router.get("/suite/:id", validarJWT, getActividadByCodeSuite);
 
-router.get("/modulo/:id", getActividadByCodeModulo);
+router.get("/modulo/:id", validarJWT, getActividadByCodeModulo);
 
-router.post("/", createActividad);
+router.post("/", validarJWT, createActividad);
 
-router.put("/:id", updateActividad);
+router.put("/:id", validarJWT, updateActividad);
 
-router.delete("/:id", deleteActividad);
+router.delete("/:id", validarJWT, deleteActividad);
 
 module.exports = router;

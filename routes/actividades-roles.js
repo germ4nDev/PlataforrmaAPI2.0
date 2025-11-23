@@ -17,16 +17,16 @@ const {
 
 const router = Router();
 
-router.get("/", getActividadesRoles);
+router.get("/", validarJWT, getActividadesRoles);
 
-router.get("/acti/:ac", getActividadByCodeActividad);
+router.get("/acti/:ac", validarJWT, getActividadByCodeActividad);
 
-router.get("/role/:ro", getActividadByCodeRole);
+router.get("/role/:ro", validarJWT, getActividadByCodeRole);
 
-router.post("/", createActividadRole);
+router.post("/", validarJWT, createActividadRole);
 
-router.put("/:id:", updateActividadRole);
+router.put("/:id:", validarJWT, updateActividadRole);
 
-router.delete("/:ac/:do", deleteActividadRole);
+router.delete("/:ac/:do", validarJWT, deleteActividadRole);
 
 module.exports = router;

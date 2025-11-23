@@ -14,10 +14,10 @@ const {
 
 const router = Router();
 
-router.get("/", geLogsActividades);
+router.get("/", validarJWT, geLogsActividades);
 
-router.post( "/", createLogActividad);
+router.post( "/", validarJWT, createLogActividad);
 
-router.get("/:id", geLogActividadById);
+router.get("/:id", validarJWT, geLogActividadById);
 
 module.exports = router;

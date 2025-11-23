@@ -5,6 +5,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getContenidos,
     getContenidoById,
@@ -15,15 +16,15 @@ const {
 
 const router = Router();
 
-router.get("/", getContenidos);
+router.get("/", validarJWT, getContenidos);
 
-router.get("/:id", getContenidoById);
+router.get("/:id", validarJWT, getContenidoById);
 
-router.post( "/", createContenido);
+router.post( "/", validarJWT, createContenido);
 
-router.put("/:id", updateContenido);
+router.put("/:id", validarJWT, updateContenido);
 
-router.delete("/:id", deleteContenido);
+router.delete("/:id", validarJWT, deleteContenido);
 
 
 module.exports = router;

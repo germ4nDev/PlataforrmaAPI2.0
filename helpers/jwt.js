@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const generarJWT = ( codigoUsuario, userNameUsuario, correoUsuario, roleUsuairo ) => {
     return new Promise( ( resolve, reject ) => {
         const payload = {
-            codigoUsuario, userNameUsuario, correoUsuario, roleUsuairo
+            codigoUsuario, userNameUsuario, correoUsuario
         };
         const options = {
             expiresIn: '30d' 

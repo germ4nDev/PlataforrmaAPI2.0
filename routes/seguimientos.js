@@ -18,16 +18,16 @@ const {
 
 const router = Router();
 
-router.get("/", getSeguimientosTK);
+router.get("/", validarJWT, getSeguimientosTK);
 
-router.post("/", createSeguimientoTK);
+router.post("/", validarJWT, createSeguimientoTK);
 
-router.put("/:id", updateSeguimientoTK);
+router.put("/:id", validarJWT, updateSeguimientoTK);
 
-router.delete("/:id", deleteSeguimientoTK);
+router.delete("/:id", validarJWT, deleteSeguimientoTK);
 
-router.get("/:id", getSeguimientoTKById);
+router.get("/:id", validarJWT, getSeguimientoTKById);
 
-router.get("/ticket/:id", getSeguimientoTKByTicket);
+router.get("/ticket/:id", validarJWT, getSeguimientoTKByTicket);
 
 module.exports = router;

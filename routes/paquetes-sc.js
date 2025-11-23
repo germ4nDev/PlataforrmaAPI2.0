@@ -17,14 +17,14 @@ const {
 
 const router = Router();
 
-router.get("/", getPaquetesSC);
+router.get("/", validarJWT, getPaquetesSC);
 
-router.post( "/", createPaqueteSC);
+router.post( "/", validarJWT, createPaqueteSC);
 
-router.put("/:id", updatePaqueteSC);
+router.put("/:id", validarJWT, updatePaqueteSC);
 
-router.delete("/:id", deletePaqueteSC);
+router.delete("/:id", validarJWT, deletePaqueteSC);
 
-router.get("/:id", getPaquetesSCById);
+router.get("/:id", validarJWT, getPaquetesSCById);
 
 module.exports = router;

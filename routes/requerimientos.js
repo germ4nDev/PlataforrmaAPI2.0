@@ -17,14 +17,14 @@ const {
 
 const router = Router();
 
-router.get("/", getRequerimientosTK);
+router.get("/", validarJWT, getRequerimientosTK);
 
-router.post("/", createRequerimientoTK);
+router.post("/", validarJWT, createRequerimientoTK);
 
-router.put("/:id", updateRequerimientoTK);
+router.put("/:id", validarJWT, updateRequerimientoTK);
 
-router.delete("/:id", deleteRequerimientoTK);
+router.delete("/:id", validarJWT, deleteRequerimientoTK);
 
-router.get("/:id", getRequerimientoTKById);
+router.get("/:id", validarJWT, getRequerimientoTKById);
 
 module.exports = router;

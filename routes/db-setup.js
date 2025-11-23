@@ -12,6 +12,6 @@ const {
 
 const router = Router();
 
-router.get("/", runDBScript);
+router.get("/", validarJWT, runDBScript);
 
 module.exports = router;

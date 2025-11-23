@@ -5,6 +5,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getEnlaces,
     getEnlaceById,
@@ -15,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getEnlaces);
+router.get("/", validarJWT, getEnlaces);
 
-router.get("/:id", getEnlaceById);
+router.get("/:id", validarJWT, getEnlaceById);
 
-router.post( "/", createEnlace);
+router.post( "/", validarJWT, createEnlace);
 
-router.put("/:id",  updateEnlace);
+router.put("/:id", validarJWT,  updateEnlace);
 
-router.delete("/:id", deleteEnlace);
+router.delete("/:id", validarJWT, deleteEnlace);
 
 module.exports = router;

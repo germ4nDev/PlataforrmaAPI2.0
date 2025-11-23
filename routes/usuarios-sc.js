@@ -9,6 +9,7 @@ const { validarJWT } = require("../middlewares/validar-jwt");
 const {
   getUsuariosSC,
   getUsuariosSCById,
+  getUsuariosSCByCodigos,
   createUsuarioSC,
   updateUsuarioSC,
   deleteUsuarioSC,
@@ -16,14 +17,16 @@ const {
 
 const router = Router();
 
-router.get("/", getUsuariosSC);
+router.get("/", validarJWT, getUsuariosSC);
 
-router.post( "/",  validarJWT, createUsuarioSC);
+router.post( "/", validarJWT, createUsuarioSC);
 
-router.put("/:id",validarJWT, updateUsuarioSC);
+router.put("/:id", validarJWT, updateUsuarioSC);
 
-router.delete("/:id", [validarJWT], deleteUsuarioSC);
+router.delete("/:id", validarJWT, deleteUsuarioSC);
 
 router.get("/:id", validarJWT, getUsuariosSCById);
+
+router.get("/codigos/:id", validarJWT, getUsuariosSCByCodigos);
 
 module.exports = router;

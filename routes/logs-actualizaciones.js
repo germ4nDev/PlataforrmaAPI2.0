@@ -14,10 +14,10 @@ const {
 
 const router = Router();
 
-router.get("/", getLogsActualizaciones);
+router.get("/", validarJWT, getLogsActualizaciones);
 
-router.post( "/",  validarJWT, createLogActualizacion);
+router.post( "/", validarJWT,  validarJWT, createLogActualizacion);
 
-router.get("/:id", validarJWT, getLogActualizacionById);
+router.get("/:id", validarJWT, validarJWT, getLogActualizacionById);
 
 module.exports = router;

@@ -2,43 +2,31 @@ const jwt = require('jsonwebtoken');
 const Usuario = require('../models/usuario-role');
 
 const validarJWT = (req, res, next) => {
-
-    // // Leer el Token
-    // const token = req.header('x-token');
-
-    // if ( !token ) {
-    //     return res.status(401).json({
-    //         ok: false,
-    //         msg: 'No hay token en la petición'
-    //     });
-    // }
-
-    // try {
-        
-    //     const { uid } = jwt.verify( token, process.env.JWT_SECRET );
-    //     req.uid = uid;
-
-    //     next();
-
-    // } catch (error) {
-    //     return res.status(401).json({
-    //         ok: false,
-    //         msg: 'Token no válido'
-    //     });
-    // }
-
-
-    const token = req.headers['authorization'];
-    if (!token) return res.status(403).json({ message: 'Token requerido' });
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded; // puedes acceder con req.user en rutas protegidas
-        next();
-    } catch (err) {
-        return res.status(401).json({ message: 'Token inválido' });
+    const token = req.header('x-token');
+    if (!token) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'No hay token en la petición'
+        });
     }
- 
+    try {
+        const { codigoUsuario, userNameUsuario, correoUsuario } = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+        
+        req.codigoUsuario = codigoUsuario;
+        req.userNameUsuario = userNameUsuario;
+        req.correoUsuario = correoUsuario; 
+
+    } catch (error) {
+        console.error('Error al validar JWT:', error);
+        return res.status(401).json({
+            ok: false,
+            msg: 'Token no válido o expirado'
+        });
+    }
+    next();
 }
 
 const varlidarADMIN_ROLE = async(req, res, next)  => {

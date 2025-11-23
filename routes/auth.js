@@ -17,10 +17,10 @@ const router = Router();
 
 router.post("/", login);
 
-router.post("/role", verificarUserInRole);
+router.post("/role", validarJWT, verificarUserInRole);
 
-router.post("/compare", verificaarClaveActual);
+router.post("/compare", validarJWT, verificaarClaveActual);
 
-router.get("/renew", renewToken);
+router.get("/renew", validarJWT, renewToken);
 
 module.exports = router;

@@ -18,14 +18,14 @@ const {
 
 const router = Router();
 
-router.get("/", getConexionesBD);
+router.get("/", validarJWT, getConexionesBD);
 
-router.post( "/", createConexion);
+router.post( "/", validarJWT, createConexion);
 
-router.put("/:id", updateConexion);
+router.put("/:id", validarJWT, updateConexion);
 
-router.delete("/:id", deleteConexion);
+router.delete("/:id", validarJWT, deleteConexion);
 
-router.get("/:id", getConexionById);
+router.get("/:id", validarJWT, getConexionById);
 
 module.exports = router;

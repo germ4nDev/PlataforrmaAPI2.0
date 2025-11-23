@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getTiposLogs);
+router.get("/", validarJWT, getTiposLogs);
 
-router.post( "/", createTipoLog);
+router.post( "/", validarJWT, createTipoLog);
 
-router.put("/:id", updateTipoLog);
+router.put("/:id", validarJWT, updateTipoLog);
 
-router.delete("/:id", deleteTipoLog);
+router.delete("/:id", validarJWT, deleteTipoLog);
 
-router.get("/:id", getTipoLogById);
+router.get("/:id", validarJWT, getTipoLogById);
 
 module.exports = router;

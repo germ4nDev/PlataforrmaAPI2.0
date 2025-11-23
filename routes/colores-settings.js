@@ -17,14 +17,14 @@ const {
 
 const router = Router();
 
-router.get("/", getColoresSettings);
+router.get("/", validarJWT, getColoresSettings);
 
-router.post("/", createColorSetting);
+router.post("/", validarJWT, createColorSetting);
 
-router.put("/:id", updateColorSetting);
+router.put("/:id", validarJWT, updateColorSetting);
 
-router.delete("/:id", deleteColorSetting);
+router.delete("/:id", validarJWT, deleteColorSetting);
 
-router.get("/:id", getColorSettingById);
+router.get("/:id", validarJWT, getColorSettingById);
 
 module.exports = router;

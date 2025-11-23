@@ -17,14 +17,14 @@ const {
 
 const router = Router();
 
-router.get("/", getTicketsAP);
+router.get("/", validarJWT, getTicketsAP);
 
-router.post( "/", createTicketAP);
+router.post( "/", validarJWT, createTicketAP);
 
-router.put("/:id", updateTicketAP);
+router.put("/:id", validarJWT, updateTicketAP);
 
-router.delete("/:id", deleteTicketAP);
+router.delete("/:id", validarJWT, deleteTicketAP);
 
-router.get("/:id", getTicketsAPById);
+router.get("/:id", validarJWT, getTicketsAPById);
 
 module.exports = router;

@@ -18,18 +18,18 @@ const {
 
 const router = Router();
 
-router.get("/", getUsuarios);
+router.get("/", validarJWT, validarJWT, getUsuarios);
 
-router.post( "/", createUsuario);
+router.post( "/", validarJWT, validarJWT, createUsuario);
 
-router.put("/:id", updateUsuario);
+router.put("/:id", validarJWT, validarJWT, updateUsuario);
 
-router.put("/datos/:id", updateUsuario);
+router.put("/datos/:id", validarJWT, validarJWT, updateUsuario);
 
-router.put("/clave/:id", updateUsuarioClave);
+router.put("/clave/:id", validarJWT, validarJWT, updateUsuarioClave);
 
-router.delete("/:id", deleteUsuario);
+router.delete("/:id", validarJWT, validarJWT, deleteUsuario);
 
-router.get("/:id", getUsuariosById);
+router.get("/:id", validarJWT, validarJWT, getUsuariosById);
 
 module.exports = router;

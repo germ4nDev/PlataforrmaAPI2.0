@@ -16,14 +16,14 @@ const {
 
 const router = Router();
 
-router.get("/", getEmpresasSC);
+router.get("/", validarJWT, getEmpresasSC);
 
-router.post( "/",  validarJWT, createEmpresaSC);
+router.post( "/", validarJWT,  validarJWT, createEmpresaSC);
 
-router.put("/:id",validarJWT, updateEmpresaSC);
+router.put("/:id", validarJWT,validarJWT, updateEmpresaSC);
 
-router.delete("/:id", [validarJWT], deleteEmpresaSC);
+router.delete("/:id", validarJWT, [validarJWT], deleteEmpresaSC);
 
-router.get("/:id", validarJWT, getEmpresaSCById);
+router.get("/:id", validarJWT, validarJWT, getEmpresaSCById);
 
 module.exports = router;
