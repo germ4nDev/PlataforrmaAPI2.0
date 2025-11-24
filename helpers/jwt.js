@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 
-const generarJWT = ( codigoUsuario, userNameUsuario, correoUsuario, roleUsuairo ) => {
+const generarJWT = ( codigoUsuario, userNameUsuario, correoUsuario, roleUsuario) => {
     return new Promise( ( resolve, reject ) => {
         const payload = {
-            codigoUsuario, userNameUsuario, correoUsuario
+            codigoUsuario, userNameUsuario, correoUsuario, roleUsuario
         };
         const options = {
             expiresIn: '30d' 

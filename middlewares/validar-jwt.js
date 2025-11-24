@@ -10,7 +10,7 @@ const validarJWT = (req, res, next) => {
         });
     }
     try {
-        const { codigoUsuario, userNameUsuario, correoUsuario } = jwt.verify(
+        const { codigoUsuario, userNameUsuario, correoUsuario, roleUsuario } = jwt.verify(
             token,
             process.env.JWT_SECRET
         );
@@ -18,6 +18,7 @@ const validarJWT = (req, res, next) => {
         req.codigoUsuario = codigoUsuario;
         req.userNameUsuario = userNameUsuario;
         req.correoUsuario = correoUsuario; 
+        req.roleUsuario = roleUsuario; 
 
     } catch (error) {
         console.error('Error al validar JWT:', error);
