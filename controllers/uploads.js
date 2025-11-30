@@ -328,6 +328,35 @@ const fileUpload = async (req, res = response) => {
 };
 
 // =================================================================
+// MÉTODO DE CREA LAS CARPETAS EN UPLOADS (folderUpload)
+// =================================================================
+const folderUpload = async (req, res = response) => {
+  const { susc } = req.params;
+  const directorioDestino = path.join(
+    __dirname,
+    '..',
+    'uploads',
+    susc
+  );
+  try {
+    await fs.promises.mkdir(directorioDestino, { recursive: true });
+    res.json({
+      ok: true,
+      msg: "Carpeta creada exitosamente",
+      folder: susc,
+      pathGuardado: pathAbsoluto
+    });
+  } catch (err) {
+    console.error('Error durante la creacion de la carpeta:', err);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error al crear de la carpeta",
+      error: err.message
+    });
+  }
+};
+
+// =================================================================
 // MÉTODO DE LECTURA DE IMAGEN (retornaImagen)
 // =================================================================
 const retornaImagen = (req, res = response) => {
@@ -422,61 +451,9 @@ const eliminarArchivo = async (req, res = response) => {
   }
 };
 
-// =================================================================
-// MÉTODO DE CREACION CARPETA SUSCRIPTOR (setUploadFolder)
-// =================================================================
-const setUploadFolder = async (req, res = response) => {
-  const { susc } = req.params;
-  
-  if (!susc) {
-     return res.status(400).json({
-      ok: false,
-      msg: "Se requiere el parámetro 'susc' para crear la carpeta."
-    });
-  }
-    
-  // Construcción del path de la carpeta raíz del suscriptor
-  // La carpeta principal 'uploads' ya existe, solo necesitamos crear 'uploads/susc'
-  const directorioDestino = path.join(
-    __dirname,
-    '..',
-    'uploads',
-    susc
-  );
-  
-  try {
-    // Aquí solo creamos el directorio. NO movemos un archivo.
-    await fs.promises.mkdir(directorioDestino, { recursive: true });
-    
-    res.json({
-      ok: true,
-      msg: "Carpeta de suscriptor creada exitosamente",
-      susc,
-      // pathGuardado: directorioDestino // Opcional para debug
-    });
-  } catch (err) {
-    console.error('Error durante la creacion de la carpeta del suscriptor:', err);
-    
-    // El código 'EEXIST' significa que la carpeta ya existe, lo cual es ok.
-    if (err.code === 'EEXIST') {
-         return res.json({
-            ok: true,
-            msg: "La carpeta del suscriptor ya existe.",
-            susc,
-         });
-    }
-
-    return res.status(500).json({
-      ok: false,
-      msg: "Error al crear la carpeta del suscriptor",
-      error: err.message
-    });
-  }
-};
-
 module.exports = {
   fileUpload,
+  folderUpload,
   retornaImagen,
   eliminarArchivo,
-  setUploadFolder,
 };

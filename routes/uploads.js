@@ -5,7 +5,7 @@
 const { Router } = require("express");
 const expressFileUpload = require("express-fileupload");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const { fileUpload, retornaImagen, eliminarArchivo, setUploadFolder } = require("../controllers/uploads");
+const { fileUpload, folderUpload, retornaImagen, eliminarArchivo } = require("../controllers/uploads");
 
 const router = Router();
 
@@ -16,7 +16,7 @@ router.use(expressFileUpload({
 
 router.put("/:susc/:tipo/:id", validarJWT, fileUpload); 
 
-router.get("/folder/:susc", validarJWT, setUploadFolder);
+router.get("/folder/:susc", validarJWT, folderUpload);
 
 router.get("/:susc/:tipo/:foto", retornaImagen);
 
