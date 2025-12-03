@@ -11,7 +11,7 @@ const {
     getSuscriptoresById,
     createSuscriptor,
     updateSuscriptor,
-    deleteSuscriptor,
+    deleteSuscriptor
 } = require("../controllers/suscriptores");
 
 const router = Router();

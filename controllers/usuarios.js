@@ -44,6 +44,41 @@ const getUsuariosById = async (req, res) => {
   }
 };
 
+const validarPasswordUsuario = async (req, res = response) => {
+  const { ...validarRegistro } = req.body;
+  console.log('validarRegistro', validarRegistro.validacion);
+  try {
+    const usuarioDB = await PTLUsuarios.findOne({
+      where: { codigoUsuario: validarRegistro.validacion.codigoAdministrador }
+    });
+    if (!usuarioDB) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'No existe un suscriptor con ese código'
+      });
+    }
+    console.log('usuario', usuarioDB);
+    const isMatch = await bcrypt.compare(validarRegistro.validacion.claveActual, usuarioDB.claveUsuario);
+    if (isMatch) {
+      res.json({
+        ok: true,
+        usuario: usuarioDB,
+      });
+    } else {
+      return res.json({
+        ok: false,
+        msg: "Contraseña no válida",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      error: 'Error al validar el usuario'
+    });
+  }
+};
+
 const createUsuario = async (req, res = response) => {
   const { ...newRegistro } = req.body;
   console.log('crear nuevo usuario', newRegistro);
@@ -196,5 +231,6 @@ module.exports = {
   createUsuario,
   updateUsuario,
   updateUsuarioClave,
+  validarPasswordUsuario,
   deleteUsuario,
 };

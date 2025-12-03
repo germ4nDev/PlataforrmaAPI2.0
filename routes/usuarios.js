@@ -13,23 +13,26 @@ const {
   createUsuario,
   updateUsuario,
   updateUsuarioClave,
+  validarPasswordUsuario,
   deleteUsuario,
 } = require("../controllers/usuarios");
 
 const router = Router();
 
-router.get("/", validarJWT, validarJWT, getUsuarios);
+router.get("/", validarJWT, getUsuarios);
 
-router.post( "/", validarJWT, validarJWT, createUsuario);
+router.post( "/", validarJWT, createUsuario);
 
-router.put("/:id", validarJWT, validarJWT, updateUsuario);
+router.post( "/validar", validarJWT, validarPasswordUsuario);
 
-router.put("/datos/:id", validarJWT, validarJWT, updateUsuario);
+router.put("/:id", validarJWT, updateUsuario);
 
-router.put("/clave/:id", validarJWT, validarJWT, updateUsuarioClave);
+router.put("/datos/:id", validarJWT, updateUsuario);
 
-router.delete("/:id", validarJWT, validarJWT, deleteUsuario);
+router.put("/clave/:id", validarJWT, updateUsuarioClave);
 
-router.get("/:id", validarJWT, validarJWT, getUsuariosById);
+router.delete("/:id", validarJWT, deleteUsuario);
+
+router.get("/:id", validarJWT, getUsuariosById);
 
 module.exports = router;

@@ -238,7 +238,8 @@ const FOLDER_MAP = {
   'suites': path.join('plataforma', 'suites'),
   'suscriptores': path.join('plataforma', 'suscriptores'),
   'usuarios': path.join('plataforma', 'usuarios'),
-  'media': path.join('content', 'uploads', 'images'),
+  'qplus10': path.join('websites', 'qplus10'),
+  'qplus10carrusel': path.join('websites', 'qplus10', 'carrusel-inicio'),
   // SUSCRIPTOR
   'tickets': path.join('tickets', 'tickets'),
   'requerimientos': path.join('tickets', 'requerimientos'),

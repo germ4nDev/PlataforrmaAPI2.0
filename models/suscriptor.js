@@ -43,11 +43,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    usuarioAdministrador: {
+    codigoAdministrador: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    claveAdministrador: {
+    usuarioAdministrador: {
       type: DataTypes.STRING,
       allowNull: false
     },

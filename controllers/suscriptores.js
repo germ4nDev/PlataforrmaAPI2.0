@@ -5,7 +5,11 @@
 */
 const express = require('express');
 const sequelize = require('../database/connection');
+const bcrypt = require("bcryptjs");
 const PTLSuscriptores = require('../models/suscriptor')(sequelize);
+const PTLUsuarios = require('../models/usuario')(sequelize);
+const PTLUsuariosSC = require('../models/usuario-sc')(sequelize);
+// import { v4 as uuidv4 } from 'uuid';
 const { io } = require('../index');
 
 const getSuscriptores = async (req, res) => {
@@ -58,14 +62,42 @@ const createSuscriptor = async (req, res = response) => {
         msg: 'Ya existe un suscriptor con ese nombre'
       });
     }
+    const fechaActual = new Date();
+    const administrador = {
+      codigoUsuario: uuidv4(),
+      identificacionUsuario: newRegistro.identificacionSuscriptor,
+      nombreUsuario: newRegistro.nombreSuscriptor,
+      correoUsuario: newRegistro.correoSuscriptor,
+      userNameUsuario: newRegistro.usuarioAdministrador,
+      claveUsuario: newRegistro.usuarioAdministrador,
+      descripcionUsuario: newRegistro.descripcionSuscriptor,
+      fotoUsuario: "no-imagen.png",
+      usuarioAdministrador: true,
+      estadoUsuario: true,
+      codigoUsuarioCreacion: newRegistro.codigoSusucriptor,
+      fechaCreacion: fechaActual.toISOString()
+    }
+    const usuarioDB = await PTLUsuarios.create(administrador);
+    newRegistro.codigoAdministrador = administrador.codigoUsuario;
     const suscriptorDB = await PTLSuscriptores.create(newRegistro);
+    const usuarioSuscriptor = {
+      codigoUsuarioSC: uuidv4(),
+      codigoUsuario: usuarioDB.codigoUsuario,
+      codigoSuscriptor: suscriptorDB.codigoSusucriptor,
+      estadoUsuarioSC: true,
+      codigoUsuarioCreacion: suscriptorDB.codigoSusucriptor,
+      fechaCreacion: fechaActual.toISOString()
+    }
+    const usuarioSCDB = await PTLUsuariosSC.create(usuarioSuscriptor);
     io.emit('suscriptores-actualizados', {
       action: 'create',
       msg: `Suscriptor creada: ${suscriptorDB.nombreSuscriptor}`
     });
     return res.status(201).json({
       ok: true,
-      suscriptor: suscriptorDB
+      suscriptor: suscriptorDB,
+      usuario: usuarioDB,
+      usuarioSC: usuarioSCDB
     });
   } catch (err) {
     console.error(err);
@@ -77,7 +109,7 @@ const createSuscriptor = async (req, res = response) => {
 };
 
 const updateSuscriptor = async (req, res = response) => {
-    const { codigoSuscriptor, ...data } = req.body;
+  const { codigoSuscriptor, ...data } = req.body;
   try {
     const suscriptorDB = await PTLSuscriptores.findOne({
       where: { codigoSuscriptor }
@@ -147,5 +179,5 @@ module.exports = {
   getSuscriptoresById,
   createSuscriptor,
   updateSuscriptor,
-  deleteSuscriptor,
+  deleteSuscriptor
 };
