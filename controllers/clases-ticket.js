@@ -48,7 +48,7 @@ const createClaseTicket = async (req, res = response) => {
     const claseTicketDB = await PTLClasesTicket.create(nuevaClaseTicket);
     io.emit('clases-tickets-actualizadas', {
       action: 'create',
-      msg: `Ckase Tiicket creada: ${claseTicketDB.claseTicket}`
+      msg: `Clase Ticket creada: ${claseTicketDB.claseTicket}`
     });
     return res.status(201).json({
       ok: true,
