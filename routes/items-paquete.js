@@ -7,11 +7,12 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getItemsPaquete,
-    getItemsPaqueteById,
-    createItemsPaquete,
-    updateItemsPaquete,
-    deleteItemsPaquete,
+  getItemsPaquete,
+  getItemsPaqueteById,
+  getItemsPaqueteByCode,
+  createItemsPaquete,
+  updateItemsPaquete,
+  deleteItemsPaquete,
 } = require("../controllers/items-paquete");
 
 const router = Router();
@@ -25,5 +26,7 @@ router.put("/:id", validarJWT, updateItemsPaquete);
 router.delete("/:id", validarJWT, deleteItemsPaquete);
 
 router.get("/:id", validarJWT, getItemsPaqueteById);
+
+router.get("/code/:code", validarJWT, getItemsPaqueteByCode);
 
 module.exports = router;
