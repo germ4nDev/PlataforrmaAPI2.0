@@ -1,82 +1,80 @@
-/*
-    Author: German Valencia
-*/
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   return sequelize.define('PTLPaquetes', {
     paquetesId: {
       type: DataTypes.INTEGER,
-      autoIncrement: true
-    },
-    codigoPaquete: {
-      type: DataTypes.STRING,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false
     },
+    codigoPaquete: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      unique: true 
+    },
     nombrePaquete: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     descripcionPaquete: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(4000),
+      allowNull: true
     },
     acuerdoLicencia: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(4000),
+      allowNull: true
     },
-    costoPquete: {
-      type: DataTypes.INTEGER,
-      default: 0,
+    costoPaquete: {
+      type: DataTypes.DECIMAL(18, 2),
       allowNull: false
     },
     precioPaquete: {
-      type: DataTypes.INTEGER,
-      default: 0,
+      type: DataTypes.DECIMAL(18, 2),
       allowNull: false
     },
     precioPromocion: {
-      type: DataTypes.INTEGER,
-      default: 0,
+      type: DataTypes.DECIMAL(18, 2),
       allowNull: false
     },
     imagenPaquete: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(100),
+      allowNull: true
     },
     iconoPaquete: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(100),
+      allowNull: true
     },
     colorPaquete: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(100),
+      allowNull: true
     },
     promocion: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: false
     },
     estadoPaquete: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
-    // AUDITORIA ------------
+    // AUDITORIA
     codigoUsuarioCreacion: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(200),
+      allowNull: true
     },
     fechaCreacion: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(100),
+      allowNull: true
     },
     codigoUsuarioModificacion: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(200),
+      allowNull: true
     },
     fechaModificacion: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(100),
+      allowNull: true
     }
   }, {
     tableName: 'PTLPaquetes',

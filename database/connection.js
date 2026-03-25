@@ -12,6 +12,7 @@ const sequelize = new Sequelize(sqlConfig.database, sqlConfig.user, sqlConfig.pa
   host: sqlConfig.server,
   dialect: 'mssql',
   port: 1433,
+  logging: console.log,
   dialectOptions: {
     options: {
         encrypt: false,
