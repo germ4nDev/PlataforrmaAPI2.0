@@ -63,41 +63,41 @@ const createSuscriptor = async (req, res = response) => {
       });
     }
     const fechaActual = new Date();
-    const administrador = {
-      codigoUsuario: "",
-      identificacionUsuario: newRegistro.identificacionSuscriptor,
-      nombreUsuario: newRegistro.nombreSuscriptor,
-      correoUsuario: newRegistro.correoSuscriptor,
-      userNameUsuario: newRegistro.usuarioAdministrador,
-      claveUsuario: newRegistro.usuarioAdministrador,
-      descripcionUsuario: newRegistro.descripcionSuscriptor,
-      fotoUsuario: "no-imagen.png",
-      usuarioAdministrador: true,
-      estadoUsuario: true,
-      codigoUsuarioCreacion: newRegistro.codigoSusucriptor,
-      fechaCreacion: fechaActual.toISOString(),
-    };
+    // const administrador = {
+    //   codigoUsuario: "",
+    //   identificacionUsuario: newRegistro.identificacionSuscriptor,
+    //   nombreUsuario: newRegistro.nombreSuscriptor,
+    //   correoUsuario: newRegistro.correoSuscriptor,
+    //   userNameUsuario: newRegistro.usuarioAdministrador,
+    //   claveUsuario: newRegistro.usuarioAdministrador,
+    //   descripcionUsuario: newRegistro.descripcionSuscriptor,
+    //   fotoUsuario: "no-imagen.png",
+    //   usuarioAdministrador: true,
+    //   estadoUsuario: true,
+    //   codigoUsuarioCreacion: newRegistro.codigoSusucriptor,
+    //   fechaCreacion: fechaActual.toISOString(),
+    // };
     // const usuarioDB = await PTLUsuarios.create(administrador);
     // newRegistro.codigoAdministrador = administrador.codigoUsuario;
-    // const suscriptorDB = await PTLSuscriptores.create(newRegistro);
+    const suscriptorDB = await PTLSuscriptores.create(newRegistro);
     // const usuarioSuscriptor = {
     //   codigoUsuarioSC: uuidv4(),
     //   codigoUsuario: usuarioDB.codigoUsuario,
-    //   codigoSuscriptor: suscriptorDB.codigoSusucriptor,
-    //   estadoUsuarioSC: true,
-    //   codigoUsuarioCreacion: suscriptorDB.codigoSusucriptor,
-    //   fechaCreacion: fechaActual.toISOString()
-    // }
-    // const usuarioSCDB = await PTLUsuariosSC.create(usuarioSuscriptor);
-    io.emit("suscriptores-actualizados", {
-      action: "create",
-      msg: `Suscriptor creada: ${suscriptorDB.nombreSuscriptor}`,
-    });
+    codigoSuscriptor: (suscriptorDB.codigoSusucriptor,
+      //   estadoUsuarioSC: true,
+      //   codigoUsuarioCreacion: suscriptorDB.codigoSusucriptor,
+      //   fechaCreacion: fechaActual.toISOString()
+      // }
+      // const usuarioSCDB = await PTLUsuariosSC.create(usuarioSuscriptor);
+      io.emit("suscriptores-actualizados", {
+        action: "create",
+        msg: `Suscriptor creada: ${suscriptorDB.nombreSuscriptor}`,
+      }));
     return res.status(201).json({
       ok: true,
       suscriptor: suscriptorDB,
-      usuario: usuarioDB,
-      usuarioSC: usuarioSCDB,
+      // usuario: usuarioDB,
+      // usuarioSC: usuarioSCDB,
     });
   } catch (err) {
     console.error(err);
@@ -107,6 +107,7 @@ const createSuscriptor = async (req, res = response) => {
     });
   }
 };
+
 
 const updateSuscriptor = async (req, res = response) => {
   const { codigoSuscriptor, ...data } = req.body;
