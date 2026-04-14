@@ -1,6 +1,6 @@
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Actualización: Juan Camilo Valencia
 */
 const express = require("express");
 const sequelize = require("../database/connection");
@@ -21,18 +21,21 @@ const getTipoGaleria = async (req, res) => {
 
 const getTipoGaleriaById = async (req, res) => {
   try {
-    const codigoTipoGaleria = req.params.id;
+    const codigoTipo = req.params.id;
+
     const tipoGaleria = await PTLTipoGaleria.findOne({
       where: {
-        codigoTipoGaleria: codigoTipoGaleria,
+        codigoTipo: codigoTipo,
       },
     });
+
     if (!tipoGaleria) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un tipo de galería con ese id",
       });
     }
+
     return res.status(201).json({
       ok: true,
       tipoGaleria: tipoGaleria,
@@ -65,26 +68,31 @@ const createTipoGaleria = async (req, res = response) => {
 
 const updateTipoGaleria = async (req, res = response) => {
   try {
-    const { codigoTipoGaleria, ...data } = req.body;
+    const { codigoTipo, ...data } = req.body;
     const tipoGaleriaDB = await PTLTipoGaleria.findOne({
-      where: { codigoTipoGaleria },
+      where: { codigoTipo },
     });
+
     if (!tipoGaleriaDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un tipo de galería con ese ID",
       });
     }
+
     await PTLTipoGaleria.update(data, {
-      where: { codigoTipoGaleria },
+      where: { codigoTipo },
     });
+
     const tipoGaleriaActualizado = await PTLTipoGaleria.findOne({
-      where: { codigoTipoGaleria },
+      where: { codigoTipo },
     });
+
     io.emit("tiposGaleria-actualizadas", {
       action: "update",
-      msg: `Tipo de Galería actualizado: ${tipoGaleriaActualizado.nombreTipoGaleria}`,
+      msg: `Tipo de Galería actualizado: ${tipoGaleriaActualizado.nombreTipo}`,
     });
+
     return res.status(200).json({
       ok: true,
       tipoGaleria: tipoGaleriaActualizado,
@@ -100,23 +108,26 @@ const updateTipoGaleria = async (req, res = response) => {
 
 const deleteTipoGaleria = async (req, res = response) => {
   try {
-    const codigoTipoGaleria = req.params.id;
+    const codigoTipo = req.params.id;
     const tipoGaleriaDB = await PTLTipoGaleria.findOne({
-      where: { codigoTipoGaleria },
+      where: { codigoTipo },
     });
+
     if (!tipoGaleriaDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un tipo de galería con ese ID",
       });
     }
-    tipoGaleriaEliminado = await PTLTipoGaleria.destroy({
-      where: { codigoTipoGaleria },
+    const tipoGaleriaEliminado = await PTLTipoGaleria.destroy({
+      where: { codigoTipo },
     });
+
     io.emit("tiposGaleria-actualizadas", {
       action: "delete",
       msg: `Tipo de Galería eliminado correctamente`,
     });
+
     return res.status(200).json({
       ok: true,
       tipoGaleria: tipoGaleriaEliminado,

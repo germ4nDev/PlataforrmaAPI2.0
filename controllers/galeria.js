@@ -1,6 +1,6 @@
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Actualización: Juan Camilo Valencia
 */
 const express = require("express");
 const sequelize = require("../database/connection");

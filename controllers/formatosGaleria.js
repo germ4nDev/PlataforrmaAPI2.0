@@ -1,6 +1,6 @@
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Actualización: Juab Camilo Valencia
 */
 const express = require("express");
 const sequelize = require("../database/connection");
@@ -21,10 +21,10 @@ const getFormatoGaleria = async (req, res) => {
 
 const getFormatoGaleriaById = async (req, res) => {
   try {
-    const codigoFormatoGaleria = req.params.id;
+    const codigoFormato = req.params.id;
     const formatoGaleria = await PTLFormatoGaleria.findOne({
       where: {
-        codigoFormatoGaleria: codigoFormatoGaleria,
+        codigoFormato: codigoFormato,
       },
     });
     if (!formatoGaleria) {
@@ -49,7 +49,7 @@ const createFormatoGaleria = async (req, res = response) => {
       await PTLFormatoGaleria.create(nuevoFormatoGaleria);
     io.emit("formatosGaleria-actualizadas", {
       action: "create",
-      msg: `Formato de Galería creado: ${formatoGaleriaDB.nombreFormatoGaleria}`,
+      msg: `Formato de Galería creado: ${formatoGaleriaDB.nombreFormato}`,
     });
     return res.status(201).json({
       ok: true,
@@ -66,26 +66,32 @@ const createFormatoGaleria = async (req, res = response) => {
 
 const updateFormatoGaleria = async (req, res = response) => {
   try {
-    const { codigoFormatoGaleria, ...data } = req.body;
+    const { codigoFormato, ...data } = req.body;
+
     const formatoGaleriaDB = await PTLFormatoGaleria.findOne({
-      where: { codigoFormatoGaleria },
+      where: { codigoFormato },
     });
+
     if (!formatoGaleriaDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un formato de galería con ese ID",
       });
     }
+
     await PTLFormatoGaleria.update(data, {
-      where: { codigoFormatoGaleria },
+      where: { codigoFormato },
     });
+
     const formatoGaleriaActualizado = await PTLFormatoGaleria.findOne({
-      where: { codigoFormatoGaleria },
+      where: { codigoFormato },
     });
+
     io.emit("formatosGaleria-actualizadas", {
       action: "update",
-      msg: `Formato de Galería actualizado: ${formatoGaleriaActualizado.nombreFormatoGaleria}`,
+      msg: `Formato de Galería actualizado: ${formatoGaleriaActualizado.nombreFormato}`,
     });
+
     return res.status(200).json({
       ok: true,
       formatoGaleria: formatoGaleriaActualizado,
@@ -101,23 +107,28 @@ const updateFormatoGaleria = async (req, res = response) => {
 
 const deleteFormatoGaleria = async (req, res = response) => {
   try {
-    const codigoFormatoGaleria = req.params.id;
+    const codigoFormato = req.params.id;
+
     const formatoGaleriaDB = await PTLFormatoGaleria.findOne({
-      where: { codigoFormatoGaleria },
+      where: { codigoFormato },
     });
+
     if (!formatoGaleriaDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un formato de galería con ese ID",
       });
     }
-    formatoGaleriaEliminado = await PTLFormatoGaleria.destroy({
-      where: { codigoFormatoGaleria },
+
+    const formatoGaleriaEliminado = await PTLFormatoGaleria.destroy({
+      where: { codigoFormato },
     });
+
     io.emit("formatosGaleria-actualizadas", {
       action: "delete",
       msg: `Formato de Galería eliminado correctamente`,
     });
+
     return res.status(200).json({
       ok: true,
       formatoGaleria: formatoGaleriaEliminado,
