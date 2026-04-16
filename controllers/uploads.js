@@ -158,14 +158,22 @@ const retornaImagen = (req, res = response) => {
   if (fs.existsSync(pathImg)) {
     res.sendFile(pathImg);
   } else {
-    // Fallback: Si no hay imagen, intenta enviar la imagen de no-imagen
+    // Fallback: Si no hay imagen, intenta enviar la imagen de no-imagen física
     const pathNoImg = path.join(__dirname, '..', 'uploads', 'no-imagen.png');
     if (fs.existsSync(pathNoImg)) {
       res.sendFile(pathNoImg);
     } else {
-      console.error("ERROR 404: No se encontró la imagen solicitada y tampoco el fallback 'no-imagen.png'");
-      // Si ni siquiera el fallback existe, enviamos un 404 simple
-      res.status(404).send('Archivo no encontrado.');
+      // --- ¡AQUÍ ESTÁ LA MAGIA! ---
+      // Si ni el archivo ni el fallback existen, Node.js genera una imagen virtual en tiempo real
+      // y la envía como un gráfico (SVG) con un color de fondo que hace match con tu tema oscuro
+      const svgVirtual = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+          <rect width="300" height="200" fill="#2c3136"/>
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="18" fill="#888888">Sin Archivo</text>
+        </svg>
+      `;
+      res.setHeader('Content-Type', 'image/svg+xml');
+      return res.status(200).send(svgVirtual);
     }
   }
 };

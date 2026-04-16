@@ -3,9 +3,25 @@
     Actualización: Juan Camilo Valencia
 */
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const sequelize = require("../database/connection");
 const PTLGaleria = require("../models/galeria")(sequelize);
 const { io } = require("../index");
+
+
+const borrarArchivoFisico = (fileName) => {
+  if (!fileName || fileName === "no-imagen.png") return;
+  const pathArchivo = path.join(__dirname, "..", "uploads", "plataforma", "galeria", fileName);
+  if (fs.existsSync(pathArchivo)) {
+    try {
+      fs.unlinkSync(pathArchivo);
+      console.log(`Archivo físico eliminado correctamente: ${fileName}`);
+    } catch (err) {
+      console.error(`Error al intentar eliminar el archivo ${fileName}:`, err);
+    }
+  }
+};
 
 const getGaleria = async (req, res) => {
   try {
@@ -75,6 +91,12 @@ const updateGaleria = async (req, res = response) => {
         msg: "No existe una galería con ese ID",
       });
     }
+
+    if (data.imagenGaleria && galeriaDB.imagenGaleria !== data.imagenGaleria) {
+      // Borramos el viejo para no dejar basura!
+      borrarArchivoFisico(galeriaDB.imagenGaleria);
+    }
+
     await PTLGaleria.update(data, {
       where: { codigoGaleria },
     });
@@ -110,7 +132,11 @@ const deleteGaleria = async (req, res = response) => {
         msg: "No existe una galería con ese ID",
       });
     }
-    galeriaEliminada = await PTLGaleria.destroy({
+
+    borrarArchivoFisico(galeriaDB.imagenGaleria);
+
+
+    const galeriaEliminada = await PTLGaleria.destroy({
       where: { codigoGaleria },
     });
     io.emit("galeria-actualizadas", {
