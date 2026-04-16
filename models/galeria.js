@@ -32,6 +32,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      imagenGaleria: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       estadoGaleria: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

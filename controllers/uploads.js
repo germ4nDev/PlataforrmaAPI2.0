@@ -12,6 +12,7 @@ const FOLDER_MAP = {
   'suscriptores': path.join('suscriptores'),
   'usuarios': path.join('usuarios'),  // SUSCRIPTOR
   'biblioteca': path.join('biblioteca', 'biblioteca'),  // biblioteca
+  'galeria': path.join('galeria'), // galeria
   'galeria-img': path.join('biblioteca', 'galeria', 'imagenes'),  // imagenes
   'galeria-vid': path.join('biblioteca', 'galeria', 'videos'),  // videos
   'galeria-doc': path.join('biblioteca', 'galeria', 'documentos'),  // documentos
@@ -25,7 +26,7 @@ const FOLDER_MAP = {
   'seguimientos': path.join('tickets', 'seguimientos'),
 };
 
-const tiposValidos = Object.keys(FOLDER_MAP);
+const tiposValidos = ['usuarios', 'biblioteca', 'aplicaciones', 'galeria'];
 
 // =================================================================
 // UTILIDAD QUE EJECUTA EL MOVIMIENTO DEL ARCHIVO A LA CARPETA
@@ -71,7 +72,6 @@ const fileUpload = async (req, res = response) => {
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
 
   // 2. Construcción del path de destino
-  // Se quita 'path.dirname(pathAbsoluto)' y se usa 'path.join' hasta el directorio para fs.mkdir
   const directorioDestino = path.join(
     __dirname,
     '..',
@@ -84,19 +84,16 @@ const fileUpload = async (req, res = response) => {
 
   try {
     // 3. Creación recursiva del directorio
-    // Esto resuelve el error si la carpeta del suscriptor o el tipo no existen.
     await fs.promises.mkdir(directorioDestino, { recursive: true });
 
     // 4. Mover el archivo
     await moveFilePromise(file, pathAbsoluto);
 
-    // TODO: Aquí deberías guardar el nombreArchivo y el id en tu base de datos (e.g., actualizar el usuario)
-
     res.json({
       ok: true,
       msg: "Archivo cargado exitosamente",
       nombreArchivo,
-      pathGuardado: pathAbsoluto // Solo para debug, no devolver path absoluto en producción
+      pathGuardado: pathAbsoluto 
     });
   } catch (err) {
     console.error('Error durante la carga o movimiento del archivo:', err);
