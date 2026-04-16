@@ -5,12 +5,16 @@ const { v4: uuidv4 } = require("uuid");
 
 const FOLDER_MAP = {
   //PLATAFORMA
-  'aplicaciones': path.join('plataforma', 'aplicaciones'),
-  'sitios': path.join('plataforma', 'sitios'),
-  'sliders': path.join('plataforma', 'sliders'),
-  'suites': path.join('plataforma', 'suites'),
-  'suscriptores': path.join('plataforma', 'suscriptores'),
-  'usuarios': path.join('plataforma', 'usuarios'),  // SUSCRIPTOR
+  'aplicaciones': path.join('aplicaciones'),
+  'sitios': path.join('sitios'),
+  'sliders': path.join('sliders'),
+  'suites': path.join('suites'),
+  'suscriptores': path.join('suscriptores'),
+  'usuarios': path.join('usuarios'),  // SUSCRIPTOR
+  'biblioteca': path.join('biblioteca', 'biblioteca'),  // biblioteca
+  'galeria-img': path.join('biblioteca', 'galeria', 'imagenes'),  // imagenes
+  'galeria-vid': path.join('biblioteca', 'galeria', 'videos'),  // videos
+  'galeria-doc': path.join('biblioteca', 'galeria', 'documentos'),  // documentos
   // WEBSITES
   'qplus10': path.join('websites', 'qplus10'),
   'qplus10carrusel': path.join('websites', 'qplus10', 'carrusel-inicio'),
@@ -43,7 +47,7 @@ const moveFilePromise = (file, pathAbsoluto) => {
 // =================================================================
 const fileUpload = async (req, res = response) => {
   const { susc, tipo, id } = req.params;
-  
+
   // 1. Validaciones iniciales
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
@@ -51,7 +55,7 @@ const fileUpload = async (req, res = response) => {
       msg: `Tipo no válido: '${tipo}'. Los tipos permitidos son: ${tiposValidos.join(', ')}`,
     });
   }
-  
+
   // Revisamos si el campo 'file' existe. Es importante que en Angular uses 'file' como nombre del campo
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
     return res.status(400).json({
@@ -59,7 +63,7 @@ const fileUpload = async (req, res = response) => {
       msg: "No se ha subido ningún archivo. Se esperaba el campo 'file'.",
     });
   }
-  
+
   const file = req.files.file;
   const nombreCortado = file.name.split(".");
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
@@ -75,19 +79,19 @@ const fileUpload = async (req, res = response) => {
     susc,
     relativePath
   );
-  
+
   const pathAbsoluto = path.join(directorioDestino, nombreArchivo);
 
   try {
     // 3. Creación recursiva del directorio
     // Esto resuelve el error si la carpeta del suscriptor o el tipo no existen.
     await fs.promises.mkdir(directorioDestino, { recursive: true });
-    
+
     // 4. Mover el archivo
     await moveFilePromise(file, pathAbsoluto);
 
     // TODO: Aquí deberías guardar el nombreArchivo y el id en tu base de datos (e.g., actualizar el usuario)
-    
+
     res.json({
       ok: true,
       msg: "Archivo cargado exitosamente",

@@ -45,6 +45,8 @@ const getBibliotecaById = async (req, res) => {
 const createBiblioteca = async (req, res = response) => {
   try {
     const { ...nuevaBiblioteca } = req.body;
+    console.log(req.body);
+
     const bibliotecaDB = await PTLBiblioteca.create(nuevaBiblioteca);
     io.emit("biblioteca-actualizadas", {
       action: "create",
