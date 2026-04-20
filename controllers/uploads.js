@@ -29,6 +29,21 @@ const FOLDER_MAP = {
 const tiposValidos = ['usuarios', 'biblioteca', 'aplicaciones', 'galeria'];
 
 // =================================================================
+// NUEVA FUNCIÓN AYUDANTE: ENRUTADOR INTELIGENTE PARA GALERÍA
+// =================================================================
+const obtenerSubcarpetaGaleria = (nombreArchivo) => {
+  const ext = nombreArchivo.split('.').pop().toLowerCase();
+
+  if (['mp4', 'avi', 'mov', 'webm', 'mkv'].includes(ext)) {
+    return FOLDER_MAP['galeria-vid'];
+  } else if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'ppt'].includes(ext)) {
+    return FOLDER_MAP['galeria-doc'];
+  } else {
+    return FOLDER_MAP['galeria-img'];
+  }
+};
+
+// =================================================================
 // UTILIDAD QUE EJECUTA EL MOVIMIENTO DEL ARCHIVO A LA CARPETA
 // =================================================================
 const moveFilePromise = (file, pathAbsoluto) => {
@@ -49,15 +64,12 @@ const moveFilePromise = (file, pathAbsoluto) => {
 const fileUpload = async (req, res = response) => {
   const { susc, tipo, id } = req.params;
 
-  // 1. Validaciones iniciales
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).json({
       ok: false,
       msg: `Tipo no válido: '${tipo}'. Los tipos permitidos son: ${tiposValidos.join(', ')}`,
     });
   }
-
-  // Revisamos si el campo 'file' existe. Es importante que en Angular uses 'file' como nombre del campo
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
     return res.status(400).json({
       ok: false,
@@ -68,10 +80,13 @@ const fileUpload = async (req, res = response) => {
   const file = req.files.file;
   const nombreCortado = file.name.split(".");
   const extensionArchivo = nombreCortado[nombreCortado.length - 1];
-  const relativePath = FOLDER_MAP[tipo];
   const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
 
-  // 2. Construcción del path de destino
+  let relativePath = FOLDER_MAP[tipo];
+  if (tipo === 'galeria') {
+    relativePath = obtenerSubcarpetaGaleria(nombreArchivo);
+  }
+
   const directorioDestino = path.join(
     __dirname,
     '..',
@@ -83,10 +98,7 @@ const fileUpload = async (req, res = response) => {
   const pathAbsoluto = path.join(directorioDestino, nombreArchivo);
 
   try {
-    // 3. Creación recursiva del directorio
     await fs.promises.mkdir(directorioDestino, { recursive: true });
-
-    // 4. Mover el archivo
     await moveFilePromise(file, pathAbsoluto);
 
     res.json({
@@ -139,6 +151,7 @@ const folderUpload = async (req, res = response) => {
 // =================================================================
 const retornaImagen = (req, res = response) => {
   const { susc, tipo, foto } = req.params;
+
   if (!susc || !tipo || !foto) {
     console.error("ERROR 400: Parámetro de ruta faltante.");
     return res.status(400).send('Parámetro de ruta faltante.');
@@ -146,8 +159,14 @@ const retornaImagen = (req, res = response) => {
   if (!tiposValidos.includes(tipo)) {
     return res.status(400).send(`Tipo de carpeta no válido: ${tipo}.`);
   }
-  const relativePath = FOLDER_MAP[tipo];
-  const pathImg = path.join(
+
+  let relativePath = FOLDER_MAP[tipo];
+
+  if (tipo === 'galeria') {
+    relativePath = obtenerSubcarpetaGaleria(foto);
+  }
+
+  let pathImg = path.join(
     __dirname,
     '..',
     'uploads',
@@ -155,17 +174,18 @@ const retornaImagen = (req, res = response) => {
     relativePath,
     foto
   );
+
+  if (!fs.existsSync(pathImg) && tipo === 'galeria') {
+    pathImg = path.join(__dirname, '..', 'uploads', susc, 'galeria', foto);
+  }
+
   if (fs.existsSync(pathImg)) {
     res.sendFile(pathImg);
   } else {
-    // Fallback: Si no hay imagen, intenta enviar la imagen de no-imagen física
     const pathNoImg = path.join(__dirname, '..', 'uploads', 'no-imagen.png');
     if (fs.existsSync(pathNoImg)) {
       res.sendFile(pathNoImg);
     } else {
-      // --- ¡AQUÍ ESTÁ LA MAGIA! ---
-      // Si ni el archivo ni el fallback existen, Node.js genera una imagen virtual en tiempo real
-      // y la envía como un gráfico (SVG) con un color de fondo que hace match con tu tema oscuro
       const svgVirtual = `
         <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
           <rect width="300" height="200" fill="#2c3136"/>
@@ -198,9 +218,13 @@ const eliminarArchivo = async (req, res = response) => {
     });
   }
 
-  const relativePath = FOLDER_MAP[tipo];
+  let relativePath = FOLDER_MAP[tipo];
 
-  const pathFile = path.join(
+  if (tipo === 'galeria') {
+    relativePath = obtenerSubcarpetaGaleria(fileName);
+  }
+
+  let pathFile = path.join(
     __dirname,
     '..',
     'uploads',
@@ -209,10 +233,14 @@ const eliminarArchivo = async (req, res = response) => {
     fileName
   );
 
+  const pathViejo = path.join(__dirname, '..', 'uploads', susc, 'galeria', fileName);
+  if (!fs.existsSync(pathFile) && tipo === 'galeria' && fs.existsSync(pathViejo)) {
+    pathFile = pathViejo;
+  }
+
   try {
-    // Verificamos si existe y luego eliminamos
-    await fs.promises.stat(pathFile); // stat lanzará un error si no existe
-    await fs.promises.unlink(pathFile); // Elimina el archivo
+    await fs.promises.stat(pathFile);
+    await fs.promises.unlink(pathFile); 
 
     return res.json({
       ok: true,
@@ -221,7 +249,6 @@ const eliminarArchivo = async (req, res = response) => {
 
   } catch (error) {
     if (error.code === 'ENOENT') {
-      // El archivo no existía, lo tratamos como una eliminación exitosa o un 404
       return res.status(404).json({
         ok: false,
         msg: `Archivo ${fileName} no encontrado en la ruta, no se pudo eliminar.`,

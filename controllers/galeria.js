@@ -12,14 +12,30 @@ const { io } = require("../index");
 
 const borrarArchivoFisico = (fileName) => {
   if (!fileName || fileName === "no-imagen.png") return;
-  const pathArchivo = path.join(__dirname, "..", "uploads", "plataforma", "galeria", fileName);
-  if (fs.existsSync(pathArchivo)) {
-    try {
+  const ext = fileName.split('.').pop().toLowerCase();
+  let subcarpeta = 'imagenes'; // Por defecto busca en imágenes
+
+  if (['mp4', 'avi', 'mov', 'webm', 'mkv'].includes(ext)) {
+    subcarpeta = 'videos';
+  } else if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'ppt'].includes(ext)) {
+    subcarpeta = 'documentos';
+  }
+  const pathArchivo = path.join(__dirname, "..", "uploads", "plataforma", "biblioteca", "galeria", subcarpeta, fileName);
+  const pathArchivoViejo = path.join(__dirname, "..", "uploads", "plataforma", "galeria", fileName);
+
+  try {
+    if (fs.existsSync(pathArchivo)) {
       fs.unlinkSync(pathArchivo);
-      console.log(`Archivo físico eliminado correctamente: ${fileName}`);
-    } catch (err) {
-      console.error(`Error al intentar eliminar el archivo ${fileName}:`, err);
+      console.log(`Archivo físico eliminado de subcarpeta ${subcarpeta}: ${fileName}`);
     }
+    else if (fs.existsSync(pathArchivoViejo)) {
+      fs.unlinkSync(pathArchivoViejo);
+      console.log(`Archivo viejo eliminado correctamente: ${fileName}`);
+    } else {
+      console.log(`El archivo no se encontró en ninguna ruta física: ${fileName}`);
+    }
+  } catch (err) {
+    console.error(`Error al intentar eliminar el archivo físico ${fileName}:`, err.message);
   }
 };
 

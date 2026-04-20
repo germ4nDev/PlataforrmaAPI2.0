@@ -1,11 +1,26 @@
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Actualización: Juan Camilo Valencia
 */
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const sequelize = require("../database/connection");
 const PTLBiblioteca = require("../models/biblioteca")(sequelize);
 const { io } = require("../index");
+
+const borrarArchivoFisico = (fileName) => {
+  if (!fileName || fileName === "no-imagen.png") return;
+  const pathArchivo = path.join(__dirname, "..", "uploads", "plataforma", "biblioteca", "biblioteca", fileName);
+  if (fs.existsSync(pathArchivo)) {
+    try {
+      fs.unlinkSync(pathArchivo);
+      console.log(`Archivo físico de biblioteca eliminado correctamente: ${fileName}`);
+    } catch (err) {
+      console.error(`Error al intentar eliminar el archivo ${fileName}:`, err);
+    }
+  }
+};
 
 const getBiblioteca = async (req, res) => {
   try {
@@ -46,7 +61,6 @@ const createBiblioteca = async (req, res = response) => {
   try {
     const { ...nuevaBiblioteca } = req.body;
     console.log(req.body);
-
     const bibliotecaDB = await PTLBiblioteca.create(nuevaBiblioteca);
     io.emit("biblioteca-actualizadas", {
       action: "create",
@@ -76,6 +90,10 @@ const updateBiblioteca = async (req, res = response) => {
         ok: false,
         msg: "No existe una biblioteca con ese ID",
       });
+    }
+
+    if (data.imagenBiblioteca && bibliotecaDB.imagenBiblioteca !== data.imagenBiblioteca) {
+      borrarArchivoFisico(bibliotecaDB.imagenBiblioteca);
     }
     await PTLBiblioteca.update(data, {
       where: { codigoBiblioteca },
@@ -112,6 +130,7 @@ const deleteBiblioteca = async (req, res = response) => {
         msg: "No existe un biblioteca con ese ID",
       });
     }
+    borrarArchivoFisico(bibliotecaDB.imagenBiblioteca);
     bibliotecaEliminado = await PTLBiblioteca.destroy({
       where: { codigoBiblioteca },
     });
