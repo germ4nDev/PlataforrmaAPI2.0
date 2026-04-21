@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     estadoServidor: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       allowNull: false
     },
     // AUDITORIA ------------

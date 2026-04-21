@@ -78,6 +78,8 @@ app.use("/api/biblioteca", require("./routes/biblioteca"));
 app.use("/api/galeria", require("./routes/galeria"));
 app.use("/api/tiposGaleria", require("./routes/tiposGaleria"));
 app.use("/api/formatosGaleria", require("./routes/formatosGaleria"));
+app.use('/api/tipos-scripts', require('./routes/tiposScripts'));
+app.use('/api/scripts', require('./routes/scripts'));
 // APLICACIONES
 app.use("/api/aplicaciones", require("./routes/aplicaciones"));
 app.use("/api/versiones", require("./routes/versiones-ap"));
