@@ -23,6 +23,18 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    codigoAplicacion: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    codigoSuite: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    tipoRol: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     estadoUsuarioRole: {
       type: DataTypes.BOOLEAN,
       default: false
