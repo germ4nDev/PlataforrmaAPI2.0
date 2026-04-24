@@ -13,10 +13,10 @@ const FOLDER_MAP = {
     'usuarios': path.join('usuarios'),
     'idiomas': path.join('idiomas'),
     'biblioteca': path.join('biblioteca', 'biblioteca'),
-    'galeria': path.join('biblioteca', 'galeria'),
-    'galeria-img': path.join('biblioteca', 'galeria', 'imagenes'),
-    'galeria-vid': path.join('biblioteca', 'galeria', 'videos'),
-    'galeria-doc': path.join('biblioteca', 'galeria', 'documentos'),
+    'galeria': path.join('biblioteca', 'galerias'),
+    'galeria-img': path.join('biblioteca', 'galerias', 'imagenes'),
+    'galeria-vid': path.join('biblioteca', 'galerias', 'videos'),
+    'galeria-doc': path.join('biblioteca', 'galerias', 'documentos'),
     'qplus10': path.join('websites', 'qplus10'),
     'qplus10carrusel': path.join('websites', 'qplus10', 'carrusel-inicio'),
     'qplus10clientes': path.join('websites', 'qplus10', 'clientes'),
@@ -48,7 +48,6 @@ const moveFilePromise = (file, pathAbsoluto) => {
 const fileUpload = async(req, res = response) => {
     const { susc, tipo, id } = req.params;
 
-    // 1. Validaciones iniciales
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             ok: false,
@@ -56,7 +55,6 @@ const fileUpload = async(req, res = response) => {
         });
     }
 
-    // Revisamos si el campo 'file' existe. Es importante que en Angular uses 'file' como nombre del campo
     if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
         return res.status(400).json({
             ok: false,
@@ -70,8 +68,6 @@ const fileUpload = async(req, res = response) => {
     const relativePath = FOLDER_MAP[tipo];
     const nombreArchivo = `${uuidv4()}.${extensionArchivo}`;
 
-    // 2. Construcción del path de destino
-    // Se quita 'path.dirname(pathAbsoluto)' y se usa 'path.join' hasta el directorio para fs.mkdir
     const directorioDestino = path.join(
         __dirname,
         '..',

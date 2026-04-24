@@ -98,6 +98,11 @@ app.use('/api/enlaces-st', require('./routes/enlaces-st'));
 // IDIOMAS
 app.use('/api/idiomas', require('./routes/idiomas'));
 app.use('/api/textos-id', require('./routes/textos-id'));
+// BIBLIOTECAS
+app.use('/api/bibliotecas', require('./routes/bibliotecas'));
+app.use('/api/galerias', require('./routes/galerias'));
+app.use('/api/tipos-galeria', require('./routes/tipos-galeria'));
+app.use('/api/formatos-galeria', require('./routes/formatos-galeria'));
 // LOGS
 app.use('/api/tios-logs', require('./routes/tipos-logs'));
 app.use('/api/logs-actividades', require('./routes/logs-actividades'));
