@@ -6,15 +6,6 @@ const sqlConfig = {
     password: process.env.DB_PWD,
     database: process.env.DB_NAME,
     server: process.env.DB_SERVER,
-    // pool: {
-    //     max: 10,
-    //     min: 0,
-    //     idleTimeoutMillis: 30000
-    // },
-    // options: {
-    //     encrypt: true, // for azure
-    //     trustServerCertificate: false // change to true for local dev / self-signed certs
-    // }
 }
 
 let pool;
@@ -33,7 +24,7 @@ const dbConnection = async() => {
     try {
         // make sure that any items are correctly URL encoded in the connection string
         await sql.connect(sqlConfig)
-        const result = await sql.query`select * from PTLUsuarios where id = ${value}`
+        const result = await sql.query `select * from PTLUsuarios where id = ${value}`
         console.dir(result)
     } catch (err) {
         console.log(error);
@@ -47,7 +38,7 @@ const dbConnection = async() => {
     //     });
 
     //     console.log('DB Online');
-        
+
     // } catch (error) {
     //     console.log(error);
     //     throw new Error('Error a la hora de iniciar la BD ver logs');

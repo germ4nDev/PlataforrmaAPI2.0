@@ -15,11 +15,9 @@ const cors = require('cors');
 const app = express();
 const server = http.createServer(app);
 
-// === CONFIGURACIÓN CORS EXPLÍCITA Y ROBUSTA ===
-// ----------------------------------------------
 const allowedOrigins = [
-    process.env.ANGULAR_URL_LOCL, 
-    process.env.ANGULAR_URL_PRUE, 
+    process.env.ANGULAR_URL_LOCL,
+    process.env.ANGULAR_URL_PRUE,
     process.env.ANGULAR_URL_PROD
 ].filter(Boolean);
 
@@ -27,7 +25,7 @@ const corsOptions = {
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.includes(origin) || process.env.ANGULAR_URL === "*") {
+        if (allowedOrigins.includes(origin) || process.env.ANGULAR_URL_LOCL === "*") {
             return callback(null, true);
         } else {
             const msg = `El origen CORS: ${origin} no tiene permiso.`;
@@ -40,7 +38,7 @@ const corsOptions = {
 
 const io = new Server(server, {
     cors: {
-        origin: process.env.ANGULAR_URL || "*",
+        origin: process.env.ANGULAR_URL_LOCL || "*",
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
     }
 });
@@ -48,6 +46,7 @@ const io = new Server(server, {
 module.exports = { io };
 
 app.use(cors(corsOptions));
+
 // ----------------------------------------------
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -66,6 +65,7 @@ app.use('/api/sliders', require('./routes/sliders-inicio'));
 app.use('/api/colores', require('./routes/colores-settings'));
 app.use('/api/tipos-valor', require('./routes/tipos-valor'));
 app.use('/api/valores-unitarios', require('./routes/valores-unitarios'));
+app.use('/api/idiomas', require('./routes/idiomas'));
 app.use('/api/db-setup', require('./routes/db-setup'));
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones'));
@@ -98,6 +98,11 @@ app.use('/api/enlaces-st', require('./routes/enlaces-st'));
 // IDIOMAS
 app.use('/api/idiomas', require('./routes/idiomas'));
 app.use('/api/textos-id', require('./routes/textos-id'));
+// BIBLIOTECAS
+app.use('/api/bibliotecas', require('./routes/bibliotecas'));
+app.use('/api/galerias', require('./routes/galerias'));
+app.use('/api/tipos-galeria', require('./routes/tipos-galeria'));
+app.use('/api/formatos-galeria', require('./routes/formatos-galeria'));
 // LOGS
 app.use('/api/tios-logs', require('./routes/tipos-logs'));
 app.use('/api/logs-actividades', require('./routes/logs-actividades'));
