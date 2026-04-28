@@ -18,6 +18,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    codigoSuite: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     nombreRole: {
       type: DataTypes.STRING,
       allowNull: false
