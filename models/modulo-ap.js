@@ -26,10 +26,6 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        codigoBiblioteca: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         nombreModulo: {
             type: DataTypes.STRING,
             allowNull: false
