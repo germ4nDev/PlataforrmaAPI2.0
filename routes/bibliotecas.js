@@ -16,7 +16,7 @@ const {
 
 const router = Router();
 
-router.get("/", validarJWT, getBiblioteca);
+router.get("/", getBiblioteca);
 
 router.post("/", validarJWT, createBiblioteca);
 
