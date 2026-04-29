@@ -11,7 +11,6 @@ const { io } = require("../index");
 const getBiblioteca = async(req, res) => {
     try {
         const bibliotecas = await PTLBiblioteca.findAll();
-        console.log('bibliotecas', bibliotecas);
         return res.status(201).json({
             ok: true,
             bibliotecas: bibliotecas,
