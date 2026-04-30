@@ -5,34 +5,26 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   return sequelize.define(
-    "PTLBiblioteca",
+    "PTLFormatosGaleria",
     {
-      bibliotecaId: {
+      formatoId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
       },
-      codigoBiblioteca: {
+      codigoFormato: {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
       },
-      nombreBiblioteca: {
+      nombreFormato: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      descripcionBiblioteca: {
+      descripcionFormato: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      codigoAplicacion: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      imagenBiblioteca: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      estadoBiblioteca: {
+      estadoFormato: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
@@ -55,7 +47,7 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "PTLBiblioteca",
+      tableName: "PTLFormatosGaleria",
       timestamps: false,
     },
   );
