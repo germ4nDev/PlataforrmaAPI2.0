@@ -195,6 +195,7 @@ const retornaImagen = (req, res = response) => {
       res.setHeader('Content-Type', 'image/svg+xml');
       return res.status(200).send(svgVirtual);
     }
+  }
 };
 
 // =================================================================
@@ -292,6 +293,7 @@ const eliminarArchivo = async (req, res = response) => {
             error: error.message
         });
     }
+  }
 };
 
 module.exports = {
