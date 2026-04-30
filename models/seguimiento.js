@@ -23,6 +23,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    nombreSeguimiento: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     fechaSeguimiento: {
       type: DataTypes.STRING,
       allowNull: false

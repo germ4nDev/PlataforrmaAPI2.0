@@ -1,8 +1,8 @@
 /*
-    index.js
-    Author: German Valencia
-    Actualización: German Valencia, John Castañeda,
-    Actualización: Gerard Valencia, 20251101
+index.js
+Author: German Valencia
+Actualización: German Valencia, John Castañeda,
+Actualización: Gerard Valencia, 20251101
 */
 require("dotenv").config();
 const path = require("path");
@@ -15,9 +15,6 @@ const cors = require("cors");
 const app = express();
 const server = http.createServer(app);
 
-// === CONFIGURACIÓN CORS EXPLÍCITA Y ROBUSTA ===
-// ----------------------------------------------
-// Lista de orígenes permitidos. Debe incluir la URL de tu frontend (ej: http://localhost:4200)
 const allowedOrigins = [
   process.env.ANGULAR_URL, // El origen principal de tu frontend
   "http://localhost:4200", // Añadir localhost:4200 de forma explícita si ANGULAR_URL no está seteado
@@ -42,7 +39,6 @@ const corsOptions = {
   credentials: true, // Permite cookies, headers de autorización, etc.
 };
 
-// Configuración CORS para Sockets (Ya estaba bien)
 const io = new Server(server, {
   cors: {
     origin: process.env.ANGULAR_URL || "*",

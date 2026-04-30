@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    direccionIP: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     estadoServidor: {
       type: DataTypes.BOOLEAN,
       allowNull: false

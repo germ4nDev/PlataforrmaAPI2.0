@@ -47,15 +47,15 @@ const obtenerSubcarpetaGaleria = (nombreArchivo) => {
 // UTILIDAD QUE EJECUTA EL MOVIMIENTO DEL ARCHIVO A LA CARPETA
 // =================================================================
 const moveFilePromise = (file, pathAbsoluto) => {
-  return new Promise((resolve, reject) => {
-    file.mv(pathAbsoluto, (err) => {
-      if (err) {
-        console.error("Error moviendo archivo:", err);
-        return reject(err);
-      }
-      resolve();
+    return new Promise((resolve, reject) => {
+        file.mv(pathAbsoluto, (err) => {
+            if (err) {
+                console.error("Error moviendo archivo:", err);
+                return reject(err);
+            }
+            resolve();
+        });
     });
-  });
 };
 
 // =================================================================
@@ -120,30 +120,30 @@ const fileUpload = async (req, res = response) => {
 // =================================================================
 // MÉTODO DE CREA LAS CARPETAS EN UPLOADS (folderUpload)
 // =================================================================
-const folderUpload = async (req, res = response) => {
-  const { susc } = req.params;
-  const directorioDestino = path.join(
-    __dirname,
-    '..',
-    'uploads',
-    susc
-  );
-  try {
-    await fs.promises.mkdir(directorioDestino, { recursive: true });
-    res.json({
-      ok: true,
-      msg: "Carpeta creada exitosamente",
-      folder: susc,
-      pathGuardado: pathAbsoluto
-    });
-  } catch (err) {
-    console.error('Error durante la creacion de la carpeta:', err);
-    return res.status(500).json({
-      ok: false,
-      msg: "Error al crear de la carpeta",
-      error: err.message
-    });
-  }
+const folderUpload = async(req, res = response) => {
+    const { susc } = req.params;
+    const directorioDestino = path.join(
+        __dirname,
+        '..',
+        'uploads',
+        susc
+    );
+    try {
+        await fs.promises.mkdir(directorioDestino, { recursive: true });
+        res.json({
+            ok: true,
+            msg: "Carpeta creada exitosamente",
+            folder: susc,
+            pathGuardado: pathAbsoluto
+        });
+    } catch (err) {
+        console.error('Error durante la creacion de la carpeta:', err);
+        return res.status(500).json({
+            ok: false,
+            msg: "Error al crear de la carpeta",
+            error: err.message
+        });
+    }
 };
 
 // =================================================================
@@ -195,7 +195,6 @@ const retornaImagen = (req, res = response) => {
       res.setHeader('Content-Type', 'image/svg+xml');
       return res.status(200).send(svgVirtual);
     }
-  }
 };
 
 // =================================================================
@@ -256,17 +255,48 @@ const eliminarArchivo = async (req, res = response) => {
       });
     }
 
-    return res.status(500).json({
-      ok: false,
-      msg: `No se pudo eliminar el archivo ${fileName}.`,
-      error: error.message
-    });
-  }
+    const relativePath = FOLDER_MAP[tipo];
+
+    const pathFile = path.join(
+        __dirname,
+        '..',
+        'uploads',
+        susc,
+        relativePath,
+        fileName
+    );
+
+    try {
+        // Verificamos si existe y luego eliminamos
+        await fs.promises.stat(pathFile); // stat lanzará un error si no existe
+        await fs.promises.unlink(pathFile); // Elimina el archivo
+
+        return res.json({
+            ok: true,
+            msg: `Archivo ${fileName} eliminado de la ruta: ${relativePath}`
+        });
+
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            // El archivo no existía, lo tratamos como una eliminación exitosa o un 404
+            return res.status(404).json({
+                ok: false,
+                msg: `Archivo ${fileName} no encontrado en la ruta, no se pudo eliminar.`,
+                error: 'ENOENT'
+            });
+        }
+
+        return res.status(500).json({
+            ok: false,
+            msg: `No se pudo eliminar el archivo ${fileName}.`,
+            error: error.message
+        });
+    }
 };
 
 module.exports = {
-  fileUpload,
-  folderUpload,
-  retornaImagen,
-  eliminarArchivo,
+    fileUpload,
+    folderUpload,
+    retornaImagen,
+    eliminarArchivo,
 };

@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", validarJWT, getIdiomas);
 
-router.get("/:id", validarJWT, validarJWT, getIdiomaById);
+router.get("/:id", validarJWT, getIdiomaById);
 
-router.post( "/", validarJWT,  validarJWT, createIdioma);
+router.post("/", validarJWT, createIdioma);
 
-router.put("/:id", validarJWT,validarJWT, updateIdioma);
+router.put("/:id", validarJWT, updateIdioma);
 
-router.delete("/:id", validarJWT, [validarJWT], deleteIdioma);
+router.delete("/:id", validarJWT, deleteIdioma);
 
 module.exports = router;
