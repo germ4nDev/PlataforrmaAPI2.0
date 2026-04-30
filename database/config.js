@@ -1,5 +1,6 @@
 // const mongoose = require('mongoose');
 const sql = require('mssql')
+const { Sequelize } = require('sequelize');
 
 const sqlConfig = {
     user: process.env.DB_USER,
