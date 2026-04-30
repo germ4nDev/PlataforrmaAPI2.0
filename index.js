@@ -10,6 +10,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
 const sequelize = require('./database/connection');
+const seq_master = require('./database/config');
 const cors = require('cors');
 
 const app = express();
@@ -67,6 +68,7 @@ app.use('/api/tipos-valor', require('./routes/tipos-valor'));
 app.use('/api/valores-unitarios', require('./routes/valores-unitarios'));
 app.use('/api/idiomas', require('./routes/idiomas'));
 app.use('/api/db-setup', require('./routes/db-setup'));
+app.use('/api/admin-scripts', require('./routes/admin-scripts'));
 // APLICACIONES
 app.use('/api/aplicaciones', require('./routes/aplicaciones'));
 app.use('/api/versiones', require('./routes/versiones-ap'));
