@@ -69,7 +69,7 @@ const createBiblioteca = async(req, res = response) => {
         }
         const nuevo = await PTLBiblioteca.create(data);
         console.log('nuevo', nuevo);
-        io.emit('bibliotecas-actualizados', {
+        io.emit('bibliotecas-actualizadas', {
             action: 'create',
             msg: `biblioteca creado: ${nuevo.nombreBiblioteca}`
         });

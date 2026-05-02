@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
             primaryKey: true,
             allowNull: false
         },
-        nombreScript: {
+        codigoTipo: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -23,13 +23,17 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        nombreScript: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         descripcionScript: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        codigoTipo: {
+        descripcionScript: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         estadoScript: {
             type: DataTypes.BOOLEAN,
@@ -38,19 +42,19 @@ module.exports = (sequelize) => {
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         fechaCreacion: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         codigoUsuarioModificacion: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         fechaModificacion: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     }, {
         tableName: 'PTLScripts',
