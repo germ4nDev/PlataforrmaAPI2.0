@@ -12,7 +12,7 @@ const {
     createValorUnitario,
     updateValorUnitario,
     deleteValorUnitario,
-} = require("../controllers/valores-unitarios");
+} = require("../controllers/items");
 
 const router = Router();
 

@@ -4,8 +4,8 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLTiposValor', {
-    tipoValorId: {
+  return sequelize.define('PTLTiposItem', {
+    tipoItemId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -40,7 +40,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLTiposValor',
+    tableName: 'PTLTiposItem',
     timestamps: false
   });
 };

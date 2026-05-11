@@ -1,96 +1,212 @@
+// /*
+//     Author: John Castañeda
+//     Actualizado: german Valencia 20251026
+// */
+// const express = require('express');
+// const sequelize = require('../database/connection');
+// const PTLTickestAP = require('../models/ticket-ap')(sequelize);
+// // const PTLAplicaciones = require("../models/aplicacion")(sequelize);
+// const { io } = require('../index');
+
+// const getTicketsAP = async (req, res) => {
+//     try {
+//         console.log('aca');
+//         const tickets = await PTLTickestAP.findAll();
+//         console.log('todos los tickets', tickets);
+//         return res.status(201).json({
+//             ok: true,
+//             tickets: tickets
+//         });
+//     } catch (err) {
+//         res.status(500).json({ error: 'Error al obtener TicketsAP' });
+//     }
+// };
+
+// const getTicketsAPById = async (req, res) => {
+//     try {
+//         const codigoTicket = req.params.id;
+//         const ticket = await PTLTickestAP.findOne({
+//             where: {
+//                 codigoTicket: codigoTicket,
+//             },
+//         });
+//         if (!ticket) {
+//             return res.status(404).json({
+//                 ok: false,
+//                 msg: "No existe un ticket por ese id",
+//             });
+//         }
+//         return res.status(201).json({
+//             ok: true,
+//             ticketAP: ticket,
+//         });
+//     } catch (err) {
+//         res.status(500).json({ error: "Error al obtener ticket" });
+//     }
+// };
+
+// const createTicketAP = async (req, res = response) => {
+//     const { ...data } = req.body;
+//     try {
+//         const nuevo = await PTLTickestAP.create(data);
+//         io.emit('textos-actualizados', {
+//             action: 'create',
+//             msg: `Ticket creado: ${nuevo.nombreTicket}`
+//         });
+//         return res.status(201).json({
+//             ok: true,
+//             ticketAP: nuevo,
+//         });
+//     } catch (err) {
+//         res.status(500).json({ error: "Error al crear el modulo" });
+//     }
+// };
+
+// // Actualizar un nuevo ticket
+// const updateTicketAP = async (req, res = response) => {
+//     const { codigoTicket, ...data } = req.body;
+//     try {
+//         const ticketDB = await PTLTickestAP.findOne({
+//             where: { codigoTicket }
+//         });
+//         if (!ticketDB) {
+//             return res.status(404).json({
+//                 ok: false,
+//                 msg: 'No existe un ticket con ese ID'
+//             });
+//         }
+//         await PTLTickestAP.update(data, {
+//             where: { codigoTicket }
+//         });
+//         const ticketActualizado = await PTLTickestAP.findOne({
+//             where: { codigoTicket },
+//         });
+//         io.emit('textos-actualizados', {
+//             action: 'update',
+//             msg: `Ticket actualozado: ${ticketActualizado.nombreTicket}`
+//         });
+//         return res.status(201).json({
+//             ok: true,
+//             ticketAP: ticketActualizado,
+//         });
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(500).json({
+//             ok: false,
+//             error: 'Error al actualizar el ticket'
+//         });
+//     }
+// };
+
+// // Borrar un nuevo ticket
+// const deleteTicketAP = async (req, res = response) => {
+//     try {
+//         const codigoTicket = req.params.id;
+//         const ticketDB = await PTLTickestAP.findOne({
+//             where: { codigoTicket }
+//         });
+//         if (!ticketDB) {
+//             return res.status(404).json({
+//                 ok: false,
+//                 msg: 'No existe un ticket con ese ID'
+//             });
+//         }
+//         const ticketEliminado = await PTLTickestAP.destroy({
+//             where: { codigoTicket }
+//         });
+//         io.emit('textos-actualizados', {
+//             action: 'delete',
+//             msg: `Ticket eliminado: ${ticketEliminado.nombreTicket}`
+//         });
+//         return res.status(200).json({
+//             ok: true,
+//             ticketAP: ticketEliminado,
+//             msg: 'ticket eliminado correctamente'
+//         });
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(500).json({
+//             ok: false,
+//             error: 'Error al eliminar el ticket'
+//         });
+//     }
+// };
+
+// module.exports = {
+//     getTicketsAP,
+//     getTicketsAPById,
+//     createTicketAP,
+//     updateTicketAP,
+//     deleteTicketAP,
+// };
+
 /*
     Author: John Castañeda
-    Actualizado: german Valencia 20251026
+    Actualizado: German Valencia 20251026
 */
-const express = require('express');
-const sequelize = require('../database/connection');
-const PTLTickestAP = require('../models/ticket-ap')(sequelize);
-// const PTLAplicaciones = require("../models/aplicacion")(sequelize);
-const { io } = require('../index');
+const { response } = require('express');
+const ticketsApService = require('../services/tickets-ap.service'); // Ajusta la ruta a tu proyecto
 
-const getTicketsAP = async (req, res) => {
+const getTicketsAP = async (req, res = response) => {
     try {
-        console.log('aca');
-        const tickets = await PTLTickestAP.findAll();
-        console.log('todos los tickets', tickets);
-        return res.status(201).json({
+        const tickets = await ticketsApService.obtenerTicketsAP();
+
+        return res.status(200).json({ // Cambiado de 201 a 200
             ok: true,
             tickets: tickets
         });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error al obtener TicketsAP' });
     }
 };
 
-const getTicketsAPById = async (req, res) => {
+const getTicketsAPById = async (req, res = response) => {
     try {
-        const codigoTicket = req.params.id;
-        const ticket = await PTLTickestAP.findOne({
-            where: {
-                codigoTicket: codigoTicket,
-            },
-        });
-        if (!ticket) {
-            return res.status(404).json({
-                ok: false,
-                msg: "No existe un ticket por ese id",
-            });
-        }
-        return res.status(201).json({
+        const ticket = await ticketsApService.obtenerTicketAPPorId(req.params.id);
+
+        return res.status(200).json({ // Cambiado de 201 a 200
             ok: true,
             ticketAP: ticket,
         });
     } catch (err) {
+        console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
         res.status(500).json({ error: "Error al obtener ticket" });
     }
 };
 
 const createTicketAP = async (req, res = response) => {
-    const { ...data } = req.body;
     try {
-        const nuevo = await PTLTickestAP.create(data);
-        io.emit('textos-actualizados', {
-            action: 'create',
-            msg: `Ticket creado: ${nuevo.nombreTicket}`
-        });
+        const nuevoTicket = await ticketsApService.crearTicketAP(req.body);
+
         return res.status(201).json({
             ok: true,
-            ticketAP: nuevo,
+            ticketAP: nuevoTicket,
         });
     } catch (err) {
-        res.status(500).json({ error: "Error al crear el modulo" });
+        console.error(err);
+        res.status(500).json({ error: "Error al crear el ticket" }); // Corregido: decía 'modulo'
     }
 };
 
-// Actualizar un nuevo ticket
 const updateTicketAP = async (req, res = response) => {
-    const { codigoTicket, ...data } = req.body;
     try {
-        const ticketDB = await PTLTickestAP.findOne({
-            where: { codigoTicket }
-        });
-        if (!ticketDB) {
-            return res.status(404).json({
-                ok: false,
-                msg: 'No existe un ticket con ese ID'
-            });
-        }
-        await PTLTickestAP.update(data, {
-            where: { codigoTicket }
-        });
-        const ticketActualizado = await PTLTickestAP.findOne({
-            where: { codigoTicket },
-        });
-        io.emit('textos-actualizados', {
-            action: 'update',
-            msg: `Ticket actualozado: ${ticketActualizado.nombreTicket}`
-        });
-        return res.status(201).json({
+        const { codigoTicket, ...data } = req.body;
+
+        const ticketActualizado = await ticketsApService.actualizarTicketAP(codigoTicket, data);
+
+        return res.status(200).json({ // Cambiado de 201 a 200
             ok: true,
             ticketAP: ticketActualizado,
         });
     } catch (err) {
         console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
         return res.status(500).json({
             ok: false,
             error: 'Error al actualizar el ticket'
@@ -98,33 +214,20 @@ const updateTicketAP = async (req, res = response) => {
     }
 };
 
-// Borrar un nuevo ticket
 const deleteTicketAP = async (req, res = response) => {
     try {
-        const codigoTicket = req.params.id;
-        const ticketDB = await PTLTickestAP.findOne({
-            where: { codigoTicket }
-        });
-        if (!ticketDB) {
-            return res.status(404).json({
-                ok: false,
-                msg: 'No existe un ticket con ese ID'
-            });
-        }
-        const ticketEliminado = await PTLTickestAP.destroy({
-            where: { codigoTicket }
-        });
-        io.emit('textos-actualizados', {
-            action: 'delete',
-            msg: `Ticket eliminado: ${ticketEliminado.nombreTicket}`
-        });
-        return res.status(200).json({
+        const ticketEliminado = await ticketsApService.eliminarTicketAP(req.params.id);
+
+        return res.status(200).json({ // Cambiado de 201 a 200
             ok: true,
             ticketAP: ticketEliminado,
-            msg: 'ticket eliminado correctamente'
+            msg: 'Ticket eliminado correctamente'
         });
     } catch (err) {
         console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
         return res.status(500).json({
             ok: false,
             error: 'Error al eliminar el ticket'
