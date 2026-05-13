@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", validarJWT, getEmpresasSC);
 
-router.post( "/", validarJWT,  validarJWT, createEmpresaSC);
+router.post("/", validarJWT, createEmpresaSC);
 
-router.put("/:id", validarJWT,validarJWT, updateEmpresaSC);
+router.put("/:id", validarJWT, updateEmpresaSC);
 
-router.delete("/:id", validarJWT, [validarJWT], deleteEmpresaSC);
+router.delete("/:id", validarJWT, deleteEmpresaSC);
 
-router.get("/:id", validarJWT, validarJWT, getEmpresaSCById);
+router.get("/:id", validarJWT, getEmpresaSCById);
 
 module.exports = router;

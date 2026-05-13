@@ -2,28 +2,28 @@
     Author: German Valencia
     Ruta: /api/idiomas
 */
-const { Router } = require("express");
-const { check } = require("express-validator");
-const { validarCampos } = require("../middlewares/validar-campos");
-const { validarJWT } = require("../middlewares/validar-jwt");
+const { Router } = require('express')
+const { check } = require('express-validator')
+const { validarCampos } = require('../middlewares/validar-campos')
+const { validarJWT } = require('../middlewares/validar-jwt')
 const {
-    getIdiomas,
-    getIdiomaById,
-    createIdioma,
-    updateIdioma,
-    deleteIdioma,
-} = require("../controllers/idiomas");
+  getIdiomas,
+  getIdiomaById,
+  createIdioma,
+  updateIdioma,
+  deleteIdioma
+} = require('../controllers/idiomas')
 
-const router = Router();
+const router = Router()
 
-router.get("/", validarJWT, getIdiomas);
+router.get('/', getIdiomas)
 
-router.get("/:id", validarJWT, getIdiomaById);
+router.get('/:id', validarJWT, getIdiomaById)
 
-router.post("/", validarJWT, createIdioma);
+router.post('/', validarJWT, createIdioma)
 
-router.put("/:id", validarJWT, updateIdioma);
+router.put('/:id', validarJWT, updateIdioma)
 
-router.delete("/:id", validarJWT, deleteIdioma);
+router.delete('/:id', validarJWT, deleteIdioma)
 
-module.exports = router;
+module.exports = router
