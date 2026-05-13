@@ -12,19 +12,27 @@ const obtenerSuscriptorPorId = async (codigoSuscriptor) => {
   });
 
   if (!suscriptor) {
-    throw { statusCode: 404, msg: "No existe un suscriptor por ese id" };
+    throw { statusCode: 404, msg: "ERROREXISTECODE" };
   }
 
   return suscriptor;
 };
 
 const crearSuscriptor = async (data) => {
+  const existeIdentificafcion = await PTLSuscriptores.findOne({
+    where: { identificacionSuscriptor: data.identificacionSuscriptor },
+  });
+
+  if (existeIdentificafcion) {
+    throw { statusCode: 400, msg: "ERROREXISTEID" };
+  }
+
   const existeNombre = await PTLSuscriptores.findOne({
     where: { nombreSuscriptor: data.nombreSuscriptor },
   });
 
   if (existeNombre) {
-    throw { statusCode: 400, msg: "Ya existe un suscriptor con ese nombre" };
+    throw { statusCode: 400, msg: "ERROREXISTENOMBRE" };
   }
 
   // Se eliminó el código muerto/comentado que rompía la sintaxis
@@ -44,7 +52,7 @@ const actualizarSuscriptor = async (codigoSuscriptor, data) => {
   });
 
   if (!suscriptorDB) {
-    throw { statusCode: 404, msg: 'No existe un suscriptor con ese ID' };
+    throw { statusCode: 404, msg: 'ERROREXISTECODE' };
   }
 
   await PTLSuscriptores.update(data, {
@@ -69,7 +77,7 @@ const eliminarSuscriptor = async (codigoSuscriptor) => {
   });
 
   if (!suscriptorDB) {
-    throw { statusCode: 404, msg: 'No existe un suscriptor con ese ID' };
+    throw { statusCode: 404, msg: 'ERROREXISTECODE' };
   }
 
   const nombreSuscriptor = suscriptorDB.nombreSuscriptor;
@@ -80,7 +88,7 @@ const eliminarSuscriptor = async (codigoSuscriptor) => {
 
   io.emit('suscriptores-actualizados', {
     action: 'delete',
-    msg: `Suscriptor eliminado: ${nombreSuscriptor}` // Dinámico en lugar de estático
+    msg: `ELIMINATEDMSG: ${nombreSuscriptor}`
   });
 
   return suscriptorEliminado;

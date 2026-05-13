@@ -6,7 +6,7 @@ const obtenerEmpresasSC = async () => {
   return await PTLEmpresasSC.findAll();
 };
 
-const obtenerEmpresaSCPorId = async (codigoEmpresaSC) => {
+const obtenerEmpresaSCById = async (codigoEmpresaSC) => {
   const empresaSC = await PTLEmpresasSC.findOne({
     where: { codigoEmpresaSC }
   });
@@ -82,7 +82,7 @@ const eliminarEmpresaSC = async (codigoEmpresaSC) => {
 
 module.exports = {
   obtenerEmpresasSC,
-  obtenerEmpresaSCPorId,
+  obtenerEmpresaSCById,
   crearEmpresaSC,
   actualizarEmpresaSC,
   eliminarEmpresaSC,

@@ -13,7 +13,7 @@ const obtenerUsuarioPorId = async (codigoUsuario) => {
   });
 
   if (!usuario) {
-    throw { statusCode: 404, msg: "No existe un usuario por ese id" };
+    throw { statusCode: 404, msg: "ERROREXISTEID" };
   }
 
   return usuario;
@@ -25,7 +25,7 @@ const validarPassword = async (codigoAdministrador, claveActual) => {
   });
 
   if (!usuarioDB) {
-    throw { statusCode: 404, msg: 'No existe un usuario con ese código' }; // Corregido 'suscriptor'
+    throw { statusCode: 404, msg: 'ERROREXISTECODE' };
   }
 
   const isMatch = await bcrypt.compare(claveActual, usuarioDB.claveUsuario);
@@ -38,22 +38,21 @@ const validarPassword = async (codigoAdministrador, claveActual) => {
 };
 
 const crearUsuario = async (data) => {
-  // Corregido: Buscaba la identificación en la columna nombreUsuario
   const existeIdentificacion = await PTLUsuarios.findOne({
     where: { identificacionUsuario: data.identificacionUsuario }
   });
 
   if (existeIdentificacion) {
-    throw { statusCode: 400, msg: 'Ya existe un usuario con esa identificación' };
+    throw { statusCode: 400, msg: 'ERROREXISTEID', usuario: existeIdentificacion };
   }
 
-  const existeNombre = await PTLUsuarios.findOne({
-    where: { nombreUsuario: data.nombreUsuario }
-  });
+  // const existeNombre = await PTLUsuarios.findOne({
+  //   where: { nombreUsuario: data.nombreUsuario }
+  // });
 
-  if (existeNombre) {
-    throw { statusCode: 400, msg: 'Ya existe un usuario con ese nombre' };
-  }
+  // if (existeNombre) {
+  //   throw { statusCode: 400, msg: 'ERROREXISTENAME' };
+  // }
 
   const salt = bcrypt.genSaltSync();
   data.claveUsuario = await bcrypt.hash(data.claveUsuario, salt);
@@ -103,11 +102,9 @@ const actualizarClaveUsuario = async (codigoUsuario, data) => {
     throw { statusCode: 404, msg: 'No existe un usuario con ese ID' };
   }
 
-  // Corregido: La variable nuevoUsuario no existía
   const salt = bcrypt.genSaltSync();
   const password = await bcrypt.hash(data.claveUsuario, salt);
 
-  // Actualizamos explícitamente solo la clave
   await PTLUsuarios.update({ claveUsuario: password }, {
     where: { codigoUsuario }
   });
