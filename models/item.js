@@ -4,21 +4,21 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('PTLValoresUnitarios', {
-    valorUnitarioId: {
+  return sequelize.define('PTLItems', {
+    itemId: {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
-    codigoValor: {
+    codigoItem: {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false
     },
-    tipoValorId: {
+    tipoItemId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    nombreValor: {
+    nombreItem: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -56,7 +56,7 @@ module.exports = (sequelize) => {
       allowNull: false
     }
   }, {
-    tableName: 'PTLValoresUnitarios',
+    tableName: 'PTLItems',
     timestamps: false
   });
 };

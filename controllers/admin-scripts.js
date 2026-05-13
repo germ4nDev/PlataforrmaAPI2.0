@@ -1,68 +1,188 @@
-const fs = require('fs').promises;
-const path = require('path');
-const { Sequelize } = require('sequelize');
+// const fs = require('fs').promises;
+// const path = require('path');
+// const { Sequelize } = require('sequelize');
 
-const adminSequelize = new Sequelize(process.env.DB_NAME_MASTER, process.env.DB_USER, process.env.DB_PWD, {
-    host: process.env.DB_SERVER,
-    dialect: 'mssql',
-    logging: console.log,
-    dialectOptions: {
-        options: {
-            encrypt: true,
-            trustServerCertificate: true
-        }
-    }
-});
+// const adminSequelize = new Sequelize(process.env.DB_NAME_MASTER, process.env.DB_USER, process.env.DB_PWD, {
+//     host: process.env.DB_SERVER,
+//     dialect: 'mssql',
+//     logging: console.log,
+//     dialectOptions: {
+//         options: {
+//             encrypt: true,
+//             trustServerCertificate: true
+//         }
+//     }
+// });
 
-const ejecutarScript = async(req, res) => {
+// const ejecutarScript = async(req, res) => {
+//     try {
+//         const {...data } = req.body;
+//         const nombreArchivo = data.archivo;
+//         const nombreDb = data.database;
+
+//         if (!nombreArchivo) {
+//             return res.status(400).json({ ok: false, msg: 'Debe enviar el nombre del archivo.' });
+//         }
+//         if (nombreArchivo.includes('..') || nombreArchivo.includes('/')) {
+//             return res.status(403).json({ ok: false, msg: 'Nombre de archivo no permitido.' });
+//         }
+
+//         if (!nombreDb || !/^[a-zA-Z0-9_]+$/.test(nombreDb)) {
+//             return res.status(400).json({
+//                 ok: false,
+//                 msg: 'Debe enviar un nombreDb válido (solo letras, números y guiones bajos, sin espacios).'
+//             });
+//         }
+
+//         const rutaArchivo = path.join(
+//             __dirname,
+//             '..',
+//             'uploads',
+//             'plataforma',
+//             'scripts',
+//             nombreArchivo
+//         );
+
+//         try {
+//             await fs.access(rutaArchivo);
+//         } catch (err) {
+//             return res.status(404).json({ ok: false, msg: 'El archivo de script no existe.' });
+//         }
+
+//         let scriptSql = await fs.readFile(rutaArchivo, 'utf8');
+//         scriptSql = scriptSql.replace(/##NOMBRE_DB##/g, nombreDb);
+//         await adminSequelize.authenticate();
+//         await adminSequelize.query(scriptSql);
+
+//         return res.status(200).json({
+//             ok: true,
+//             msg: `El script ${nombreArchivo} se ejecutó correctamente para la base de datos: ${nombreDb}.`
+//         });
+
+//     } catch (error) {
+//         console.error('Error al ejecutar DDL:', error);
+//         const mensajeReal = error.original ? error.original.message : error.message;
+
+//         return res.status(500).json({
+//             ok: false,
+//             msg: 'Error al procesar el archivo o ejecutar el script.',
+//             detalle: mensajeReal
+//         });
+//     }
+// };
+
+// const ejecutarScriptMultiDb = async(req, res) => {
+//     try {
+//         const {...data } = req.body;
+//         const nombreArchivo = data.archivo;
+//         const nombresDbs = data.databases;
+
+//         if (!nombreArchivo || nombreArchivo.includes('..') || nombreArchivo.includes('/')) {
+//             return res.status(400).json({ ok: false, msg: 'Nombre de archivo inválido.' });
+//         }
+
+//         if (!Array.isArray(nombresDbs) || nombresDbs.length === 0) {
+//             return res.status(400).json({
+//                 ok: false,
+//                 msg: 'Debe enviar un arreglo nombresDbs con al menos una base de datos.'
+//             });
+//         }
+
+//         const rutaArchivo = path.join(
+//             __dirname,
+//             '..',
+//             'uploads',
+//             'plataforma',
+//             'scripts',
+//             nombreArchivo
+//         );
+//         let scriptBase;
+
+//         try {
+//             scriptBase = await fs.readFile(rutaArchivo, 'utf8');
+//         } catch (err) {
+//             return res.status(404).json({ ok: false, msg: 'El archivo de script no existe.' });
+//         }
+
+//         await adminSequelize.authenticate();
+//         const resultados = {
+//             exitosos: [],
+//             fallidos: []
+//         };
+
+//         for (const dbName of nombresDbs) {
+//             if (!/^[a-zA-Z0-9_]+$/.test(dbName)) {
+//                 resultados.fallidos.push({ bd: dbName, error: 'Nombre con formato inválido.' });
+//                 continue;
+//             }
+
+//             try {
+//                 const scriptAEjecutar = scriptBase.replace(/##NOMBRE_DB##/g, dbName);
+//                 await adminSequelize.query(scriptAEjecutar);
+//                 resultados.exitosos.push(dbName);
+//             } catch (error) {
+//                 const mensajeReal = error.original ? error.original.message : error.message;
+//                 resultados.fallidos.push({ bd: dbName, error: mensajeReal });
+//             }
+//         }
+
+//         if (resultados.fallidos.length === 0) {
+//             return res.status(200).json({
+//                 ok: true,
+//                 msg: 'Script ejecutado con éxito en TODAS las bases de datos.',
+//                 resultados
+//             });
+//         } else {
+//             return res.status(207).json({
+//                 ok: false,
+//                 msg: 'El proceso terminó, pero hubo errores en algunas bases de datos.',
+//                 resultados
+//             });
+//         }
+
+//     } catch (error) {
+//         console.error('Error general en ejecución masiva:', error);
+//         return res.status(500).json({
+//             ok: false,
+//             msg: 'Error crítico al procesar la solicitud.',
+//             detalle: error.message
+//         });
+//     }
+// };
+
+// module.exports = {
+//     ejecutarScript,
+//     ejecutarScriptMultiDb
+// };
+
+/*
+    Author: German Valencia
+*/
+const { response } = require('express');
+const scriptsService = require('../services/scripts.service'); // Ajusta la ruta a tu carpeta de servicios
+
+const ejecutarScript = async (req, res = response) => {
     try {
-        const {...data } = req.body;
-        const nombreArchivo = data.archivo;
-        const nombreDb = data.database;
+        const { archivo, database } = req.body;
 
-        if (!nombreArchivo) {
-            return res.status(400).json({ ok: false, msg: 'Debe enviar el nombre del archivo.' });
-        }
-        if (nombreArchivo.includes('..') || nombreArchivo.includes('/')) {
-            return res.status(403).json({ ok: false, msg: 'Nombre de archivo no permitido.' });
-        }
-
-        if (!nombreDb || !/^[a-zA-Z0-9_]+$/.test(nombreDb)) {
-            return res.status(400).json({
-                ok: false,
-                msg: 'Debe enviar un nombreDb válido (solo letras, números y guiones bajos, sin espacios).'
-            });
-        }
-
-        const rutaArchivo = path.join(
-            __dirname,
-            '..',
-            'uploads',
-            'plataforma',
-            'scripts',
-            nombreArchivo
-        );
-
-        try {
-            await fs.access(rutaArchivo);
-        } catch (err) {
-            return res.status(404).json({ ok: false, msg: 'El archivo de script no existe.' });
-        }
-
-        let scriptSql = await fs.readFile(rutaArchivo, 'utf8');
-        scriptSql = scriptSql.replace(/##NOMBRE_DB##/g, nombreDb);
-        await adminSequelize.authenticate();
-        await adminSequelize.query(scriptSql);
+        // Llamamos al servicio
+        const mensajeExito = await scriptsService.ejecutarScript(archivo, database);
 
         return res.status(200).json({
             ok: true,
-            msg: `El script ${nombreArchivo} se ejecutó correctamente para la base de datos: ${nombreDb}.`
+            msg: mensajeExito
         });
 
     } catch (error) {
         console.error('Error al ejecutar DDL:', error);
-        const mensajeReal = error.original ? error.original.message : error.message;
 
+        // Si el error fue lanzado por una de nuestras validaciones (400, 403, 404)
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ ok: false, msg: error.msg });
+        }
+
+        // Si fue un error nativo de Sequelize o Node (500)
+        const mensajeReal = error.original ? error.original.message : error.message;
         return res.status(500).json({
             ok: false,
             msg: 'Error al procesar el archivo o ejecutar el script.',
@@ -71,61 +191,14 @@ const ejecutarScript = async(req, res) => {
     }
 };
 
-const ejecutarScriptMultiDb = async(req, res) => {
+const ejecutarScriptMultiDb = async (req, res = response) => {
     try {
-        const {...data } = req.body;
-        const nombreArchivo = data.archivo;
-        const nombresDbs = data.databases;
+        const { archivo, databases } = req.body;
 
-        if (!nombreArchivo || nombreArchivo.includes('..') || nombreArchivo.includes('/')) {
-            return res.status(400).json({ ok: false, msg: 'Nombre de archivo inválido.' });
-        }
+        // Llamamos al servicio
+        const resultados = await scriptsService.ejecutarScriptMultiDb(archivo, databases);
 
-        if (!Array.isArray(nombresDbs) || nombresDbs.length === 0) {
-            return res.status(400).json({
-                ok: false,
-                msg: 'Debe enviar un arreglo nombresDbs con al menos una base de datos.'
-            });
-        }
-
-        const rutaArchivo = path.join(
-            __dirname,
-            '..',
-            'uploads',
-            'plataforma',
-            'scripts',
-            nombreArchivo
-        );
-        let scriptBase;
-
-        try {
-            scriptBase = await fs.readFile(rutaArchivo, 'utf8');
-        } catch (err) {
-            return res.status(404).json({ ok: false, msg: 'El archivo de script no existe.' });
-        }
-
-        await adminSequelize.authenticate();
-        const resultados = {
-            exitosos: [],
-            fallidos: []
-        };
-
-        for (const dbName of nombresDbs) {
-            if (!/^[a-zA-Z0-9_]+$/.test(dbName)) {
-                resultados.fallidos.push({ bd: dbName, error: 'Nombre con formato inválido.' });
-                continue;
-            }
-
-            try {
-                const scriptAEjecutar = scriptBase.replace(/##NOMBRE_DB##/g, dbName);
-                await adminSequelize.query(scriptAEjecutar);
-                resultados.exitosos.push(dbName);
-            } catch (error) {
-                const mensajeReal = error.original ? error.original.message : error.message;
-                resultados.fallidos.push({ bd: dbName, error: mensajeReal });
-            }
-        }
-
+        // Lógica de respuesta dependiendo de si hubo fallos parciales
         if (resultados.fallidos.length === 0) {
             return res.status(200).json({
                 ok: true,
@@ -133,7 +206,7 @@ const ejecutarScriptMultiDb = async(req, res) => {
                 resultados
             });
         } else {
-            return res.status(207).json({
+            return res.status(207).json({ // 207 Multi-Status
                 ok: false,
                 msg: 'El proceso terminó, pero hubo errores en algunas bases de datos.',
                 resultados
@@ -142,6 +215,13 @@ const ejecutarScriptMultiDb = async(req, res) => {
 
     } catch (error) {
         console.error('Error general en ejecución masiva:', error);
+
+        // Manejo de errores de validación
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({ ok: false, msg: error.msg });
+        }
+
+        // Manejo de errores críticos del servidor
         return res.status(500).json({
             ok: false,
             msg: 'Error crítico al procesar la solicitud.',

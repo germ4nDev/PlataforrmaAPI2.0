@@ -8,8 +8,12 @@ module.exports = (sequelize) => {
   return sequelize.define('PTLUsuariosRole', {
     usuarioRoleId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true
+    },
+    codigoUsuarioRole: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false
     },
     codigoUsuarioSC: {
       type: DataTypes.STRING,
