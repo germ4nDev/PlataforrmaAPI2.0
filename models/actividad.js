@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ActividadModel = (sequelize) => {
     return sequelize.define('PTLActividades', {
         actividadId: {
             type: DataTypes.INTEGER,
@@ -32,11 +33,12 @@ module.exports = (sequelize) => {
         },
         descripcion: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         estadoActividad: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         codigoUsuarioCreacion: {
             type: DataTypes.STRING,
@@ -58,4 +60,27 @@ module.exports = (sequelize) => {
         tableName: 'PTLActividades',
         timestamps: false
     });
+};
+
+const ActividadDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoActividad: data.codigoActividad,
+        codigoAplicacion: data.codigoAplicacion,
+        codigoSuite: data.codigoSuite,
+        codigoModulo: data.codigoModulo,
+        actividad: data.actividad,
+        descripcion: data.descripcion,
+        estadoActividad: data.estadoActividad ?? true,
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ActividadModel,
+    ActividadDTO
 };

@@ -6,18 +6,19 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const {
-    getLogsTransacciones,
-    getLogTransaccionById,
-    createLogTransaccion,
-} = require("../controllers/logs-transacciones");
+const { getLogs, getLogById, createLog } = require("../controllers/logs-transacciones");
 
 const router = Router();
 
-router.get("/", validarJWT, getLogsTransacciones);
+router.use(validarJWT);
 
-router.post( "/", validarJWT,  validarJWT, createLogTransaccion);
+router.get("/", getLogs);
+router.get("/:id", getLogById);
 
-router.get("/:id", validarJWT, validarJWT, getLogTransaccionById);
+router.post("/", [
+    check('tipoTransaccion', 'El tipo de transacción es obligatorio').not().isEmpty(),
+    check('monto', 'El monto debe ser un valor numérico').optional().isNumeric(),
+    validarCampos
+], createLog);
 
 module.exports = router;

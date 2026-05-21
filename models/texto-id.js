@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization (i18n)
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const TextoIDModel = (sequelize) => {
   return sequelize.define('PTLTextosID', {
     textoId: {
       type: DataTypes.INTEGER,
@@ -24,7 +25,8 @@ module.exports = (sequelize) => {
     },
     estadoTexto: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -47,4 +49,25 @@ module.exports = (sequelize) => {
     tableName: 'PTLTextosID',
     timestamps: false
   });
+};
+
+const TextoIDDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    idiomaId: data.idiomaId,
+    anclaTexto: data.anclaTexto?.trim() || 'CLAVE_HUÉRFANA',
+    textoValor: data.textoValor || '',
+    estadoTexto: data.estadoTexto ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  TextoIDModel,
+  TextoIDDTO
 };

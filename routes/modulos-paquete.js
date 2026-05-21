@@ -12,21 +12,29 @@ const {
   getModulosPaqueteByCode,
   createModulosPaquete,
   updateModulosPaquete,
-  deleteModulosPaquete,
+  deleteModulosPaquete
 } = require("../controllers/modulos-paquete");
 
 const router = Router();
 
-router.get("/", validarJWT, getModulosPaquete);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createModulosPaquete);
+router.get("/", getModulosPaquete);
 
-router.put("/:id", validarJWT, updateModulosPaquete);
+router.get("/:id", getModulosPaqueteById);
 
-router.delete("/:id", validarJWT, deleteModulosPaquete);
+router.get("/paquete/:codigoPaquete", getModulosPaqueteByCode);
 
-router.get("/:id", validarJWT, getModulosPaqueteById);
+router.post("/", [
+  check('codigoPaquete', 'El código del paquete es obligatorio').not().isEmpty(),
+  check('modulos', 'El arreglo de módulos es obligatorio').isArray(),
+  validarCampos
+], createModulosPaquete);
 
-router.get("/code/:code", validarJWT, getModulosPaqueteByCode);
+router.put("/:id", [
+  validarCampos
+], updateModulosPaquete);
+
+router.delete("/:id", deleteModulosPaquete);
 
 module.exports = router;

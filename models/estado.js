@@ -1,9 +1,10 @@
 /*
-    Author: John Castañeda
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const EstadoModel = (sequelize) => {
   return sequelize.define('PTLEstados', {
     estadoId: {
       type: DataTypes.INTEGER,
@@ -12,7 +13,7 @@ module.exports = (sequelize) => {
     },
     tipoEstado: {
       type: DataTypes.INTEGER,
-      default: 0,
+      defaultValue: 0,
       allowNull: false
     },
     nombreEstado: {
@@ -44,4 +45,24 @@ module.exports = (sequelize) => {
     tableName: 'PTLEstados',
     timestamps: false
   });
+};
+
+const EstadoDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    tipoEstado: data.tipoEstado || 0,
+    nombreEstado: data.nombreEstado,
+    siglaEstado: data.siglaEstado?.toUpperCase() || '', // Estandarizamos siglas a mayúsculas
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  EstadoModel,
+  EstadoDTO
 };

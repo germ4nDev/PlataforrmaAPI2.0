@@ -1,9 +1,10 @@
 /*
-    Author: John Castañeda
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ContenidoModel = (sequelize) => {
   return sequelize.define('PTLContenidosEL', {
     contenidoId: {
       type: DataTypes.INTEGER,
@@ -24,7 +25,7 @@ module.exports = (sequelize) => {
     },
     descripcionContenido: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     contenido: {
       type: DataTypes.STRING,
@@ -32,7 +33,8 @@ module.exports = (sequelize) => {
     },
     estadoContenido: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -55,4 +57,27 @@ module.exports = (sequelize) => {
     tableName: 'PTLContenidosEL',
     timestamps: false
   });
+};
+
+const ContenidoDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoContenido: data.codigoContenido,
+    codigoEnlace: data.codigoEnlace,
+    nombreContenido: data.nombreContenido,
+    descripcionContenido: data.descripcionContenido || '',
+    contenido: data.contenido || '',
+    estadoContenido: data.estadoContenido ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  ContenidoModel,
+  ContenidoDTO
 };

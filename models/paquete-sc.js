@@ -1,9 +1,10 @@
 /*
-    Author: John Castañeda
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Sequelize Syntax
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const PaqueteSCModel = (sequelize) => {
   return sequelize.define('PTLPaquetesSC', {
     suscriptoPaqueteId: {
       type: DataTypes.INTEGER,
@@ -23,18 +24,17 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     fechaInicio: {
-      type: DataTypes.DATE,
-      default: Date.now(),
+      type: DataTypes.STRING,
       allowNull: false
     },
     fechaVencimiento: {
-      type: DataTypes.DATE,
-      default: Date.now(),
+      type: DataTypes.STRING,
       allowNull: false
     },
     estadoLicencia: {
       type: DataTypes.BOOLEAN,
-      default: false,
+      defaultValue: true,
+      allowNull: false
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -57,4 +57,27 @@ module.exports = (sequelize) => {
     tableName: 'PTLPaquetesSC',
     timestamps: false
   });
+};
+
+const PaqueteSCDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoSuscriptor: data.codigoSuscriptor,
+    codigoPaquete: data.codigoPaquete,
+    codigoLicencia: data.codigoLicencia,
+    fechaInicio: data.fechaInicio || fechaActual,
+    fechaVencimiento: data.fechaVencimiento || fechaActual,
+
+    estadoLicencia: data.estadoLicencia ?? true,
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  PaqueteSCModel,
+  PaqueteSCDTO
 };

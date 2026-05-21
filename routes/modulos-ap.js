@@ -11,19 +11,28 @@ const {
     getModuloById,
     createModulo,
     updateModulo,
-    deleteModulo,
+    deleteModulo
 } = require("../controllers/modulos-ap");
 
 const router = Router();
 
-router.get("/", validarJWT, getModulos);
+// router.use(validarJWT);
 
-router.post( "/", validarJWT, createModulo);
+router.get("/", getModulos);
+router.get("/:id", validarJWT, getModuloById);
 
-router.put("/:id", validarJWT, updateModulo);
+router.post("/", [
+    check('codigoModulo', 'El código es obligatorio').not().isEmpty(),
+    check('nombreModulo', 'El nombre es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createModulo);
+
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateModulo);
 
 router.delete("/:id", validarJWT, deleteModulo);
-
-router.get("/:id", validarJWT, getModuloById);
 
 module.exports = router;

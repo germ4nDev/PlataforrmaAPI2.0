@@ -1,255 +1,65 @@
-// /*
-//     Author: German Valencia
-// */
-// const express = require('express');
-// const sequelize = require('../database/connection');
-// const PTLSuitesAP = require('../models/suites-ap')(sequelize);
-// const { io } = require('../index');
-
-// const getSuitesAP = async (req, res) => {
-//   try {
-//     const suites = await PTLSuitesAP.findAll();
-//     return res.status(201).json({
-//       ok: true,
-//       suites: suites,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Error al obtener Suites' });
-//   }
-// };
-
-// const getSuitesAPById = async (req, res) => {
-//   try {
-//     const codigoSuite = req.params.id;
-//     console.log('suite', codigoSuite);
-//     const suite = await PTLSuitesAP.findOne({
-//       where: { codigoSuite },
-//     });
-//     if (!suite) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: "No existe un suite por ese id",
-//       });
-//     }
-//     console.log('suite', suite);
-
-//     return res.status(201).json({
-//       ok: true,
-//       suite: suite,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: "Error al obtener suite" });
-//   }
-// };
-
-// const createSuiteAP = async (req, res = response) => {
-//   const { ...newRegistro } = req.body;
-//   try {
-//     const existeNombre = await PTLSuitesAP.findOne({
-//       where: { nombresuite: newRegistro.nombreSuite }
-//     });
-//     if (existeNombre) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'Ya existe un suite con ese nombre'
-//       });
-//     }
-//     const suiteDB = await PTLSuitesAP.create(newRegistro);
-//     io.emit('suites-actualizados', {
-//       action: 'create',
-//       msg: `Suite creada: ${suiteDB.nombreSuite}`
-//     });
-//     return res.status(201).json({
-//       ok: true,
-//       suite: suiteDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear el suite'
-//     });
-//   }
-// };
-
-// const updateSuiteAP = async (req, res = response) => {
-//   const { codigoSuite, ...data } = req.body;
-//   try {
-//     const suiteDB = await PTLSuitesAP.findOne({
-//       where: { codigoSuite }
-//     });
-//     if (!suiteDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un suite con ese ID'
-//       });
-//     }
-//     await PTLSuitesAP.update(data, {
-//       where: { codigoSuite }
-//     });
-//     const suiteActualizado = await PTLSuitesAP.findOne({ where: { codigoSuite } });
-//     io.emit('suites-actualizados', {
-//       action: 'update',
-//       msg: `Suite actualizada: ${suiteActualizado.nombreSuite}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       suite: suiteActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar el suite'
-//     });
-//   }
-// };
-
-// const deleteSuiteAP = async (req, res = response) => {
-//   try {
-//     const codigoSuite = req.params.id;
-//     const suiteDB = await PTLSuitesAP.findOne({
-//       where: { codigoSuite }
-//     });
-//     if (!suiteDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe una suite con ese ID'
-//       });
-//     }
-//     suiteEliminado = await PTLSuitesAP.destroy({
-//       where: { codigoSuite }
-//     });
-//     io.emit('suites-actualizados', {
-//       action: 'delete',
-//       msg: `Suite eliminada: ${suiteDB.nombreSuite}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       suite: suiteEliminado,
-//       msg: 'Suite eliminado correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar el suite'
-//     });
-//   }
-// };
-
-// module.exports = {
-//   getSuitesAP,
-//   getSuitesAPById,
-//   createSuiteAP,
-//   updateSuiteAP,
-//   deleteSuiteAP,
-// };
-
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern
 */
-const { response } = require('express');
-const suitesApService = require('../services/suites-ap.service'); // Ajusta la ruta a tu proyecto
+const { response } = require("express");
+const SuitesAPService = require("../services/suites-ap.service");
+const service = new SuitesAPService();
 
-const getSuitesAP = async (req, res = response) => {
+const getSuites = async (req, res = response) => {
   try {
-    const suites = await suitesApService.obtenerSuites();
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suites: suites,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener Suites' });
+    const suites = await service.getSuites();
+    res.status(200).json({ ok: true, suites });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ ok: false, msg: error.msg });
   }
 };
 
-const getSuitesAPById = async (req, res = response) => {
+const getSuiteById = async (req, res = response) => {
   try {
-    const suite = await suitesApService.obtenerSuitePorId(req.params.id);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suite: suite,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    res.status(500).json({ error: "Error al obtener suite" });
+    const { id } = req.params;
+    const respuesta = await service.getSuiteById(id);
+    res.status(200).json({ ok: true, respuesta });
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ ok: false, msg: error.msg });
   }
 };
 
-const createSuiteAP = async (req, res = response) => {
+const createSuite = async (req, res = response) => {
   try {
-    const suiteDB = await suitesApService.crearSuite(req.body);
-
-    return res.status(201).json({
-      ok: true,
-      suite: suiteDB
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al crear la suite' // Corregido el género a femenino
-    });
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const respuesta = await service.createSuite({ ...req.body, usuarioAccion });
+    res.status(201).json({ ok: true, respuesta });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
-const updateSuiteAP = async (req, res = response) => {
+const updateSuite = async (req, res = response) => {
   try {
-    const { codigoSuite, ...data } = req.body;
-
-    const suiteActualizada = await suitesApService.actualizarSuite(codigoSuite, data);
-
-    return res.status(200).json({
-      ok: true,
-      suite: suiteActualizada
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar la suite'
-    });
+    const { id } = req.params;
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const respuesta = await service.updateSuite(id, req.body, usuarioAccion);
+    res.status(200).json({ ok: true, respuesta });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
-const deleteSuiteAP = async (req, res = response) => {
+const deleteSuite = async (req, res = response) => {
   try {
-    const suiteEliminada = await suitesApService.eliminarSuite(req.params.id);
-
-    return res.status(200).json({
-      ok: true,
-      suite: suiteEliminada,
-      msg: 'Suite eliminada correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al eliminar la suite'
-    });
+    const { id } = req.params;
+    await service.deleteSuite(id);
+    res.status(200).json({ ok: true, msg: "Suite eliminada correctamente" });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 module.exports = {
-  getSuitesAP,
-  getSuitesAPById,
-  createSuiteAP,
-  updateSuiteAP,
-  deleteSuiteAP,
+  getSuites,
+  getSuiteById,
+  createSuite,
+  updateSuite,
+  deleteSuite
 };

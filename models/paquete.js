@@ -1,17 +1,21 @@
+/*
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & SQL Server precision
+*/
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const PaqueteModel = (sequelize) => {
   return sequelize.define('PTLPaquetes', {
-    paquetesId: {
+    paqueteId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
       allowNull: false
     },
     codigoPaquete: {
       type: DataTypes.STRING(200),
+      primaryKey: true,
       allowNull: false,
-      unique: true 
+      unique: true
     },
     nombrePaquete: {
       type: DataTypes.STRING(100),
@@ -27,15 +31,18 @@ module.exports = (sequelize) => {
     },
     costoPaquete: {
       type: DataTypes.DECIMAL(18, 2),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0.00
     },
     precioPaquete: {
       type: DataTypes.DECIMAL(18, 2),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0.00
     },
     precioPromocion: {
       type: DataTypes.DECIMAL(18, 2),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0.00
     },
     imagenPaquete: {
       type: DataTypes.STRING(100),
@@ -80,4 +87,33 @@ module.exports = (sequelize) => {
     tableName: 'PTLPaquetes',
     timestamps: false
   });
+};
+
+const PaqueteDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoPaquete: data.codigoPaquete,
+    nombrePaquete: data.nombrePaquete,
+    descripcionPaquete: data.descripcionPaquete || '',
+    acuerdoLicencia: data.acuerdoLicencia || '',
+    costoPaquete: data.costoPaquete || 0,
+    precioPaquete: data.precioPaquete || 0,
+    precioPromocion: data.precioPromocion || 0,
+    imagenPaquete: data.imagenPaquete || 'no-imagen.png',
+    iconoPaquete: data.iconoPaquete || 'default-icon',
+    colorPaquete: data.colorPaquete || '#FFFFFF', // Blanco por defecto para no romper estilos
+    promocion: data.promocion ?? false,
+    estadoPaquete: data.estadoPaquete ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  PaqueteModel,
+  PaqueteDTO
 };

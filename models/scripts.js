@@ -1,9 +1,10 @@
 /*
     Author: Juan Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ScriptModel = (sequelize) => {
     return sequelize.define('PTLScripts', {
         scriptId: {
             type: DataTypes.INTEGER,
@@ -31,13 +32,10 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        descripcionScript: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         estadoScript: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
@@ -60,4 +58,27 @@ module.exports = (sequelize) => {
         tableName: 'PTLScripts',
         timestamps: false
     });
+};
+
+const ScriptDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoScript: data.codigoScript,
+        codigoTipo: data.codigoTipo,
+        codigoAplicacion: data.codigoAplicacion,
+        nombreScript: data.nombreScript,
+        descripcionScript: data.descripcionScript || '',
+        estadoScript: data.estadoScript ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ScriptModel,
+    ScriptDTO
 };

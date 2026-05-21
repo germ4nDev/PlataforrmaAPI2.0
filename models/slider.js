@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const SliderInicioModel = (sequelize) => {
     return sequelize.define('PTLSliderInicio', {
         sliderId: {
             type: DataTypes.INTEGER,
@@ -16,7 +17,8 @@ module.exports = (sequelize) => {
         },
         urlSlider: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 'no-imagen.png'
         },
         descripcionSlider: {
             type: DataTypes.STRING,
@@ -24,7 +26,8 @@ module.exports = (sequelize) => {
         },
         estadoSlider: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
@@ -47,4 +50,25 @@ module.exports = (sequelize) => {
         tableName: 'PTLSliderInicio',
         timestamps: false
     });
+};
+
+const SliderInicioDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        nombreSlider: data.nombreSlider,
+        urlSlider: data.urlSlider || 'no-imagen.png',
+        descripcionSlider: data.descripcionSlider || '',
+        estadoSlider: data.estadoSlider ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    SliderInicioModel,
+    SliderInicioDTO
 };

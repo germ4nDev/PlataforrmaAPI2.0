@@ -7,23 +7,29 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-  getSuitesAP,
-  getSuitesAPById,
-  createSuiteAP,
-  updateSuiteAP,
-  deleteSuiteAP,
+  getSuites,
+  getSuiteById,
+  createSuite,
+  updateSuite,
+  deleteSuite
 } = require("../controllers/suites-ap");
 
 const router = Router();
 
-router.get("/", validarJWT, getSuitesAP);
+// router.use(validarJWT);
 
-router.post( "/", validarJWT, createSuiteAP);
+router.get("/", getSuites);
+router.get("/:id", getSuiteById);
 
-router.put("/:id", validarJWT, updateSuiteAP);
+router.post("/", [
+  check('nombreSuite', 'El nombre de la suite es obligatorio').not().isEmpty(),
+  validarCampos
+], createSuite);
 
-router.delete("/:id", validarJWT, deleteSuiteAP);
+router.put("/:id", [
+  validarCampos
+], updateSuite);
 
-router.get("/:id", validarJWT, getSuitesAPById);
+router.delete("/:id", deleteSuite);
 
 module.exports = router;

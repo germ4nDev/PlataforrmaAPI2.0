@@ -1,29 +1,32 @@
-/*
-    Author: German Valencia
-    Ruta: /api/clasesTcket
-*/
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getClasesTicket,
+    getClasesTickets,
     getClaseTicketById,
     createClaseTicket,
     updateClaseTicket,
-    deleteClaseTicket,
+    deleteClaseTicket
 } = require("../controllers/clases-ticket");
 
 const router = Router();
 
-router.get("/", validarJWT, getClasesTicket);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createClaseTicket);
+router.get("/", getClasesTickets);
+router.get("/:id", getClaseTicketById);
 
-router.put("/:id", validarJWT, updateClaseTicket);
+router.post("/", [
+    check('codigoClase', 'El código es obligatorio').not().isEmpty(),
+    check('claseTicket', 'El nombre de la clase es obligatorio').not().isEmpty(),
+    validarCampos
+], createClaseTicket);
 
-router.delete("/:id", validarJWT, deleteClaseTicket);
+router.put("/:id", [
+    validarCampos
+], updateClaseTicket);
 
-router.get("/:id", validarJWT, getClaseTicketById);
+router.delete("/:id", deleteClaseTicket);
 
 module.exports = router;

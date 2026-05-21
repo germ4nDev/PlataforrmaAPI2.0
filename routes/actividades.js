@@ -18,21 +18,33 @@ const {
 } = require("../controllers/actividades");
 
 const router = Router();
+// router.use(validarJWT);
 
-router.get("/", validarJWT, getActividades);
+router.get("/", getActividades);
 
-router.get("/:id", validarJWT, getActividadById);
+router.get("/:id", getActividadById);
 
-router.get("/app/:id", validarJWT, getActividadByCodeApp);
+router.get("/app/:id", getActividadByCodeApp);
 
-router.get("/suite/:id", validarJWT, getActividadByCodeSuite);
+router.get("/suite/:id", getActividadByCodeSuite);
 
-router.get("/modulo/:id", validarJWT, getActividadByCodeModulo);
+router.get("/modulo/:id", getActividadByCodeModulo);
 
-router.post("/", validarJWT, createActividad);
+router.post("/", [
+  check('codigoActividad', 'El código de actividad es obligatorio').not().isEmpty(),
+  check('codigoAplicacion', 'El código de la aplicacion es obligatorio').not().isEmpty(),
+  check('codigoSuite', 'El código de la suite es obligatorio').not().isEmpty(),
+  check('codigoModulo', 'El código del modulo es obligatorio').not().isEmpty(),
+  validarCampos
+], createActividad);
 
-router.put("/:id", validarJWT, updateActividad);
+router.put("/:id", [
+  check('codigoAplicacion', 'El código de la aplicacion es obligatorio').not().isEmpty(),
+  check('codigoSuite', 'El código de la suite es obligatorio').not().isEmpty(),
+  check('codigoModulo', 'El código del modulo es obligatorio').not().isEmpty(),
+  validarCampos
+], updateActividad)
 
-router.delete("/:id", validarJWT, deleteActividad);
+router.delete("/:id", deleteActividad);
 
 module.exports = router;

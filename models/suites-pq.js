@@ -1,13 +1,14 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Collision Fix
 */
 const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize) => {
+const SuitePQModel = (sequelize) => {
   return sequelize.define(
-    "PTLSuitesAP",
+    "PTLSuitesPQ",
     {
-      suitePqueteId: {
+      suitePaqueteId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -22,7 +23,7 @@ module.exports = (sequelize) => {
       },
       estadoSuite: {
         type: DataTypes.BOOLEAN,
-        default: false,
+        defaultValue: true,
         allowNull: false,
       },
       // AUDITORIA ------------
@@ -44,9 +45,28 @@ module.exports = (sequelize) => {
       }
     },
     {
-      tableName: "PTLSuitesAP",
+      tableName: "PTLSuitesPQ",
       timestamps: false,
     }
   );
 };
 
+const SuitePQDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoPaquete: data.codigoPaquete,
+    codigoSuite: data.codigoSuite,
+    estadoSuite: data.estadoSuite ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  SuitePQModel,
+  SuitePQDTO
+};

@@ -1,100 +1,101 @@
-const sequelize = require("../database/connection");
-const PTLBiblioteca = require("../models/biblioteca")(sequelize);
-const { io } = require("../index");
+/*
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern
+*/
+const { response } = require("express");
+const BibliotecasService = require("../services/bibliotecas.service");
+const service = new BibliotecasService();
 
-const obtenerBibliotecas = async () => {
-    return await PTLBiblioteca.findAll();
+const getBibliotecas = async (req, res = response) => {
+    try {
+        const bibliotecas = await service.getBibliotecas();
+        return res.status(200).json({
+            ok: true,
+            bibliotecas,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, error: "Error al get bibliotecas" });
+    }
 };
 
-const obtenerBibliotecaPorId = async (codigoBiblioteca) => {
-    const biblioteca = await PTLBiblioteca.findOne({
-        where: { codigoBiblioteca },
-    });
+const getBibliotecaByCode = async (req, res = response) => {
+    try {
+        const biblioteca = await service.getBibliotecaByCode(req.params.id);
 
-    if (!biblioteca) {
-        throw { statusCode: 404, msg: "No existe una biblioteca por ese id" };
+        if (!biblioteca) {
+            return res.status(404).json({ ok: false, msg: "No existe una biblioteca por el id" });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            biblioteca,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ ok: false, error: "Error al get biblioteca" });
     }
-
-    return biblioteca;
 };
 
-const crearBiblioteca = async (data) => {
-    const existente = await PTLBiblioteca.findOne({
-        where: { codigoAplicacion: data.codigoAplicacion }
-    });
+const createBiblioteca = async (req, res = response) => {
+    try {
+        const bibliotecaDB = await service.createBiblioteca(req.body);
 
-    if (existente) {
-        throw { statusCode: 400, msg: 'Ya existe una biblioteca para esa aplicacion' };
+        return res.status(201).json({
+            ok: true,
+            biblioteca: bibliotecaDB
+        });
+    } catch (err) {
+        console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
+        return res.status(500).json({ ok: false, error: 'Error al create la biblioteca' });
     }
-
-    const existeNombre = await PTLBiblioteca.findOne({
-        where: { nombreBiblioteca: data.nombreBiblioteca }
-    });
-
-    if (existeNombre) {
-        throw { statusCode: 400, msg: 'Ya existe una biblioteca con ese nombre' };
-    }
-
-    const nuevo = await PTLBiblioteca.create(data);
-
-    io.emit('bibliotecas-actualizadas', {
-        action: 'create',
-        msg: `biblioteca creado: ${nuevo.nombreBiblioteca}`
-    });
-
-    return nuevo;
 };
 
-const actualizarBiblioteca = async (codigoBiblioteca, data) => {
-    const bibliotecaDB = await PTLBiblioteca.findOne({
-        where: { codigoBiblioteca },
-    });
+const updateBiblioteca = async (req, res = response) => {
+    try {
+        const { codigoBiblioteca, ...data } = req.body;
+        const usuarioId = req.usuario?.id;
 
-    if (!bibliotecaDB) {
-        throw { statusCode: 404, msg: "No existe una biblioteca con ese ID" };
+        const bibliotecaActualizada = await service.updateBiblioteca(codigoBiblioteca, data, usuarioId);
+
+        return res.status(200).json({
+            ok: true,
+            biblioteca: bibliotecaActualizada
+        });
+    } catch (err) {
+        console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
+        return res.status(500).json({ ok: false, error: 'Error al update la biblioteca' });
     }
-
-    await PTLBiblioteca.update(data, {
-        where: { codigoBiblioteca },
-    });
-
-    const bibliotecaActualizada = await PTLBiblioteca.findOne({
-        where: { codigoBiblioteca },
-    });
-
-    io.emit("bibliotecas-actualizadas", {
-        action: "update",
-        msg: `Biblioteca actualizada: ${bibliotecaActualizada.nombreBiblioteca}`,
-    });
-
-    return bibliotecaActualizada;
 };
 
-const eliminarBiblioteca = async (codigoBiblioteca) => {
-    const bibliotecaDB = await PTLBiblioteca.findOne({
-        where: { codigoBiblioteca },
-    });
+const deleteBiblioteca = async (req, res = response) => {
+    try {
+        const bibliotecaEliminada = await service.deleteBiblioteca(req.params.id);
 
-    if (!bibliotecaDB) {
-        throw { statusCode: 404, msg: "No existe un biblioteca con ese ID" };
+        return res.status(200).json({
+            ok: true,
+            biblioteca: bibliotecaEliminada,
+            msg: 'Aplicación eliminada correctamente'
+        });
+    } catch (err) {
+        console.error(err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ ok: false, msg: err.msg });
+        }
+        return res.status(500).json({ ok: false, error: 'Error al delete la biblioteca' });
     }
-
-    const bibliotecaEliminada = await PTLBiblioteca.destroy({
-        where: { codigoBiblioteca },
-    });
-
-    io.emit("bibliotecas-actualizadas", {
-        action: "delete",
-        msg: `Biblioteca eliminada correctamente`,
-    });
-
-    return bibliotecaEliminada; // Se puede retornar por si se necesita
 };
 
 module.exports = {
-    obtenerBibliotecas,
-    obtenerBibliotecaPorId,
-    crearBiblioteca,
-    actualizarBiblioteca,
-    eliminarBiblioteca,
+    getBibliotecas,
+    getBibliotecaByCode,
+    createBiblioteca,
+    updateBiblioteca,
+    deleteBiblioteca,
 };

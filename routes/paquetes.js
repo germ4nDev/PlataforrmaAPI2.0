@@ -11,19 +11,26 @@ const {
     getPaqueteById,
     createPaquete,
     updatePaquete,
-    deletePaquete,
+    deletePaquete
 } = require("../controllers/paquetes");
 
 const router = Router();
 
-router.get("/", validarJWT, getPaquetes);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createPaquete);
+router.get("/", getPaquetes);
+router.get("/:id", getPaqueteById);
 
-router.put("/:id", validarJWT, updatePaquete);
+router.post("/", [
+    check('codigoPaquete', 'El código es obligatorio').not().isEmpty(),
+    check('nombrePaquete', 'El nombre es obligatorio').not().isEmpty(),
+    validarCampos
+], createPaquete);
 
-router.delete("/:id", validarJWT, deletePaquete);
+router.put("/:id", [
+    validarCampos
+], updatePaquete);
 
-router.get("/:id", validarJWT, getPaqueteById);
+router.delete("/:id", deletePaquete);
 
 module.exports = router;

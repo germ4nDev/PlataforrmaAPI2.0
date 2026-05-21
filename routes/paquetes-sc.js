@@ -8,23 +8,30 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getPaquetesSC,
-    getPaquetesSCById,
-    createPaqueteSC,
-    updatePaqueteSC,
-    deletePaqueteSC,
+    getPaquetes,
+    getPaqueteById,
+    createPaquete,
+    updatePaquete,
+    deletePaquete
 } = require("../controllers/paquetes-sc");
 
 const router = Router();
 
-router.get("/", validarJWT, getPaquetesSC);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createPaqueteSC);
+router.get("/", getPaquetes);
+router.get("/:id", getPaqueteById);
 
-router.put("/:id", validarJWT, updatePaqueteSC);
+router.post("/", [
+    check('codigoPaquete', 'El código del paquete es obligatorio').not().isEmpty(),
+    check('codigoSuscriptor', 'El código del suscriptor es obligatorio').not().isEmpty(),
+    validarCampos
+], createPaquete);
 
-router.delete("/:id", validarJWT, deletePaqueteSC);
+router.put("/:id", [
+    validarCampos
+], updatePaquete);
 
-router.get("/:id", validarJWT, getPaquetesSCById);
+router.delete("/:id", deletePaquete);
 
 module.exports = router;

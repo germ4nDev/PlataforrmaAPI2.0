@@ -1,105 +1,105 @@
-// Importaciones simuladas
+/*
+    Author: German Valencia
+    Refactored for: QPLUS Architecture - Auth & Security Flow
+*/
 const { response } = require('express');
 
-// SIMULACIÓN DE LA BASE DE DATOS/MODELO
-// En un entorno real, esto sería una conexión a MongoDB, Firestore, etc.
-const TokenBlacklist = {
-    // Lista de ejemplo de IDs de usuario que han sido revocados
-    // En la vida real, almacenarías el JWT ID (JTI) o el propio token.
+const TokenBlacklistService = {
     revokedUserIds: new Set(),
 
-    /** Agrega un ID de usuario a la lista de revocados. */
-    revokeUserSession: function(userId) {
-        // En un sistema real, harías una consulta para encontrar TODOS 
-        // los tokens activos de ese usuario y los invalidarías.
-        // Aquí simulamos que invalidamos su ID completo.
-        this.revokedUserIds.add(userId);
+    revokeSession: function (userId) {
+        this.revokedUserIds.add(userId.toString());
         return true;
     },
 
-    /** Verifica si un token o ID de usuario está revocado. */
-    isUserRevoked: function(userId) {
-        return this.revokedUserIds.has(userId);
+    isRevoked: function (userId) {
+        return this.revokedUserIds.has(userId.toString());
     }
 };
 
-// =================================================================
-// 1. Middleware para Verificar Rol de Administrador (Simulado)
-// =================================================================
-const verificarRolAdmin = (req, res, next) => {
-    // IMPORTANTE: En tu aplicación, esto DEBE verificar el token del 
-    // usuario que hace la solicitud y si su rol es 'ADMIN' o similar.
-    const usuarioSolicitante = req.usuario; // Suponemos que el middleware de JWT ya lo adjuntó
+/**
+ * Middleware: Verifica que el usuario tenga el rol de administrador.
+ * Dependencia: Requiere que el middleware de JWT se ejecute antes.
+ */
+const verificarRolAdmin = (req, res = response, next) => {
+    const usuarioSolicitante = req.usuario;
 
-    if (!usuarioSolicitante || usuarioSolicitante.rol !== 'ADMIN_MASTER') {
-        return res.status(403).json({
+    if (!usuarioSolicitante) {
+        return res.status(500).json({
             ok: false,
-            msg: 'Permiso denegado. Se requiere un rol de administrador para esta acción.'
+            msg: 'Se intentó verificar el rol sin validar el token primero.'
         });
     }
+
+    if (usuarioSolicitante.rol !== 'ADMIN_MASTER') {
+        return res.status(403).json({
+            ok: false,
+            msg: 'Acceso denegado. Se requiere un rol de administrador para esta acción.'
+        });
+    }
+
     next();
 };
 
-// =================================================================
-// 2. Controlador para Revocar la Sesión de un Usuario
-// =================================================================
+/**
+ * Middleware: Verifica si la sesión del usuario ha sido revocada.
+ * Dependencia: Requiere que el middleware de JWT se ejecute antes.
+ */
+const checkBlacklist = (req, res = response, next) => {
+    const userId = req.usuario?.uid || req.uid;
+
+    if (!userId) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'No se pudo identificar al usuario para validar la sesión.'
+        });
+    }
+
+    if (TokenBlacklistService.isRevoked(userId)) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'Su sesión ha sido revocada por un administrador. Por favor, inicie sesión nuevamente.'
+        });
+    }
+
+    next();
+};
+
+/**
+ * Controlador: Revoca la sesión activa de un usuario específico.
+ */
 const revocarSesionUsuario = async (req, res = response) => {
-    // ID del usuario cuya sesión se quiere cerrar
-    const userIdToRevoke = req.params.id; 
+    const userIdToRevoke = req.params.id;
 
     if (!userIdToRevoke) {
         return res.status(400).json({
             ok: false,
-            msg: 'Se requiere el ID del usuario cuya sesión se desea cerrar.'
+            msg: 'El ID del usuario es obligatorio para revocar la sesión.'
         });
     }
 
     try {
-        // SIMULACIÓN: Invalida el usuario en la lista negra
-        TokenBlacklist.revokeUserSession(userIdToRevoke);
+        TokenBlacklistService.revokeSession(userIdToRevoke);
 
-        // En un sistema real, aquí podrías registrar la acción en un log de auditoría.
+        // TODO (QPLUS): Aquí podrías insertar un registro en PTLLogActividadesAP
+        // detallando qué administrador revocó a qué usuario.
 
         res.json({
             ok: true,
-            msg: `Sesión(es) del usuario ${userIdToRevoke} revocada(s) exitosamente.`,
-            // NOTA: El efecto no es inmediato; se verá en la próxima petición del usuario revocado.
+            msg: `Las sesiones del usuario con ID ${userIdToRevoke} han sido revocadas exitosamente.`
         });
 
     } catch (error) {
-        console.error('Error al intentar revocar la sesión:', error);
-        return res.status(500).json({
+        console.error('Error en revocarSesionUsuario:', error);
+        res.status(500).json({
             ok: false,
-            msg: 'Error interno del servidor al revocar la sesión.'
+            msg: 'Error interno del servidor al intentar revocar la sesión. Contacte al soporte.'
         });
     }
-};
-
-// =================================================================
-// 3. Middleware para Chequear la Blacklist (Debería ir DESPUÉS 
-//    del middleware de verificación de JWT)
-// =================================================================
-const checkBlacklist = (req, res, next) => {
-    const userId = req.usuario.uid; // Suponemos que el UID del usuario está en el token.
-
-    if (TokenBlacklist.isUserRevoked(userId)) {
-        return res.status(401).json({
-            ok: false,
-            msg: 'Su sesión ha sido revocada. Por favor, inicie sesión nuevamente.'
-        });
-    }
-    next();
 };
 
 module.exports = {
-    revocarSesionUsuario,
     verificarRolAdmin,
-    checkBlacklist
+    checkBlacklist,
+    revocarSesionUsuario
 };
-
-/*
- * Uso en tu archivo de rutas (ejemplo):
- * router.delete('/sesiones/revocar/:id', verificarRolAdmin, revocarSesionUsuario);
- * * Uso del middleware de Blacklist (Debe ir en TODAS las rutas protegidas):
- * router.get('/ruta-protegida', middlewareJWT, checkBlacklist, miControlador);
-*/

@@ -8,7 +8,7 @@ const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getSuscriptores,
-    getSuscriptoresById,
+    getSuscriptorById,
     createSuscriptor,
     updateSuscriptor,
     deleteSuscriptor
@@ -16,14 +16,24 @@ const {
 
 const router = Router();
 
-router.get("/", validarJWT, getSuscriptores);
+// router.use(validarJWT);
 
-router.post( "/", validarJWT, createSuscriptor);
+router.get("/", getSuscriptores);
 
-router.put("/:id", validarJWT, updateSuscriptor);
+router.get("/:id", validarJWT, getSuscriptorById);
+
+router.post("/", [
+    check('nombreSuscriptor', 'El nombre es obligatorio').not().isEmpty(),
+    check('identificacionSuscriptor', 'La identificación es obligatoria').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createSuscriptor);
+
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateSuscriptor);
 
 router.delete("/:id", validarJWT, deleteSuscriptor);
-
-router.get("/:id", validarJWT, getSuscriptoresById);
 
 module.exports = router;

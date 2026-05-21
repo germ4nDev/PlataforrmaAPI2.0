@@ -1,10 +1,10 @@
 /*
     Author: German Valencia
-    Actualización: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ConexionesBDModel = (sequelize) => {
     return sequelize.define('PTLConexionesBD', {
         conexionId: {
             type: DataTypes.INTEGER,
@@ -49,7 +49,7 @@ module.exports = (sequelize) => {
         },
         BDPort: {
             type: DataTypes.INTEGER,
-            default: 0,
+            defaultValue: 0,
             allowNull: false
         },
         descripcionConexion: {
@@ -58,7 +58,8 @@ module.exports = (sequelize) => {
         },
         estadoConexion: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
@@ -81,4 +82,33 @@ module.exports = (sequelize) => {
         tableName: 'PTLConexionesBD',
         timestamps: false
     });
+};
+
+const ConexionesBDDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoConexion: data.codigoConexion,
+        codigoSuscriptor: data.codigoSuscriptor,
+        codigoPaquete: data.codigoPaquete,
+        codigoAplicacion: data.codigoAplicacion,
+        nombreConexion: data.nombreConexion,
+        nombreServidor: data.nombreServidor,
+        BDNombre: data.BDNombre,
+        BDUser: data.BDUser,
+        BDPassword: data.BDPassword,
+        BDPort: data.BDPort || 0,
+        descripcionConexion: data.descripcionConexion || '',
+        estadoConexion: data.estadoConexion ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ConexionesBDModel,
+    ConexionesBDDTO
 };

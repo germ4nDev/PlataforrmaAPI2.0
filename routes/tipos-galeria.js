@@ -7,23 +7,29 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getTipoGaleria,
+    getTiposGaleria,
     getTipoGaleriaById,
     createTipoGaleria,
     updateTipoGaleria,
-    deleteTipoGaleria,
+    deleteTipoGaleria
 } = require("../controllers/tipos-galeria");
 
 const router = Router();
 
-router.get("/", validarJWT, getTipoGaleria);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createTipoGaleria);
+router.get("/", getTiposGaleria);
+router.get("/:id", getTipoGaleriaById);
 
-router.put("/:id", validarJWT, updateTipoGaleria);
+router.post("/", [
+    check('nombreTipo', 'El nombre del tipo es obligatorio').not().isEmpty(),
+    validarCampos
+], createTipoGaleria);
 
-router.delete("/:id", validarJWT, deleteTipoGaleria);
+router.put("/:id", [
+    validarCampos
+], updateTipoGaleria);
 
-router.get("/:id", validarJWT, getTipoGaleriaById);
+router.delete("/:id", deleteTipoGaleria);
 
 module.exports = router;

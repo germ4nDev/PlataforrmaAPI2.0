@@ -1,251 +1,65 @@
-// /*
-//     Author: German Valencia
-//     Actualización: John Castañeda
-// */
-// const express = require('express');
-// const sequelize = require('../database/connection');
-// const PTLPaquetesSC = require('../models/paquete-sc')(sequelize);
-// const { io } = require('../index');
-
-// // Obtener todos los roles
-// const getPaquetesSC = async (req, res) => {
-//   try {
-//     const suscritorPaquetes = await PTLPaquetesSC.findAll();
-//     return res.status(201).json({
-//       ok: true,
-//       suscritorPaquetes: suscritorPaquetes,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Error al obtener los pasuscritorPuetes' });
-//   }
-// };
-
-// const getPaquetesSCById = async (req, res) => {
-//   try {
-//     const suscriptorPaqueteId = req.params.id;
-//     const suscriptorPaquete = await PTLPaquetesSC.findOne({
-//       where: {
-//         suscriptorPaqueteId: suscriptorPaqueteId,
-//       },
-//     });
-//     if (!suscriptorPaquete) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: "No existe un suscriptorPaquete por ese id",
-//       });
-//     }
-//     return res.status(201).json({
-//       ok: true,
-//       suscriptorPaquete: suscriptorPaquete,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: "Error al obtener suscriptorPaquete" });
-//   }
-// };
-
-// // Crear un nuevo rol
-// const createPaqueteSC = async (req, res = response) => {
-//   const { ...newRegistro } = req.body;
-//   try {
-//     const paqueteSCDB = await PTLPaquetesSC.create(newRegistro);
-//     io.emit('paquetes-sc-actualizados', {
-//       action: 'create',
-//       msg: `Paquete SC creado: ${paqueteSCDB.suscriptoPaqueteId}`
-//     });
-//     return res.status(201).json({
-//       ok: true,
-//       suscriptorPaquete: paqueteSCDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear el suscriptorPaquete'
-//     });
-//   }
-// };
-
-// // Actualizar un nuevo rol
-// const updatePaqueteSC = async (req, res = response) => {
-//   try {
-//     const { suscriptorPaqueteId, ...data } = req.body;
-//     const paqueteSCDB = await PTLPaquetesSC.findOne({
-//       where: { suscriptorPaqueteId }
-//     });
-//     if (!paqueteSCDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un suscrptorPaquete con ese ID'
-//       });
-//     }
-//     await PTLPaquetesSC.update(data, {
-//       where: { suscriptorPaqueteId }
-//     });
-//     const suscrptorPaqueteActualizado = await PTLPaquetesSC.findOne({ where: { suscriptorPaqueteId } });
-//     io.emit('paquetes-sc-actualizados', {
-//       action: 'update',
-//       msg: `Paquete SC acturalizados: ${suscrptorPaqueteActualizado.suscriptoPaqueteId}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       suscrptorPaquete: suscrptorPaqueteActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar el suscrptorPaquete'
-//     });
-//   }
-// };
-
-// // Borrar un nuevo rol
-// const deletePaqueteSC = async (req, res = response) => {
-//   try {
-//     const suscriptorPaqueteId = req.params.id;
-//     const paqueteSCDB = await PTLPaquetesSC.findOne({
-//       where: { suscriptorPaqueteId }
-//     });
-//     if (!paqueteSCDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un suscriptorPaquete con ese ID'
-//       });
-//     }
-//     suscriptorPaqueteEliminado = await PTLPaquetesSC.destroy({
-//       where: { suscriptorPaqueteId }
-//     });
-//     io.emit('paquetes-sc-actualizados', {
-//       action: 'delete',
-//       msg: `Paquete SC eliminado: ${suscriptorPaqueteEliminado.suscriptoPaqueteId}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       usuario: suscriptorPaqueteEliminado,
-//       msg: 'suscriptorPaquete eliminado correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar el suscriptorPaquete'
-//     });
-//   }
-// };
-
-// module.exports = {
-//   getPaquetesSC,
-//   getPaquetesSCById,
-//   createPaqueteSC,
-//   updatePaqueteSC,
-//   deletePaqueteSC,
-// };
-
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Refactored for: QPLUS DTO Pattern
 */
-const { response } = require('express');
-const paquetesScService = require('../services/paquetes-sc.service'); // Ajusta la ruta a tu proyecto
+const { response } = require("express");
+const PaqueteSCService = require("../services/paquetes-sc.service");
+const service = new PaqueteSCService();
 
-const getPaquetesSC = async (req, res = response) => {
+const getPaquetes = async (req, res = response) => {
   try {
-    const suscriptoresPaquetes = await paquetesScService.obtenerPaquetesSC();
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suscriptoresPaquetes: suscriptoresPaquetes,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener los suscriptoresPaquetes' }); // Corregido el mensaje de error
+    const paquetes = await service.getPaquetesSC();
+    res.status(200).json({ ok: true, paquetes });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ ok: false, msg: error.msg });
   }
 };
 
-const getPaquetesSCById = async (req, res = response) => {
+const getPaqueteById = async (req, res = response) => {
   try {
-    const suscriptorPaquete = await paquetesScService.obtenerPaqueteSCPorId(req.params.id);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suscriptorPaquete: suscriptorPaquete,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    res.status(500).json({ error: "Error al obtener suscriptorPaquete" });
+    const { id } = req.params;
+    const paquete = await service.getPaqueteSCById(id);
+    res.status(200).json({ ok: true, paquete });
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ ok: false, msg: error.msg });
   }
 };
 
-const createPaqueteSC = async (req, res = response) => {
+const createPaquete = async (req, res = response) => {
   try {
-    const paqueteSCDB = await paquetesScService.crearPaqueteSC(req.body);
-
-    return res.status(201).json({
-      ok: true,
-      suscriptorPaquete: paqueteSCDB
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al crear el suscriptorPaquete'
-    });
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const paquete = await service.createPaqueteSC({ ...req.body, usuarioAccion });
+    res.status(201).json({ ok: true, paquete });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
-const updatePaqueteSC = async (req, res = response) => {
+const updatePaquete = async (req, res = response) => {
   try {
-    const { suscriptorPaqueteId, ...data } = req.body;
-
-    const suscriptorPaqueteActualizado = await paquetesScService.actualizarPaqueteSC(suscriptorPaqueteId, data);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suscriptorPaquete: suscriptorPaqueteActualizado
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar el suscriptorPaquete'
-    });
+    const { id } = req.params;
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const paquete = await service.updatePaqueteSC(id, req.body, usuarioAccion);
+    res.status(200).json({ ok: true, paquete });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
-const deletePaqueteSC = async (req, res = response) => {
+const deletePaquete = async (req, res = response) => {
   try {
-    const suscriptorPaqueteEliminado = await paquetesScService.eliminarPaqueteSC(req.params.id);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      suscriptorPaquete: suscriptorPaqueteEliminado, // Corregido: decía 'usuario'
-      msg: 'SuscriptorPaquete eliminado correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al eliminar el suscriptorPaquete'
-    });
+    const { id } = req.params;
+    await service.deletePaqueteSC(id);
+    res.status(200).json({ ok: true, msg: "Paquete eliminado correctamente" });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 module.exports = {
-  getPaquetesSC,
-  getPaquetesSCById,
-  createPaqueteSC,
-  updatePaqueteSC,
-  deletePaqueteSC,
+  getPaquetes,
+  getPaqueteById,
+  createPaquete,
+  updatePaquete,
+  deletePaquete
 };

@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Sequelize Syntax
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ModuloAPModel = (sequelize) => {
     return sequelize.define('PTLModulosAP', {
         moduloId: {
             type: DataTypes.INTEGER,
@@ -31,8 +32,8 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         precioModulo: {
-            type: DataTypes.NUMBER,
-            default: 0,
+            type: DataTypes.DECIMAL(18, 2),
+            defaultValue: 0,
             allowNull: false
         },
         rutaModulo: {
@@ -45,7 +46,7 @@ module.exports = (sequelize) => {
         },
         hijos: {
             type: DataTypes.BOOLEAN,
-            default: false,
+            defaultValue: false,
             allowNull: false
         },
         icon: {
@@ -58,7 +59,7 @@ module.exports = (sequelize) => {
         },
         estadoModulo: {
             type: DataTypes.BOOLEAN,
-            default: false,
+            defaultValue: true,
             allowNull: false
         },
         // AUDITORIA ------------
@@ -82,4 +83,33 @@ module.exports = (sequelize) => {
         tableName: 'PTLModulosAP',
         timestamps: false
     });
+};
+
+const ModuloAPDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoModulo: data.codigoModulo,
+        codigoAplicacion: data.codigoAplicacion,
+        codigoSuite: data.codigoSuite,
+        codigoPadre: data.codigoPadre || '',
+        nombreModulo: data.nombreModulo,
+        precioModulo: data.precioModulo || 0,
+        rutaModulo: data.rutaModulo || '',
+        descripcionModulo: data.descripcionModulo || '',
+        hijos: data.hijos ?? false,
+        icon: data.icon || 'default-icon',
+        translateKey: data.translateKey,
+        estadoModulo: data.estadoModulo ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ModuloAPModel,
+    ModuloAPDTO
 };

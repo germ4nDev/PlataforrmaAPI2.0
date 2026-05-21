@@ -8,23 +8,30 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getTicketsAP,
-    getTicketsAPById,
-    createTicketAP,
-    updateTicketAP,
-    deleteTicketAP,
+    getTickets,
+    getTicketById,
+    createTicket,
+    updateTicket,
+    deleteTicket
 } = require("../controllers/tickets-ap");
 
 const router = Router();
 
-router.get("/", validarJWT, getTicketsAP);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createTicketAP);
+router.get("/", getTickets);
+router.get("/:id", getTicketById);
 
-router.put("/:id", validarJWT, updateTicketAP);
+router.post("/", [
+    check('nombreTicket', 'El nombre del ticket es obligatorio').not().isEmpty(),
+    check('descripcionTicket', 'La descripción es obligatoria').not().isEmpty(),
+    validarCampos
+], createTicket);
 
-router.delete("/:id", validarJWT, deleteTicketAP);
+router.put("/:id", [
+    validarCampos
+], updateTicket);
 
-router.get("/:id", validarJWT, getTicketsAPById);
+router.delete("/:id", deleteTicket);
 
 module.exports = router;

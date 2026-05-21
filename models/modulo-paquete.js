@@ -1,10 +1,10 @@
 /*
     Author: German Valencia
-    Model adjusted to match SQL Server schema (Screenshot 2026-03-14)
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & SQL Server precision
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ModuloPQModel = (sequelize) => {
     return sequelize.define('PTLModulosPQ', {
         moduloPQId: {
             type: DataTypes.INTEGER,
@@ -33,7 +33,8 @@ module.exports = (sequelize) => {
         },
         estadoModuloPQ: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
@@ -56,4 +57,27 @@ module.exports = (sequelize) => {
         tableName: 'PTLModulosPQ',
         timestamps: false
     });
+};
+
+const ModuloPQDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoModuloPQ: data.codigoModuloPQ,
+        codigoAplicacion: data.codigoAplicacion,
+        codigoSuite: data.codigoSuite,
+        codigoModulo: data.codigoModulo,
+        codigoPaquete: data.codigoPaquete,
+        estadoModuloPQ: data.estadoModuloPQ ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ModuloPQModel,
+    ModuloPQDTO
 };

@@ -7,23 +7,30 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-  getTextosID,
-  getTextosIDById,
-  createTextoID,
-  updateTextoID,
-  deleteTextoID,
+  getTextos,
+  getTextoById,
+  createTexto,
+  updateTexto,
+  deleteTexto
 } = require("../controllers/textos-id");
 
 const router = Router();
 
-router.get("/", validarJWT, getTextosID);
+router.use(validarJWT);
 
-router.get("/:id", validarJWT, validarJWT, getTextosIDById);
+router.get("/", getTextos);
+router.get("/:id", getTextoById);
 
-router.post( "/", validarJWT,  validarJWT, createTextoID);
+router.post("/", [
+  check('anclaTexto', 'El ancla del texto es obligatoria').not().isEmpty(),
+  check('contenidoTexto', 'El contenido del texto es obligatorio').not().isEmpty(),
+  validarCampos
+], createTexto);
 
-router.put("/:id", validarJWT,validarJWT, updateTextoID);
+router.put("/:id", [
+  validarCampos
+], updateTexto);
 
-router.delete("/:id", validarJWT, [validarJWT], deleteTextoID);
+router.delete("/:id", deleteTexto);
 
 module.exports = router;

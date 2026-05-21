@@ -1,6 +1,6 @@
 /*
-    Author: John Castañeda
-    Ruta: /api/enlaces-st
+    Author: German Valencia
+    Ruta: /api/seguimientos
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
@@ -11,19 +11,26 @@ const {
     getEnlaceById,
     createEnlace,
     updateEnlace,
-    deleteEnlace,
+    deleteEnlace
 } = require("../controllers/enlaces-st");
 
 const router = Router();
 
-router.get("/", validarJWT, getEnlaces);
+router.use(validarJWT);
 
-router.get("/:id", validarJWT, getEnlaceById);
+router.get("/", getEnlaces);
+router.get("/:id", getEnlaceById);
 
-router.post( "/", validarJWT, createEnlace);
+router.post("/", [
+    check('nombreEnlace', 'El nombre del enlace es obligatorio').not().isEmpty(),
+    check('urlEnlace', 'La URL es obligatoria').not().isEmpty(),
+    validarCampos
+], createEnlace);
 
-router.put("/:id", validarJWT,  updateEnlace);
+router.put("/:id", [
+    validarCampos
+], updateEnlace);
 
-router.delete("/:id", validarJWT, deleteEnlace);
+router.delete("/:id", deleteEnlace);
 
 module.exports = router;
