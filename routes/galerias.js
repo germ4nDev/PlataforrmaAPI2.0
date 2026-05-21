@@ -11,19 +11,28 @@ const {
     getGaleriaById,
     createGaleria,
     updateGaleria,
-    deleteGaleria,
+    deleteGaleria
 } = require("../controllers/galerias");
 
 const router = Router();
 
-router.get("/", validarJWT, getGalerias);
+// router.use(validarJWT);
 
-router.post("/", validarJWT, createGaleria);
-
-router.put("/:id", validarJWT, updateGaleria);
-
-router.delete("/:id", validarJWT, deleteGaleria);
+router.get("/", getGalerias);
 
 router.get("/:id", validarJWT, getGaleriaById);
+
+router.post("/", [
+    check('nombreGaleria', 'El nombre es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createGaleria);
+
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateGaleria);
+
+router.delete("/:id", validarJWT, deleteGaleria);
 
 module.exports = router;

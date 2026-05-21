@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const SitioAPModel = (sequelize) => {
   return sequelize.define('PTLSitiosAP', {
     sitioId: {
       type: DataTypes.INTEGER,
@@ -29,15 +30,18 @@ module.exports = (sequelize) => {
     },
     urlSitio: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'http://localhost'
     },
     estadoSitio: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     puertoSitio: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 80
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -60,4 +64,28 @@ module.exports = (sequelize) => {
     tableName: 'PTLSitiosAP',
     timestamps: false
   });
+};
+
+const SitioAPDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoSitio: data.codigoSitio,
+    codigoAplicacion: data.codigoAplicacion,
+    nombreSitio: data.nombreSitio,
+    descripcionSitio: data.descripcionSitio || '',
+    urlSitio: data.urlSitio || 'http://localhost',
+    puertoSitio: data.puertoSitio || 80,
+    estadoSitio: data.estadoSitio ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  SitioAPModel,
+  SitioAPDTO
 };

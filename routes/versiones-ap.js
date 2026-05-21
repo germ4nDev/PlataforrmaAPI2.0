@@ -1,29 +1,37 @@
 /*
     Author: German Valencia
-    Ruta: /api/usuarios
+    Refactored for: QPLUS Architecture Pattern & Strict Validations
+    Ruta: /api/versiones-ap
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
+
 const {
     getVersionesAP,
-    getVersionesAPById,
+    getVersionAPById,
     createVersionAP,
     updateVersionAP,
-    deleteVersionAP,
+    deleteVersionAP
 } = require("../controllers/versiones-ap");
 
 const router = Router();
 
-router.get("/", validarJWT, getVersionesAP);
+router.use(validarJWT);
 
-router.post( "/", validarJWT,  createVersionAP);
+router.get("/", getVersionesAP);
+router.get("/:id", getVersionAPById);
 
-router.put("/:id", validarJWT, updateVersionAP);
+router.post("/", [
+    check('nombreVersion', 'El nombre de la versión es obligatorio').not().isEmpty(),
+    validarCampos
+], createVersionAP);
 
-router.delete("/:id", validarJWT, deleteVersionAP);
+router.put("/:id", [
+    validarCampos
+], updateVersionAP);
 
-router.get("/:id", validarJWT, getVersionesAPById);
+router.delete("/:id", deleteVersionAP);
 
 module.exports = router;

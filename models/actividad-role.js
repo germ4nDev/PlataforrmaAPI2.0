@@ -1,49 +1,3 @@
-// /*
-//     Author: German Valencia
-// */
-// const { DataTypes } = require('sequelize');
-
-// module.exports = (sequelize) => {
-//     return sequelize.define('PTLActividadesRoles', {
-//         actividadRoleId: {
-//             type: DataTypes.INTEGER,
-//             autoIncrement: true
-//         },
-//         codigoActividad: {
-//             type: DataTypes.STRING,
-//             primaryKey: true,
-//             allowNull: false
-//         },
-//         codigoRole: {
-//             type: DataTypes.STRING,
-//             allowNull: false
-//         },
-//         permiso: {
-//             type: DataTypes.BOOLEAN,
-//             allowNull: false
-//         },
-//         codigoUsuarioCreacion: {
-//             type: DataTypes.STRING,
-//             allowNull: false
-//         },
-//         fechaCreacion: {
-//             type: DataTypes.STRING,
-//             allowNull: false
-//         },
-//         codigoUsuarioModificacion: {
-//             type: DataTypes.STRING,
-//             allowNull: false
-//         },
-//         fechaModificacion: {
-//             type: DataTypes.STRING,
-//             allowNull: false
-//         }
-//     }, {
-//         tableName: 'PTLActividadesRoles',
-//         timestamps: false
-//     });
-// };
-
 /*
     Author: German Valencia
     Refactored for: QPLUS DTO Pattern
@@ -51,10 +5,6 @@
 const Joi = require('joi');
 const { DataTypes } = require('sequelize');
 
-/**
- * 1. ESQUEMA DE VALIDACIÓN (Joi)
- * Protege la integridad de los datos antes de que lleguen a SQL.
- */
 const ActividadRoleSchema = Joi.object({
     codigoActividad: Joi.string().max(50).required()
         .messages({ 'any.required': 'El código de actividad es obligatorio.' }),
@@ -69,10 +19,6 @@ const ActividadRoleSchema = Joi.object({
     codigoUsuario: Joi.string().optional().default('SISTEMA'),
 });
 
-/**
- * 2. TRANSFORMACIÓN DTO
- * Limpia y normaliza los datos para la API y el Servicio.
- */
 const ActividadRoleDTO = (rawData) => {
     const { error, value } = ActividadRoleSchema.validate(rawData, { abortEarly: false });
 
@@ -83,12 +29,10 @@ const ActividadRoleDTO = (rawData) => {
         };
     }
 
-    // Retornamos el objeto mapeado exactamente como lo espera la base de datos
     return {
         codigoActividad: value.codigoActividad.trim(),
         codigoRole: value.codigoRole.trim(),
         permiso: value.permiso,
-        // Auditoría automática
         codigoUsuarioCreacion: value.codigoUsuario,
         fechaCreacion: new Date().toISOString(),
         codigoUsuarioModificacion: value.codigoUsuario,
@@ -96,10 +40,6 @@ const ActividadRoleDTO = (rawData) => {
     };
 };
 
-/**
- * 3. MODELO DE SEQUELIZE
- * Definición técnica de la tabla SQL.
- */
 const ActividadRoleModel = (sequelize) => {
     return sequelize.define('PTLActividadesRoles', {
         actividadRoleId: {
@@ -114,7 +54,7 @@ const ActividadRoleModel = (sequelize) => {
         },
         codigoRole: {
             type: DataTypes.STRING(50),
-            primaryKey: true, // Si es una tabla intermedia, usualmente ambos son PK
+            primaryKey: true,
             allowNull: false
         },
         permiso: {

@@ -11,19 +11,26 @@ const {
     getServidorById,
     createServidor,
     updateServidor,
-    deleteServidor,
+    deleteServidor
 } = require("../controllers/servidores");
 
 const router = Router();
 
-router.get("/", validarJWT, getServidores);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createServidor);
+router.get("/", getServidores);
+router.get("/:id", getServidorById);
 
-router.put("/:id", validarJWT, updateServidor);
+router.post("/", [
+    check('nombreServidor', 'El nombre es obligatorio').not().isEmpty(),
+    check('ipServidor', 'La IP del servidor es obligatoria').not().isEmpty(),
+    validarCampos
+], createServidor);
 
-router.delete("/:id", validarJWT, deleteServidor);
+router.put("/:id", [
+    validarCampos
+], updateServidor);
 
-router.get("/:id", validarJWT, getServidorById);
+router.delete("/:id", deleteServidor);
 
 module.exports = router;

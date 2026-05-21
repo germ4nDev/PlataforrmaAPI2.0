@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ColorSettingsModel = (sequelize) => {
     return sequelize.define('PTLColorSettings', {
         colorNavId: {
             type: DataTypes.INTEGER,
@@ -28,7 +29,8 @@ module.exports = (sequelize) => {
         },
         estadoColor: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         codigoUsuarioCreacion: {
             type: DataTypes.STRING,
@@ -50,4 +52,26 @@ module.exports = (sequelize) => {
         tableName: 'PTLColorSettings',
         timestamps: false
     });
+};
+
+const ColorSettingsDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        navbarColor: data.navbarColor,
+        textoColor: data.textoColor,
+        iconosColor: data.iconosColor,
+        buttonsHoverColor: data.buttonsHoverColor,
+        estadoColor: data.estadoColor ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ColorSettingsModel,
+    ColorSettingsDTO
 };

@@ -8,22 +8,32 @@ const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getUsuariosEmpresas,
-    getUsuariosEmpresasById,
+    getUsuarioEmpresaById,
     createUsuarioEmpresa,
     updateUsuarioEmpresa,
-    deleteUsuarioEmpresa,
+    deleteUsuarioEmpresa
 } = require("../controllers/usuarios-empresas-sc");
 
 const router = Router();
 
-router.get("/", validarJWT, getUsuariosEmpresas);
+// router.use(validarJWT);
 
-router.get("/:id", validarJWT, getUsuariosEmpresasById);
+router.get("/", getUsuariosEmpresas);
 
-router.post( "/",  validarJWT, createUsuarioEmpresa);
+router.get("/:id", validarJWT, getUsuarioEmpresaById);
 
-router.put("/:id",validarJWT, updateUsuarioEmpresa);
+router.post("/", [
+    check('codigoUsuario', 'El código de usuario es obligatorio').not().isEmpty(),
+    check('codigoSuscriptor', 'El código de suscriptor es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createUsuarioEmpresa);
 
-router.delete("/:id", [validarJWT], deleteUsuarioEmpresa);
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateUsuarioEmpresa);
+
+router.delete("/:id", validarJWT, deleteUsuarioEmpresa);
 
 module.exports = router;

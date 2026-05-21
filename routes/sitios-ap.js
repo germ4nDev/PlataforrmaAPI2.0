@@ -6,25 +6,31 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
-
 const {
     getSitios,
     getSitioById,
     createSitio,
     updateSitio,
-    deleteSitio,
+    deleteSitio
 } = require("../controllers/sitios-ap");
 
 const router = Router();
 
-router.get("/", validarJWT, getSitios);
+router.use(validarJWT);
 
-router.get("/:id", validarJWT, getSitioById);
+router.get("/", getSitios);
+router.get("/:id", getSitioById);
 
-router.post( "/", validarJWT,  createSitio);
+router.post("/", [
+    check('nombreSitio', 'El nombre es obligatorio').not().isEmpty(),
+    check('urlSitio', 'La URL del sitio es obligatoria').not().isEmpty(),
+    validarCampos
+], createSitio);
 
-router.put("/:id", validarJWT, updateSitio);
+router.put("/:id", [
+    validarCampos
+], updateSitio);
 
-router.delete("/:id", validarJWT, deleteSitio);
+router.delete("/:id", deleteSitio);
 
 module.exports = router;

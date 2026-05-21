@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const AplicacionModel = (sequelize) => {
     return sequelize.define('PTLAplicaciones', {
         aplicacionId: {
             type: DataTypes.INTEGER,
@@ -24,7 +25,8 @@ module.exports = (sequelize) => {
         },
         estadoAplicacion: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         translateKey: {
             type: DataTypes.STRING,
@@ -54,4 +56,26 @@ module.exports = (sequelize) => {
         tableName: 'PTLAplicaciones',
         timestamps: false
     });
+};
+
+const AplicacionDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoAplicacion: data.codigoAplicacion,
+        nombreAplicacion: data.nombreAplicacion,
+        descripcionAplicacion: data.descripcionAplicacion || '',
+        estadoAplicacion: data.estadoAplicacion ?? true,
+        translateKey: data.translateKey,
+        imagenInicio: data.imagenInicio || 'no-imagen.png',
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    AplicacionModel,
+    AplicacionDTO
 };

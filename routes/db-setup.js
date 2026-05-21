@@ -1,17 +1,16 @@
-/*
-    Author: German Valencia
-    Ruta: /api/db-setup
-*/
 const { Router } = require("express");
-const { check } = require("express-validator");
-const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const {
-  runDBScript,
-} = require("../controllers/db-setup");
+const { inicializarBaseDeDatos } = require("../controllers/db-setup");
 
 const router = Router();
 
-router.get("/", validarJWT, runDBScript);
+/**
+ * ¡ATENCIÓN!: Esta es una ruta administrativa de alto riesgo.
+ * Debe estar protegida por JWT y, preferiblemente, validar un rol de SuperAdmin.
+ */
+router.post("/run-init", [
+  validarJWT
+  // Aquí podrías añadir validarRole('ADMIN_ROLE')
+], inicializarBaseDeDatos);
 
 module.exports = router;

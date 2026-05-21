@@ -1,237 +1,58 @@
-// /*
-//     Author: John Castañeda
-//     Actualizado: German Valencia
-// */
-// const express = require('express');
-// const sequelize = require('../database/connection');
-// const PTLServidor = require('../models/servidor')(sequelize);
-// const { io } = require('../index');
-
-// const getServidores = async (req, res) => {
-//   try {
-//     const servidores = await PTLServidor.findAll();
-//     return res.status(201).json({
-//       ok: true,
-//       servidores: servidores,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Error al obtener servidores' });
-//   }
-// };
-
-// const getServidorById = async (req, res) => {
-//   try {
-//     const codigoServidor = req.params.id;
-//     const servidor = await PTLServidor.findOne({
-//       where: {
-//         codigoServidor: codigoServidor,
-//       },
-//     });
-//     if (!servidor) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: "No existe un servidor por ese id",
-//       });
-//     }
-//     return res.status(201).json({
-//       ok: true,
-//       servidor: servidor,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: "Error al obtener servidor" });
-//   }
-// };
-
-// const createServidor = async (req, res = response) => {
-//   const { ...newRegistro } = req.body;
-//   try {
-//     const servidorDB = await PTLServidor.create(newRegistro);
-//     io.emit('servidores-actualizados', {
-//       action: 'create',
-//       msg: `Servidor creado: ${servidorDB.nombreServidor}`
-//     });
-//     return res.status(201).json({
-//       ok: true,
-//       servidor: servidorDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear el servidor'
-//     });
-//   }
-// };
-
-// const updateServidor = async (req, res = response) => {
-//   const { codigoServidor, ...data } = req.body;
-//   try {
-//     const servidorDB = await PTLServidor.findOne({
-//       where: { codigoServidor }
-//     });
-//     if (!servidorDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un servidor con ese ID'
-//       });
-//     }
-//     await PTLServidor.update(data, {
-//       where: { codigoServidor }
-//     });
-//     const servidorActualizado = await PTLServidor.findOne({ where: { codigoServidor } });
-//     io.emit('servidores-actualizados', {
-//       action: 'update',
-//       msg: `Servidor actualizado: ${servidorActualizado.nombreServidor}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       servidor: servidorActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar el servidor'
-//     });
-//   }
-// };
-
-// const deleteServidor = async (req, res = response) => {
-//   try {
-//     const codigoServidor = req.params.id;
-//     const servidorDB = await PTLServidor.findOne({
-//       where: { codigoServidor }
-//     });
-//     if (!servidorDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un servidor con ese ID'
-//       });
-//     }
-//     servidorEliminado = await PTLServidor.destroy({
-//       where: { codigoServidor }
-//     });
-//     io.emit('servidores-actualizados', {
-//       action: 'delete',
-//       msg: `Servidor eliminado: ${servidorDB.nombreServidor}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       usuario: servidorEliminado,
-//       msg: 'servidor eliminado correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar el servidor'
-//     });
-//   }
-// };
-
-// module.exports = {
-//   getServidores,
-//   getServidorById,
-//   createServidor,
-//   updateServidor,
-//   deleteServidor,
-// };
-
 /*
-    Author: John Castañeda
-    Actualizado: German Valencia
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern
 */
-const { response } = require('express');
-const servidoresService = require('../services/servidores.service'); // Ajusta la ruta a tu proyecto
+const { response } = require("express");
+const ServidorService = require("../services/servidores.service");
+const service = new ServidorService();
 
 const getServidores = async (req, res = response) => {
   try {
-    const servidores = await servidoresService.obtenerServidores();
-
-    return res.status(200).json({
-      ok: true,
-      servidores: servidores,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener servidores' });
+    const servidores = await service.getServidores();
+    res.status(200).json({ ok: true, servidores });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ ok: false, msg: error.msg });
   }
 };
 
 const getServidorById = async (req, res = response) => {
   try {
-    const servidor = await servidoresService.obtenerServidorPorId(req.params.id);
-
-    return res.status(200).json({
-      ok: true,
-      servidor: servidor,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    res.status(500).json({ error: "Error al obtener servidor" });
+    const { id } = req.params;
+    const servidor = await service.getServidorById(id);
+    res.status(200).json({ ok: true, servidor });
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ ok: false, msg: error.msg });
   }
 };
 
 const createServidor = async (req, res = response) => {
   try {
-    const servidorDB = await servidoresService.crearServidor(req.body);
-
-    return res.status(201).json({
-      ok: true,
-      servidor: servidorDB
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al crear el servidor'
-    });
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const servidor = await service.createServidor({ ...req.body, usuarioAccion });
+    res.status(201).json({ ok: true, servidor });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const updateServidor = async (req, res = response) => {
   try {
-    const { codigoServidor, ...data } = req.body;
-
-    const servidorActualizado = await servidoresService.actualizarServidor(codigoServidor, data);
-
-    return res.status(200).json({
-      ok: true,
-      servidor: servidorActualizado
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar el servidor'
-    });
+    const { id } = req.params;
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const servidor = await service.updateServidor(id, req.body, usuarioAccion);
+    res.status(200).json({ ok: true, servidor });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const deleteServidor = async (req, res = response) => {
   try {
-    const servidorEliminado = await servidoresService.eliminarServidor(req.params.id);
-
-    return res.status(200).json({
-      ok: true,
-      servidor: servidorEliminado,
-      msg: 'Servidor eliminado correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al eliminar el servidor'
-    });
+    const { id } = req.params;
+    await service.deleteServidor(id);
+    res.status(200).json({ ok: true, msg: "Servidor eliminado correctamente" });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
@@ -240,5 +61,5 @@ module.exports = {
   getServidorById,
   createServidor,
   updateServidor,
-  deleteServidor,
+  deleteServidor
 };

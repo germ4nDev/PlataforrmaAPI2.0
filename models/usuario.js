@@ -1,10 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Identity Standardization & Security
 */
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database/connection');
 
-module.exports = (sequelize) => {
+const UsuarioModel = (sequelize) => {
   return sequelize.define('PTLUsuarios', {
     usuarioId: {
       type: DataTypes.INTEGER,
@@ -39,19 +39,21 @@ module.exports = (sequelize) => {
     },
     descripcionUsuario: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     fotoUsuario: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'default-user.png'
     },
     usuarioAdministrador: {
       type: DataTypes.BOOLEAN,
-      default: false
+      defaultValue: false
     },
     estadoUsuario: {
       type: DataTypes.BOOLEAN,
-      default: false
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -74,4 +76,31 @@ module.exports = (sequelize) => {
     tableName: 'PTLUsuarios',
     timestamps: false
   });
+};
+
+const UsuarioDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoUsuario: data.codigoUsuario,
+    identificacionUsuario: data.identificacionUsuario,
+    nombreUsuario: data.nombreUsuario?.toUpperCase() || '', // Estandarización a mayúsculas
+    correoUsuario: data.correoUsuario?.toLowerCase() || '',
+    userNameUsuario: data.userNameUsuario?.toLowerCase() || data.correoUsuario?.split('@')[0],
+    claveUsuario: data.claveUsuario,
+    descripcionUsuario: data.descripcionUsuario || '',
+    fotoUsuario: data.fotoUsuario || 'default-user.png',
+    usuarioAdministrador: data.usuarioAdministrador ?? false,
+    estadoUsuario: data.estadoUsuario ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuarioAccion || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuarioAccion || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  UsuarioModel,
+  UsuarioDTO
 };

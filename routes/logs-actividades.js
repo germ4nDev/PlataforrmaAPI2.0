@@ -6,18 +6,21 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const {
-    geLogsActividades,
-    geLogActividadById,
-    createLogActividad,
-} = require("../controllers/logs-actividades");
+const { getLogs, getLogById, createLog } = require("../controllers/logs-actividades");
 
 const router = Router();
 
-router.get("/", validarJWT, geLogsActividades);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createLogActividad);
+router.get("/", getLogs);
+router.get("/:id", getLogById);
 
-router.get("/:id", validarJWT, geLogActividadById);
+router.post("/", [
+    check('actividad', 'La descripción de la actividad es obligatoria').not().isEmpty(),
+    check('modulo', 'El módulo es obligatorio').not().isEmpty(),
+    validarCampos
+], createLog);
+
+// NOTA: No se exponen rutas PUT ni DELETE para mantener la integridad de la auditoría.
 
 module.exports = router;

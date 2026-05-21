@@ -1,6 +1,6 @@
 /*
     Author: German Valencia
-    Ruta: /api/items paquetes
+    Ruta: /api/idiomas
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
@@ -8,25 +8,32 @@ const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
   getItemsPaquete,
-  getItemsPaqueteById,
-  getItemsPaqueteByCode,
-  createItemsPaquete,
-  updateItemsPaquete,
-  deleteItemsPaquete,
+  getItemPaqueteById,
+  getItemsByPaqueteCode,
+  createItemPaquete,
+  updateItemPaquete,
+  deleteItemPaquete
 } = require("../controllers/items-paquete");
 
 const router = Router();
 
-router.get("/", validarJWT, getItemsPaquete);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createItemsPaquete);
+router.get("/", getItemsPaquete);
+router.get("/:id", getItemPaqueteById);
+router.get("/paquete/:codigoPaquete", getItemsByPaqueteCode);
 
-router.put("/:id", validarJWT, updateItemsPaquete);
+router.post("/", [
+  check('codigoItem', 'El código del ítem es obligatorio').not().isEmpty(),
+  check('codigoPaquete', 'El código del paquete es obligatorio').not().isEmpty(),
+  check('nombreItem', 'El nombre del ítem es obligatorio').not().isEmpty(),
+  validarCampos
+], createItemPaquete);
 
-router.delete("/:id", validarJWT, deleteItemsPaquete);
+router.put("/:id", [
+  validarCampos
+], updateItemPaquete);
 
-router.get("/:id", validarJWT, getItemsPaqueteById);
-
-router.get("/code/:code", validarJWT, getItemsPaqueteByCode);
+router.delete("/:id", deleteItemPaquete);
 
 module.exports = router;

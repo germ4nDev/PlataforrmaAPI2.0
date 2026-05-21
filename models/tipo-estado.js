@@ -1,18 +1,23 @@
 /*
     Author: John Castañeda
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Sequelize Syntax
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const TipoEstadoModel = (sequelize) => {
   return sequelize.define('PTLTiposEstados', {
     tipoEstadoId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true
+    },
+    codigoTipo: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false
     },
     tipoEstado: {
       type: DataTypes.INTEGER,
-      default: 0,
+      defaultValue: 0,
       allowNull: false
     },
     nombreTipo: {
@@ -25,7 +30,8 @@ module.exports = (sequelize) => {
     },
     estado: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -48,4 +54,25 @@ module.exports = (sequelize) => {
     tableName: 'PTLTiposEstados',
     timestamps: false
   });
+};
+
+const TipoEstadoDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    tipoEstado: data.tipoEstado || 0,
+    nombreTipo: data.nombreTipo,
+    descripcionEstado: data.descripcionEstado || '',
+    estado: data.estado ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  TipoEstadoModel,
+  TipoEstadoDTO
 };

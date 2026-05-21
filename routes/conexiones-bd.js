@@ -1,31 +1,33 @@
-/*
-    Author: German Valencia
-    Actualización: John Castañeda
-
-    Ruta: /api/conexiones-bd
-*/
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getConexionesBD,
+    getConexiones,
     getConexionById,
     createConexion,
     updateConexion,
-    deleteConexion,
+    deleteConexion
 } = require("../controllers/conexiones-bd");
 
 const router = Router();
 
-router.get("/", validarJWT, getConexionesBD);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createConexion);
+router.get("/", getConexiones);
+router.get("/:id", getConexionById);
 
-router.put("/:id", validarJWT, updateConexion);
+router.post("/", [
+    check('codigoConexion', 'El código de conexión es obligatorio').not().isEmpty(),
+    check('nombreConexion', 'El nombre descriptivo es obligatorio').not().isEmpty(),
+    check('stringConexion', 'El string de conexión es obligatorio').not().isEmpty(),
+    validarCampos
+], createConexion);
 
-router.delete("/:id", validarJWT, deleteConexion);
+router.put("/:id", [
+    validarCampos
+], updateConexion);
 
-router.get("/:id", validarJWT, getConexionById);
+router.delete("/:id", deleteConexion);
 
 module.exports = router;

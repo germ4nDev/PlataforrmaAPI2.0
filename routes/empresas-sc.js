@@ -1,7 +1,3 @@
-/*
-    Author: German Valencia
-    Ruta: /api/empresas-st
-*/
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
@@ -11,19 +7,30 @@ const {
   getEmpresaSCById,
   createEmpresaSC,
   updateEmpresaSC,
-  deleteEmpresaSC,
+  deleteEmpresaSC
 } = require("../controllers/empresas-sc");
 
 const router = Router();
 
-router.get("/", validarJWT, getEmpresasSC);
+// router.use(validarJWT);
 
-router.post("/", validarJWT, createEmpresaSC);
-
-router.put("/:id", validarJWT, updateEmpresaSC);
-
-router.delete("/:id", validarJWT, deleteEmpresaSC);
+router.get("/", getEmpresasSC);
 
 router.get("/:id", validarJWT, getEmpresaSCById);
+
+router.post("/", [
+  check('codigoEmpresaSC', 'El código de empresa es obligatorio').not().isEmpty(),
+  check('nombreEmpresa', 'El nombre de la empresa es obligatorio').not().isEmpty(),
+  check('nitEmpresa', 'El NIT es obligatorio').not().isEmpty(),
+  validarJWT,
+  validarCampos
+], createEmpresaSC);
+
+router.put("/:id", [
+  validarJWT,
+  validarCampos
+], updateEmpresaSC);
+
+router.delete("/:id", validarJWT, deleteEmpresaSC);
 
 module.exports = router;

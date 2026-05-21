@@ -1,0 +1,114 @@
+/*
+    Author: German Valencia
+    Refactored for: QPLUS Architecture Pattern & Class-Based Service
+*/
+const sequelize = require('../database/connection');
+const { PaqueteModel, PaqueteDTO } = require('../models/paquete');
+const { io } = require('../index');
+
+class PaqueteService {
+  constructor() {
+    this.model = PaqueteModel(sequelize);
+  }
+
+  async getPaquetes() {
+    return await this.model.findAll();
+  }
+
+  async getPaqueteById(codigoPaquete) {
+    const registro = await this.model.findOne({ where: { codigoPaquete } });
+    if (!registro) throw { statusCode: 404, msg: "No existe el paquete solicitado" };
+    return registro;
+  }
+
+  async createPaquete(rawData) {
+    const dataDTO = PaqueteDTO(rawData);
+
+    return await sequelize.transaction(async (t) => {
+      const existente = await this.model.findOne({
+        where: { codigoPaquete: dataDTO.codigoPaquete },
+        transaction: t
+      });
+      if (existente) throw { statusCode: 400, msg: `El código ${dataDTO.codigoPaquete} ya está registrado` };
+
+      const existeNombre = await this.model.findOne({
+        where: { nombrePaquete: dataDTO.nombrePaquete },
+        transaction: t
+      });
+      if (existeNombre) throw { statusCode: 400, msg: 'Ya existe un paquete con ese nombre' };
+
+      const nuevo = await this.model.create(dataDTO, { transaction: t });
+
+      if (typeof io !== 'undefined') {
+        io.emit('paquetes-actualizados', {
+          action: 'create',
+          msg: `Paquete creado: ${nuevo.nombrePaquete}`
+        });
+      }
+
+      return nuevo;
+    });
+  }
+
+  async updatePaquete(codigoPaquete, rawData, usuarioAccion) {
+    rawData.codigoUsuario = usuarioAccion || "SISTEMA";
+    const dataDTO = PaqueteDTO(rawData);
+
+    return await sequelize.transaction(async (t) => {
+      const registroDB = await this.model.findOne({
+        where: { codigoPaquete },
+        transaction: t
+      });
+
+      if (!registroDB) throw { statusCode: 404, msg: "No existe el paquete para actualizar" };
+
+      await this.model.update(dataDTO, {
+        where: { codigoPaquete },
+        transaction: t
+      });
+
+      const actualizado = await this.model.findOne({
+        where: { codigoPaquete },
+        transaction: t
+      });
+
+      if (typeof io !== 'undefined') {
+        io.emit('paquetes-actualizados', {
+          action: 'update',
+          msg: `Paquete actualizado: ${actualizado.nombrePaquete}`
+        });
+      }
+
+      return actualizado;
+    });
+  }
+
+  async deletePaquete(codigoPaquete) {
+    return await sequelize.transaction(async (t) => {
+      const registroDB = await this.model.findOne({
+        where: { codigoPaquete },
+        transaction: t
+      });
+
+      if (!registroDB) throw { statusCode: 404, msg: "No existe el paquete con ese código" };
+
+      const nombrePaquete = registroDB.nombrePaquete;
+
+      await this.model.destroy({
+        where: { codigoPaquete },
+        transaction: t
+      });
+
+      if (typeof io !== 'undefined') {
+        io.emit('paquetes-actualizados', {
+          action: 'delete',
+          msg: `Paquete eliminado: ${nombrePaquete}`
+        });
+      }
+
+      return true;
+    });
+  }
+}
+
+module.exports = PaqueteService;

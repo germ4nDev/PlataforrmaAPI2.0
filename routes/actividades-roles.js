@@ -1,7 +1,3 @@
-/*
-    Author: German Valencia
-    Ruta: /api/actividades
-*/
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
@@ -16,17 +12,24 @@ const {
 } = require("../controllers/actividades-roles");
 
 const router = Router();
+router.use(validarJWT);
 
-router.get("/", validarJWT, getActividadesRoles);
+router.get("/", getActividadesRoles);
 
-router.get("/acti/:ac", validarJWT, getActividadByCodeActividad);
+router.get("/acti/:ac", getActividadByCodeActividad);
 
-router.get("/role/:ro", validarJWT, getActividadByCodeRole);
+router.get("/role/:ro", getActividadByCodeRole);
 
-router.post("/", validarJWT, createActividadRole);
+router.post("/", [
+  check('codigoActividad', 'El código de actividad es obligatorio').not().isEmpty(),
+  check('codigoRole', 'El código de rol es obligatorio').not().isEmpty(),
+  validarCampos
+], createActividadRole);
 
-router.put("/:id:", validarJWT, updateActividadRole);
+router.put("/:ac/:ro", [
+  validarCampos
+], updateActividadRole);
 
-router.delete("/:ac/:do", validarJWT, deleteActividadRole);
+router.delete("/:ac/:ro", deleteActividadRole);
 
 module.exports = router;

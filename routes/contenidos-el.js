@@ -8,7 +8,7 @@ const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getContenidos,
-    getContenidoById,
+    getContenidoByCode,
     createContenido,
     updateContenido,
     deleteContenido,
@@ -18,13 +18,21 @@ const router = Router();
 
 router.get("/", validarJWT, getContenidos);
 
-router.get("/:id", validarJWT, getContenidoById);
+router.get("/:id", validarJWT, getContenidoByCode);
 
-router.post( "/", validarJWT, createContenido);
+router.post("/", [
+    check('codigoContenido', 'El código del contenido es obligatorio').not().isEmpty(),
+    check('codigoEnlace', 'El código del emlace es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createContenido);
 
-router.put("/:id", validarJWT, updateContenido);
+router.put("/:id", [
+    check('codigoEnlace', 'El código del emlace es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], updateContenido);
 
 router.delete("/:id", validarJWT, deleteContenido);
-
 
 module.exports = router;

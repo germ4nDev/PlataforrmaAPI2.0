@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize) => {
+const SuscriptorModel = (sequelize) => {
   return sequelize.define(
     "PTLSuscriptores",
     {
@@ -40,10 +41,12 @@ module.exports = (sequelize) => {
       numeroEmpresas: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 1
       },
       numeroUsuarios: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 1
       },
       codigoAdministrador: {
         type: DataTypes.STRING,
@@ -64,18 +67,22 @@ module.exports = (sequelize) => {
       envioCorreosSuscriptor: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: true
       },
       envioMensajesSuscriptor: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false
       },
       envioPublicidadSuscriptor: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false
       },
       estadoSuscriptor: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: true
       },
       // AUDITORIA ------------
       codigoUsuarioCreacion: {
@@ -98,6 +105,39 @@ module.exports = (sequelize) => {
     {
       tableName: "PTLSuscriptores",
       timestamps: false,
-    },
+    }
   );
+};
+
+const SuscriptorDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoSuscriptor: data.codigoSuscriptor,
+    identificacionSuscriptor: data.identificacionSuscriptor,
+    nombreSuscriptor: data.nombreSuscriptor,
+    correoSuscriptor: data.correoSuscriptor?.toLowerCase() || '',
+    direccionSuscriptor: data.direccionSuscriptor || '',
+    telefonoContacto: data.telefonoContacto || '',
+    descripcionSuscriptor: data.descripcionSuscriptor || '',
+    logoSuscriptor: data.logoSuscriptor || 'no-imagen.png',
+    numeroEmpresas: data.numeroEmpresas || 1,
+    numeroUsuarios: data.numeroUsuarios || 1,
+    codigoAdministrador: data.codigoAdministrador,
+    usuarioAdministrador: data.usuarioAdministrador || '',
+    envioCorreosSuscriptor: data.envioCorreosSuscriptor ?? true,
+    envioMensajesSuscriptor: data.envioMensajesSuscriptor ?? false,
+    envioPublicidadSuscriptor: data.envioPublicidadSuscriptor ?? false,
+    estadoSuscriptor: data.estadoSuscriptor ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  SuscriptorModel,
+  SuscriptorDTO
 };
