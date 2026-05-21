@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const RoleAPModel = (sequelize) => {
   return sequelize.define('PTLRolesAP', {
     roleId: {
       type: DataTypes.INTEGER,
@@ -32,7 +33,8 @@ module.exports = (sequelize) => {
     },
     estadoRole: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -48,11 +50,34 @@ module.exports = (sequelize) => {
       allowNull: true
     },
     fechaModificacion: {
-      type: DataTypes.STRING  ,
+      type: DataTypes.STRING,
       allowNull: true
     }
   }, {
     tableName: 'PTLRolesAP',
     timestamps: false
   });
+};
+
+const RoleAPDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoRole: data.codigoRole,
+    codigoAplicacion: data.codigoAplicacion,
+    codigoSuite: data.codigoSuite,
+    nombreRole: data.nombreRole,
+    descripcionRole: data.descripcionRole || '', // Fallback para evitar errores de allowNull
+    estadoRole: data.estadoRole ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  RoleAPModel,
+  RoleAPDTO
 };

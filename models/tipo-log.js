@@ -1,9 +1,10 @@
 /*
     Author: John Castañeda
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Duplicity Fix
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const TipoLogModel = (sequelize) => {
   return sequelize.define('PTLTiposLogs', {
     tipoLogId: {
       type: DataTypes.INTEGER,
@@ -25,15 +26,13 @@ module.exports = (sequelize) => {
     },
     codigoRespuesta: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    descripcionTipo: {
-      type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: '200'
     },
     estadoTipo: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -56,4 +55,26 @@ module.exports = (sequelize) => {
     tableName: 'PTLTiposLogs',
     timestamps: false
   });
+};
+
+const TipoLogDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoTipoLog: data.codigoTipoLog,
+    nombreTipo: data.nombreTipo,
+    descripcionTipo: data.descripcionTipo || '',
+    codigoRespuesta: data.codigoRespuesta || '200',
+    estadoTipo: data.estadoTipo ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  TipoLogModel,
+  TipoLogDTO
 };

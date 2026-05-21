@@ -7,23 +7,32 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getFormatoGaleria,
+    getFormatosGaleria,
     getFormatoGaleriaById,
     createFormatoGaleria,
     updateFormatoGaleria,
-    deleteFormatoGaleria,
+    deleteFormatoGaleria
 } = require("../controllers/formatos-galeria");
 
 const router = Router();
 
-router.get("/", validarJWT, getFormatoGaleria);
+// router.use(validarJWT);
 
-router.post("/", validarJWT, createFormatoGaleria);
-
-router.put("/:id", validarJWT, updateFormatoGaleria);
-
-router.delete("/:id", validarJWT, deleteFormatoGaleria);
+router.get("/", getFormatosGaleria);
 
 router.get("/:id", validarJWT, getFormatoGaleriaById);
+
+router.post("/", [
+    check('nombreFormato', 'El nombre del formato es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createFormatoGaleria);
+
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateFormatoGaleria);
+
+router.delete("/:id", validarJWT, deleteFormatoGaleria);
 
 module.exports = router;

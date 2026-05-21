@@ -11,19 +11,25 @@ const {
   getTipoLogById,
   createTipoLog,
   updateTipoLog,
-  deleteTipoLog,
+  deleteTipoLog
 } = require("../controllers/tipos-logs");
 
 const router = Router();
 
-router.get("/", validarJWT, getTiposLogs);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createTipoLog);
+router.get("/", getTiposLogs);
+router.get("/:id", getTipoLogById);
 
-router.put("/:id", validarJWT, updateTipoLog);
+router.post("/", [
+  check('nombreTipoLog', 'El nombre del tipo de log es obligatorio').not().isEmpty(),
+  validarCampos
+], createTipoLog);
 
-router.delete("/:id", validarJWT, deleteTipoLog);
+router.put("/:id", [
+  validarCampos
+], updateTipoLog);
 
-router.get("/:id", validarJWT, getTipoLogById);
+router.delete("/:id", deleteTipoLog);
 
 module.exports = router;

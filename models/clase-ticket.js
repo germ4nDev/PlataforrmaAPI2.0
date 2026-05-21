@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const ClaseTicketModel = (sequelize) => {
     return sequelize.define('PTLClasesTicket', {
         claseTicketId: {
             type: DataTypes.INTEGER,
@@ -24,7 +25,8 @@ module.exports = (sequelize) => {
         },
         estadoClase: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         // AUDITORIA ------------
         codigoUsuarioCreacion: {
@@ -47,4 +49,25 @@ module.exports = (sequelize) => {
         tableName: 'PTLClasesTicket',
         timestamps: false
     });
+};
+
+const ClaseTicketDTO = (data) => {
+    const fechaActual = new Date().toISOString();
+
+    return {
+        codigoClase: data.codigoClase,
+        claseTicket: data.claseTicket,
+        descripcionClase: data.descripcionClase || '',
+        estadoClase: data.estadoClase ?? true,
+
+        codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+        fechaCreacion: data.fechaCreacion || fechaActual,
+        codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+        fechaModificacion: fechaActual
+    };
+};
+
+module.exports = {
+    ClaseTicketModel,
+    ClaseTicketDTO
 };

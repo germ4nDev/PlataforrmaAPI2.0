@@ -1,388 +1,91 @@
-// /*
-//     Author: German Valencia
-//     Actualizado: German Valiencia 20251026
-// */
-// const express = require('express');
-// const sequelize = require('../database/connection');
-// const PTLUsuarios = require('../models/usuario')(sequelize);
-// const { generarJWT } = require("../helpers/jwt");
-// const bcrypt = require("bcryptjs");
-// const { io } = require('../index');
-
-// const getUsuarios = async (req, res) => {
-//   try {
-//     const usuarios = await PTLUsuarios.findAll();
-//     return res.status(201).json({
-//       ok: true,
-//       usuarios: usuarios,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Error al obtener Usuarios' });
-//   }
-// };
-
-// const getUsuariosById = async (req, res) => {
-//   try {
-//     const codigoUsuario = req.params.id;
-//     const usuario = await PTLUsuarios.findOne({
-//       where: {
-//         codigoUsuario: codigoUsuario,
-//       },
-//     });
-//     if (!usuario) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: "No existe un usuario por ese id",
-//       });
-//     }
-//     return res.status(201).json({
-//       ok: true,
-//       usuario: usuario,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: "Error al obtener aplicacion" });
-//   }
-// };
-
-// const validarPasswordUsuario = async (req, res = response) => {
-//   const { ...validarRegistro } = req.body;
-//   console.log('validarRegistro', validarRegistro.validacion);
-//   try {
-//     const usuarioDB = await PTLUsuarios.findOne({
-//       where: { codigoUsuario: validarRegistro.validacion.codigoAdministrador }
-//     });
-//     if (!usuarioDB) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'No existe un suscriptor con ese código'
-//       });
-//     }
-//     console.log('usuario', usuarioDB);
-//     const isMatch = await bcrypt.compare(validarRegistro.validacion.claveActual, usuarioDB.claveUsuario);
-//     if (isMatch) {
-//       res.json({
-//         ok: true,
-//         usuario: usuarioDB,
-//       });
-//     } else {
-//       return res.json({
-//         ok: false,
-//         msg: "Contraseña no válida",
-//       });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al validar el usuario'
-//     });
-//   }
-// };
-
-// const createUsuario = async (req, res = response) => {
-//   const { ...newRegistro } = req.body;
-//   console.log('crear nuevo usuario', newRegistro);
-//   try {
-//     const existeIdentificacion = await PTLUsuarios.findOne({
-//       where: { nombreUsuario: newRegistro.identificacionUsuario }
-//     });
-//     if (existeIdentificacion) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'Ya existe un usuario con esa identificación'
-//       });
-//     }
-//     const existeNombre = await PTLUsuarios.findOne({
-//       where: { nombreUsuario: newRegistro.nombreUsuario }
-//     });
-//     if (existeNombre) {
-//       return res.status(400).json({
-//         ok: false,
-//         msg: 'Ya existe un usuario con ese nombre'
-//       });
-//     }
-//     const salt = bcrypt.genSaltSync();
-//     const password = await bcrypt.hash(newRegistro.claveUsuario, salt);
-//     newRegistro.claveUsuario = password;
-//     newRegistro.fotoUsuario = 'no-imagen.png';
-//     const usuarioDB = await PTLUsuarios.create(newRegistro);
-//     io.emit("usuarios-actualizados", {
-//       action: "create",
-//       msg: `Usuario creado: ${usuarioDB.nombreUsuario}`,
-//     });
-//     return res.status(201).json({
-//       ok: true,
-//       usuario: usuarioDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear el usuario'
-//     });
-//   }
-// };
-
-// const updateUsuario = async (req, res = response) => {
-//   const { codigoUsuario, ...data } = req.body;
-//   try {
-//     const usuarioDB = await PTLUsuarios.findOne({
-//       where: { codigoUsuario }
-//     });
-//     if (!usuarioDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un usuario con ese ID'
-//       });
-//     }
-//     await PTLUsuarios.update(data, {
-//       where: { codigoUsuario }
-//     });
-//     const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
-//     io.emit("usuarios-actualizados", {
-//       action: "update",
-//       msg: `Usuario actualizado: ${usuarioActualizado.nombreUsuario}`,
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       usuario: usuarioActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar el usuario'
-//     });
-//   }
-// };
-
-// const updateUsuarioClave = async (req, res = response) => {
-//   const { codigoUsuario, ...data } = req.body;
-//   try {
-//     const usuarioDB = await PTLUsuarios.findOne({
-//       where: { codigoUsuario }
-//     });
-//     if (!usuarioDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un usuario con ese ID'
-//       });
-//     }
-//     const salt = bcrypt.genSaltSync();
-//     const password = await bcrypt.hash(nuevoUsuario.claveUsuario, salt);
-//     nuevoUsuario.claveUsuario = password;
-//     await PTLUsuarios.update(data, {
-//       where: { codigoUsuario }
-//     });
-//     const usuarioActualizado = await PTLUsuarios.findOne({ where: { codigoUsuario } });
-//     io.emit("usuarios-actualizados", {
-//       action: "update",
-//       msg: `Usuario Clave actualizado: ${usuarioActualizado.nombreUsuario}`,
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       usuario: usuarioActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar el usuario'
-//     });
-//   }
-// };
-
-// const deleteUsuario = async (req, res = response) => {
-//   try {
-//     const codigoUsuario = req.params.id;
-//     const usuarioDB = await PTLUsuarios.findOne({
-//       where: { codigoUsuario }
-//     });
-//     if (!usuarioDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe una aplicación con ese ID'
-//       });
-//     }
-//     usuarioEliminado = await PTLUsuarios.destroy({
-//       where: { codigoUsuario }
-//     });
-//     io.emit("usuarios-actualizados", {
-//       action: "delete",
-//       msg: `Usuario eliminado: ${usuarioEliminado.nombreUsuario}`,
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       usuario: usuarioEliminado,
-//       msg: 'Usuario eliminado correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar el usuario'
-//     });
-//   }
-// };
-
-// module.exports = {
-//   getUsuarios,
-//   getUsuariosById,
-//   createUsuario,
-//   updateUsuario,
-//   updateUsuarioClave,
-//   validarPasswordUsuario,
-//   deleteUsuario,
-// };
-
 /*
     Author: German Valencia
-    Actualizado: German Valencia 20251026
+    Refactored for: QPLUS DTO Pattern
 */
-const { response } = require('express');
-const usuariosService = require('../services/usuarios.service');
+const { response } = require("express");
+const UsuariosService = require("../services/usuarios.service");
+const service = new UsuariosService();
 
 const getUsuarios = async (req, res = response) => {
   try {
-    const usuarios = await usuariosService.obtenerUsuarios();
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      usuarios: usuarios,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener Usuarios' });
+    const usuarios = await service.getUsuarios();
+    res.status(200).json({ ok: true, usuarios });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ ok: false, msg: error.msg });
   }
 };
 
-const getUsuariosById = async (req, res = response) => {
+const getUsuarioById = async (req, res = response) => {
   try {
-    const usuario = await usuariosService.obtenerUsuarioPorId(req.params.id);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      usuario: usuario,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    res.status(500).json({ error: "Error al obtener el usuario" }); // Corregido 'aplicacion'
+    const { id } = req.params; // codigoUsuario
+    const usuario = await service.getUsuarioById(id);
+    res.status(200).json({ ok: true, usuario });
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ ok: false, msg: error.msg });
   }
 };
 
-const validarPasswordUsuario = async (req, res = response) => {
+const validatePassword = async (req, res = response) => {
   try {
-    const { validacion } = req.body;
-    const usuario = await usuariosService.validarPassword(validacion.codigoAdministrador, validacion.claveActual);
-
-    return res.status(200).json({
-      ok: true,
-      usuario: usuario,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al validar el usuario'
-    });
+    const { codigoAdministrador, claveActual } = req.body;
+    const usuario = await service.validatePassword(codigoAdministrador, claveActual);
+    res.status(200).json({ ok: true, usuario });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const createUsuario = async (req, res = response) => {
   try {
-    const nuevoUsuario = await usuariosService.crearUsuario(req.body);
-
-    return res.status(201).json({
-      ok: true,
-      usuario: nuevoUsuario
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
+    const usuario = await service.createUsuario(req.body);
+    res.status(201).json({ ok: true, usuario });
+  } catch (error) {
+    // IMPORTANTE: Se mapea el objeto "usuario" si existe en el error, como lo indicaba tu servicio
+    res.status(error.statusCode || 400).json({
       ok: false,
-      error: 'Error al crear el usuario'
+      msg: error.msg,
+      usuario: error.usuario || null
     });
   }
 };
 
 const updateUsuario = async (req, res = response) => {
   try {
-    const { codigoUsuario, ...data } = req.body;
-    const usuarioActualizado = await usuariosService.actualizarUsuario(codigoUsuario, data);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      usuario: usuarioActualizado
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar el usuario'
-    });
+    const { id } = req.params;
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const usuario = await service.updateUsuario(id, req.body, usuarioAccion);
+    res.status(200).json({ ok: true, usuario });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
-const updateUsuarioClave = async (req, res = response) => {
+const updateUsuarioPassword = async (req, res = response) => {
   try {
-    const { codigoUsuario, ...data } = req.body;
-    const usuarioActualizado = await usuariosService.actualizarClaveUsuario(codigoUsuario, data);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      usuario: usuarioActualizado
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar la clave del usuario'
-    });
+    const { id } = req.params;
+    const usuario = await service.updateUsuarioPassword(id, req.body);
+    res.status(200).json({ ok: true, usuario });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const deleteUsuario = async (req, res = response) => {
   try {
-    const usuarioEliminado = await usuariosService.eliminarUsuario(req.params.id);
-
-    return res.status(200).json({ // Cambiado de 201 a 200
-      ok: true,
-      usuario: usuarioEliminado,
-      msg: 'Usuario eliminado correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al eliminar el usuario'
-    });
+    const { id } = req.params;
+    await service.deleteUsuario(id);
+    res.status(200).json({ ok: true, msg: "Usuario eliminado correctamente" });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 module.exports = {
   getUsuarios,
-  getUsuariosById,
+  getUsuarioById,
+  validatePassword,
   createUsuario,
   updateUsuario,
-  updateUsuarioClave,
-  validarPasswordUsuario,
-  deleteUsuario,
+  updateUsuarioPassword,
+  deleteUsuario
 };

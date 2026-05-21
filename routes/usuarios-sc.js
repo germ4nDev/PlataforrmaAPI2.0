@@ -1,32 +1,47 @@
 /*
     Author: German Valencia
-    Ruta: /api/usuarios-empresas
+    Refactored for: QPLUS Architecture Pattern & Strict Validations
+    Ruta: /api/usuarios-sc
 */
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
+
 const {
     getUsuariosSC,
-    getUsuariosSCById,
-    getUsuariosSCByCodigo,
+    getUsuarioSCById,
+    getUsuariosSCBySuscriptorCode,
     createUsuarioSC,
     updateUsuarioSC,
-    deleteUsuarioSC,
+    deleteUsuarioSC
 } = require("../controllers/usuarios-sc");
 
 const router = Router();
 
-router.get("/", validarJWT, getUsuariosSC);
+// router.use(validarJWT);
 
-router.get("/code/:id", validarJWT, getUsuariosSCByCodigo);
+router.get("/", getUsuariosSC);
 
-router.post("/", validarJWT, createUsuarioSC);
+router.get("/:id", validarJWT, getUsuarioSCById);
 
-router.put("/:id", validarJWT, updateUsuarioSC);
+router.get("/suscriptor/:codigoSuscriptor", validarJWT, getUsuariosSCBySuscriptorCode);
+
+router.post("/", [
+    check('codigoUsuarioSC', 'El código de usuario es obligatorio').not().isEmpty(),
+    check('codigoUsuario', 'El código de usuario es obligatorio').not().isEmpty(),
+    check('codigoSuscriptor', 'El código de suscriptor es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createUsuarioSC);
+
+router.put("/:id", [
+    check('codigoUsuario', 'El código de usuario es obligatorio').not().isEmpty(),
+    check('codigoSuscriptor', 'El código de suscriptor es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], updateUsuarioSC);
 
 router.delete("/:id", validarJWT, deleteUsuarioSC);
-
-router.get("/:id", validarJWT, getUsuariosSCById);
 
 module.exports = router;

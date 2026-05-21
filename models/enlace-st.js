@@ -1,9 +1,10 @@
 /*
-    Author: John Castañeda
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const EnlaceSTModel = (sequelize) => {
   return sequelize.define('PTLEnlacesST', {
     enlaceId: {
       type: DataTypes.INTEGER,
@@ -32,7 +33,8 @@ module.exports = (sequelize) => {
     },
     estadoEnlace: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -55,4 +57,27 @@ module.exports = (sequelize) => {
     tableName: 'PTLEnlacesST',
     timestamps: false
   });
+};
+
+const EnlaceSTDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoEnlace: data.codigoEnlace,
+    codigoSitio: data.codigoSitio,
+    nombreEnlace: data.nombreEnlace,
+    descripcionEnlace: data.descripcionEnlace || '',
+    rutaEnlace: data.rutaEnlace,
+    estadoEnlace: data.estadoEnlace ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  EnlaceSTModel,
+  EnlaceSTDTO
 };

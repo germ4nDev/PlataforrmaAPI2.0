@@ -8,22 +8,28 @@ const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
     getTiposEstados,
-    getTiposEstadosById,
+    getTipoEstadoById,
     createTipoEstado,
     updateTipoEstado,
-    deleteTipoEstado,
+    deleteTipoEstado
 } = require("../controllers/tipos-estados");
 
 const router = Router();
 
-router.get("/", validarJWT, getTiposEstados);
+router.use(validarJWT);
 
-router.post( "/", validarJWT, createTipoEstado);
+router.get("/", getTiposEstados);
+router.get("/:id", getTipoEstadoById);
 
-router.put("/:id", validarJWT, updateTipoEstado);
+router.post("/", [
+    check('nombreTipo', 'El nombre del tipo es obligatorio').not().isEmpty(),
+    validarCampos
+], createTipoEstado);
 
-router.delete("/:id", validarJWT, deleteTipoEstado);
+router.put("/:id", [
+    validarCampos
+], updateTipoEstado);
 
-router.get("/:id", validarJWT, getTiposEstadosById);
+router.delete("/:id", deleteTipoEstado);
 
 module.exports = router;

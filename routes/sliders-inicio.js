@@ -8,23 +8,28 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getSlidersInicio,
-    getSliderInicioById,
-    createSliderInicio,
-    updateSliderInicio,
-    deleteSliderInicio,
+    getSliders,
+    getSliderById,
+    createSlider,
+    updateSlider,
+    deleteSlider
 } = require("../controllers/sliders-inicio");
 
 const router = Router();
 
-router.get("/", getSlidersInicio);
+router.get("/", getSliders);
 
-router.post("/", validarJWT, createSliderInicio);
+router.get("/:id", [validarJWT], getSliderById);
 
-router.put("/:id", validarJWT, updateSliderInicio);
+router.post("/", [
+    validarJWT,
+    check('nombreSlider', 'El nombre es obligatorio').not().isEmpty(),
+    check('urlImagen', 'La URL de la imagen es obligatoria').not().isEmpty(),
+    validarCampos
+], createSlider);
 
-router.delete("/:id", validarJWT, deleteSliderInicio);
+router.put("/:id", [validarJWT, validarCampos], updateSlider);
 
-router.get("/:id", validarJWT, getSliderInicioById);
+router.delete("/:id", [validarJWT], deleteSlider);
 
 module.exports = router;

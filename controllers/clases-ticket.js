@@ -1,247 +1,65 @@
-// /*
-//     Author: German Valencia
-//     Actualización: John Castañeda
-// */
-// const express = require('express');
-// const sequelize = require('../database/connection');
-// const PTLClasesTicket = require('../models/clase-ticket')(sequelize);
-// const { io } = require('../index');
-
-// const getClasesTicket = async (req, res) => {
-//   try {
-//     const clasesTicket = await PTLClasesTicket.findAll();
-//     return res.status(201).json({
-//       ok: true,
-//       clasesTicket: clasesTicket,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Error al obtener la ClasesTicket' });
-//   }
-// };
-
-// const getClaseTicketById = async (req, res) => {
-//   try {
-//     const codigoClase = req.params.id;
-//     const claseTicket = await PTLClasesTicket.findOne({
-//       where: {
-//         codigoClase: codigoClase,
-//       },
-//     });
-//     if (!claseTicket) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: "No existe una claseTicket por ese id",
-//       });
-//     }
-//     return res.status(201).json({
-//       ok: true,
-//       claseTicket: claseTicket,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: "Error al obtener la claseTicket" });
-//   }
-// };
-
-// const createClaseTicket = async (req, res = response) => {
-//   try {
-//     const { ...nuevaClaseTicket } = req.body;
-//     const claseTicketDB = await PTLClasesTicket.create(nuevaClaseTicket);
-//     io.emit('clases-tickets-actualizadas', {
-//       action: 'create',
-//       msg: `Clase Ticket creada: ${claseTicketDB.claseTicket}`
-//     });
-//     return res.status(201).json({
-//       ok: true,
-//       claseTicket: claseTicketDB
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al crear la claseTicket'
-//     });
-//   }
-// };
-
-// const updateClaseTicket = async (req, res = response) => {
-//   try {
-//     const { codigoClase, ...data } = req.body;
-//     const claseTicketDB = await PTLClasesTicket.findOne({
-//       where: { codigoClase }
-//     });
-//     if (!claseTicketDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe una claseTicket con ese ID'
-//       });
-//     }
-//     await PTLClasesTicket.update(data, {
-//       where: { codigoClase }
-//     });
-//     const claseTicketActualizado = await PTLClasesTicket.findOne({ where: { codigoClase } });
-//     io.emit('clases-tickets-actualizadas', {
-//       action: 'update',
-//       msg: `Clase Ticket actualizada: ${claseTicketActualizado.claseTicket}`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       claseTicket: claseTicketActualizado
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al actualizar la claseTicket'
-//     });
-//   }
-// };
-
-// const deleteClaseTicket = async (req, res = response) => {
-//   try {
-//     const codigoClase = req.params.id;
-//     const claseTicketDB = await PTLClasesTicket.findOne({
-//       where: { codigoClase }
-//     });
-//     if (!claseTicketDB) {
-//       return res.status(404).json({
-//         ok: false,
-//         msg: 'No existe un claseTicket con ese ID'
-//       });
-//     }
-//     claseTicketEliminado = await PTLClasesTicket.destroy({
-//       where: { codigoClase }
-//     });
-//     io.emit('clases-tickets-actualizadas', {
-//       action: 'delete',
-//       msg: `Clase Ticket eliminada correctamente`
-//     });
-//     return res.status(200).json({
-//       ok: true,
-//       claseTicket: claseTicketEliminado,
-//       msg: 'la claseTicket se elimino correctamente'
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({
-//       ok: false,
-//       error: 'Error al eliminar la claseTicket'
-//     });
-//   }
-// };
-
-// module.exports = {
-//   getClasesTicket,
-//   getClaseTicketById,
-//   createClaseTicket,
-//   updateClaseTicket,
-//   deleteClaseTicket,
-// };
-
 /*
     Author: German Valencia
-    Actualización: John Castañeda
+    Refactored for: QPLUS DTO Pattern
 */
-const { response } = require('express');
-const clasesTicketService = require('../services/clases-ticket.service'); // Ajusta la ruta según tu proyecto
+const { response } = require("express");
+const ClasesTicketService = require("../services/clases-ticlet.service");
+const service = new ClasesTicketService();
 
-const getClasesTicket = async (req, res = response) => {
+const getClasesTickets = async (req, res = response) => {
   try {
-    const clasesTicket = await clasesTicketService.obtenerClasesTicket();
-
-    return res.status(200).json({
-      ok: true,
-      clasesTicket: clasesTicket,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener la ClasesTicket' });
+    const clasesTicket = await service.getClasesTicket();
+    res.status(200).json({ ok: true, clasesTicket });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ ok: false, msg: error.msg });
   }
 };
 
 const getClaseTicketById = async (req, res = response) => {
   try {
-    const claseTicket = await clasesTicketService.obtenerClaseTicketPorId(req.params.id);
-
-    return res.status(200).json({
-      ok: true,
-      claseTicket: claseTicket,
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    res.status(500).json({ error: "Error al obtener la claseTicket" });
+    const { id } = req.params;
+    const claseTicket = await service.getClaseTicketPorId(id);
+    res.status(200).json({ ok: true, claseTicket });
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ ok: false, msg: error.msg });
   }
 };
 
 const createClaseTicket = async (req, res = response) => {
   try {
-    const claseTicketDB = await clasesTicketService.crearClaseTicket(req.body);
-
-    return res.status(201).json({
-      ok: true,
-      claseTicket: claseTicketDB
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al crear la claseTicket'
-    });
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const claseTicket = await service.createClaseTicket({ ...req.body, usuarioAccion });
+    res.status(201).json({ ok: true, claseTicket });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const updateClaseTicket = async (req, res = response) => {
   try {
-    const { codigoClase, ...data } = req.body;
-
-    const claseTicketActualizado = await clasesTicketService.actualizarClaseTicket(codigoClase, data);
-
-    return res.status(200).json({
-      ok: true,
-      claseTicket: claseTicketActualizado
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al actualizar la claseTicket'
-    });
+    const { id } = req.params;
+    const usuarioAccion = req.usuario?.codigoUsuario;
+    const claseTicket = await service.updateClaseTicket(id, req.body, usuarioAccion);
+    res.status(200).json({ ok: true, claseTicket });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 const deleteClaseTicket = async (req, res = response) => {
   try {
-    const claseTicketEliminado = await clasesTicketService.eliminarClaseTicket(req.params.id);
-
-    return res.status(200).json({
-      ok: true,
-      claseTicket: claseTicketEliminado,
-      msg: 'la claseTicket se elimino correctamente'
-    });
-  } catch (err) {
-    console.error(err);
-    if (err.statusCode) {
-      return res.status(err.statusCode).json({ ok: false, msg: err.msg });
-    }
-    return res.status(500).json({
-      ok: false,
-      error: 'Error al eliminar la claseTicket'
-    });
+    const { id } = req.params;
+    await service.deleteClaseTicket(id);
+    res.status(200).json({ ok: true, msg: "Registro eliminado" });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ ok: false, msg: error.msg });
   }
 };
 
 module.exports = {
-  getClasesTicket,
+  getClasesTickets,
   getClaseTicketById,
   createClaseTicket,
   updateClaseTicket,
-  deleteClaseTicket,
+  deleteClaseTicket
 };

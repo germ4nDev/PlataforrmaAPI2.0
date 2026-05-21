@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Entity Standardization & Sequelize Syntax
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const LogActualizacionModel = (sequelize) => {
   return sequelize.define('PTLLogActualizacionesAP', {
     logId: {
       type: DataTypes.INTEGER,
@@ -28,10 +29,9 @@ module.exports = (sequelize) => {
     },
     usuarioId: {
       type: DataTypes.INTEGER,
-      default: 0,
+      defaultValue: 0,
       allowNull: false
     },
-    // AUDITORIA ------------
     codigoUsuarioCreacion: {
       type: DataTypes.STRING,
       allowNull: false
@@ -52,4 +52,26 @@ module.exports = (sequelize) => {
     tableName: 'PTLLogActualizacionesAP',
     timestamps: false
   });
+};
+
+const LogActualizacionDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoAplicacion: data.codigoAplicacion,
+    codigoVersion: data.codigoVersion,
+    fechaLog: data.fechaLog || fechaActual,
+    descripcionLog: data.descripcionLog || 'Actualización de versión registrada',
+
+    usuarioId: data.usuarioId || 0,
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  LogActualizacionModel,
+  LogActualizacionDTO
 };

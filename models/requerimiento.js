@@ -1,10 +1,11 @@
 /*
     Author: German Valencia
     Actualización: John Castañeda
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const RequerimientoModel = (sequelize) => {
   return sequelize.define('PTLRequerimientosTK', {
     requerimientoId: {
       type: DataTypes.INTEGER,
@@ -29,7 +30,8 @@ module.exports = (sequelize) => {
     },
     estadoRequerimiento: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'PENDIENTE'
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -52,4 +54,26 @@ module.exports = (sequelize) => {
     tableName: 'PTLRequerimientosTK',
     timestamps: false
   });
+};
+
+const RequerimientoDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoRequerimiento: data.codigoRequerimiento,
+    codigoTicket: data.codigoTicket,
+    nombreRequerimiento: data.nombreRequerimiento,
+    descripcionRequerimiento: data.descripcionRequerimiento || '',
+    estadoRequerimiento: data.estadoRequerimiento || 'PENDIENTE',
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  RequerimientoModel,
+  RequerimientoDTO
 };

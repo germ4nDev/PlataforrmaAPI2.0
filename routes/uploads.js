@@ -1,25 +1,26 @@
 /*
-    Author: German Valencia
-    ruta: api/uploads/
+    Author: German Valencia
+    ruta: api/uploads/
 */
 const { Router } = require("express");
-const expressFileUpload = require("express-fileupload");
 const { validarJWT } = require("../middlewares/validar-jwt");
-const { fileUpload, folderUpload, retornaImagen, eliminarArchivo } = require("../controllers/uploads");
+const {
+    uploadResource,
+    showResource,
+    deleteResource,
+    clearCategoryFolder
+} = require("../controllers/uploads");
 
 const router = Router();
 
-router.use(expressFileUpload({
-    createParentPath: true,
-    limits: { fileSize: 50 * 1024 * 1024 }, 
-}));
+router.post("/:suscriptorId/:type", [validarJWT], uploadResource);
 
-router.put("/:susc/:tipo/:id", validarJWT, fileUpload); 
+router.get("/:suscriptorId/:type/:fileName", showResource);
 
-router.get("/folder/:susc", validarJWT, folderUpload);
+router.delete("/:suscriptorId/:type/:fileName", [validarJWT], deleteResource);
 
-router.get("/:susc/:tipo/:foto", retornaImagen);
+router.delete("/file/:suscriptorId/:type/:fileName", [validarJWT], deleteResource);
 
-router.delete("/delete/:susc/:tipo/:foto", validarJWT, eliminarArchivo);
+router.delete("/clear/:suscriptorId/:type", [validarJWT], clearCategoryFolder);
 
 module.exports = router;

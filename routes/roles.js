@@ -7,26 +7,34 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const {
-    getRolesAP,
-    getRoleAPById,
-    getRoleAPByCodeApp,
-    createRoleAP,
-    updateRoleAP,
-    deleteRoleAP,
+    getRoles,
+    getRoleById,
+    getRolesByApp,
+    createRole,
+    updateRole,
+    deleteRole
 } = require("../controllers/roles");
 
 const router = Router();
 
-router.get("/", validarJWT, getRolesAP);
+// router.use(validarJWT);
 
-router.post( "/", validarJWT,  createRoleAP);
+router.get("/", getRoles);
+router.get("/:id", validarJWT, getRoleById);
+router.get("/app/:appCode", validarJWT, getRolesByApp);
 
-router.put("/:id", validarJWT, updateRoleAP);
+router.post("/", [
+    check('nombreRole', 'El nombre del rol es obligatorio').not().isEmpty(),
+    check('codigoAplicacion', 'El código de aplicación es obligatorio').not().isEmpty(),
+    validarJWT,
+    validarCampos
+], createRole);
 
-router.get("/app/:id", validarJWT, getRoleAPByCodeApp);
+router.put("/:id", [
+    validarJWT,
+    validarCampos
+], updateRole);
 
-router.delete("/:id", validarJWT, deleteRoleAP);
-
-router.get("/:id", validarJWT, getRoleAPById);
+router.delete("/:id", validarJWT, deleteRole);
 
 module.exports = router;

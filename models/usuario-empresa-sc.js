@@ -1,9 +1,10 @@
 /*
     Author: German Valencia
+    Refactored for: QPLUS DTO Pattern, Multi-tenant Linkage & Typo Correction
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const UsuarioEmpresaModel = (sequelize) => {
   return sequelize.define('PTLUsuariosEmpresasSC', {
     usuarioEmpresaSCId: {
       type: DataTypes.INTEGER,
@@ -14,37 +15,59 @@ module.exports = (sequelize) => {
       primaryKey: true,
       allowNull: false
     },
-    codigoEmpresaSC: {
+    codigoUsuairoSC: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    codigoUsuairoSC: {
+    codigoEmpresaSC: {
       type: DataTypes.STRING,
       allowNull: false
     },
     estadoUsuairoEmpresaSC: {
       type: DataTypes.BOOLEAN,
-      default: false
+      defaultValue: true,
+      allowNull: false
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaCreacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     codigoUsuarioModificacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     fechaModificacion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     }
   }, {
     tableName: 'PTLUsuariosEmpresasSC',
     timestamps: false
   });
+};
+
+const UsuarioEmpresaDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    codigoUsuarioEmpresaSC: data.codigoUsuarioEmpresaSC,
+    codigoUsuarioSC: data.codigoUsuarioSC,
+    codigoEmpresaSC: data.codigoEmpresaSC,
+    estadoUsuarioEmpresaSC: data.estadoUsuarioEmpresaSC ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  UsuarioEmpresaModel,
+  UsuarioEmpresaDTO
 };

@@ -12,7 +12,7 @@ const {
     createSuscriptorPaquete,
     updateSuscriptorPaquete,
     deleteSuscriptorPaquete,
-} = require("../controllers/suscriptores-paquetes");
+} = require("../controllers/suscriptor-paquetes");
 
 const router = Router();
 
@@ -20,10 +20,10 @@ router.get("/", validarJWT, getSuscriptoresPaquetes);
 
 router.get("/:id", validarJWT, getSuscriptoresPaquetesById);
 
-router.post( "/", validarJWT,  createSuscriptorPaquete);
+router.post("/", validarJWT, createSuscriptorPaquete);
 
 router.put("/:id", validarJWT, updateSuscriptorPaquete);
 
-router.delete("/:id", validarJWT,  deleteSuscriptorPaquete);
+router.delete("/:id", validarJWT, deleteSuscriptorPaquete);
 
 module.exports = router;

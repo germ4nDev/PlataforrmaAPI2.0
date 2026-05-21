@@ -1,9 +1,10 @@
 /*
-    Author: John Castañeda
+    Author: German Valencia
+    Refactored for: QPLUS DTO Pattern & Entity Standardization
 */
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+const TipoItemModel = (sequelize) => {
   return sequelize.define('PTLTiposItem', {
     tipoItemId: {
       type: DataTypes.INTEGER,
@@ -20,7 +21,8 @@ module.exports = (sequelize) => {
     },
     estadoTipo: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: true
     },
     // AUDITORIA ------------
     codigoUsuarioCreacion: {
@@ -43,4 +45,24 @@ module.exports = (sequelize) => {
     tableName: 'PTLTiposItem',
     timestamps: false
   });
+};
+
+const TipoItemDTO = (data) => {
+  const fechaActual = new Date().toISOString();
+
+  return {
+    nombreTipo: data.nombreTipo,
+    descripcionTipo: data.descripcionTipo || '',
+    estadoTipo: data.estadoTipo ?? true,
+
+    codigoUsuarioCreacion: data.codigoUsuario || data.codigoUsuarioCreacion || 'SISTEMA',
+    fechaCreacion: data.fechaCreacion || fechaActual,
+    codigoUsuarioModificacion: data.codigoUsuario || data.codigoUsuarioModificacion || 'SISTEMA',
+    fechaModificacion: fechaActual
+  };
+};
+
+module.exports = {
+  TipoItemModel,
+  TipoItemDTO
 };

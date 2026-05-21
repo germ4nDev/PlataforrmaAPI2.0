@@ -1,8 +1,3 @@
-/*
-    Author: German Valencia
-
-    Ruta: /api/coloresSettings
-*/
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
@@ -12,19 +7,25 @@ const {
     getColorSettingById,
     createColorSetting,
     updateColorSetting,
-    deleteColorSetting,
+    deleteColorSetting
 } = require("../controllers/colores-settings");
 
 const router = Router();
 
-router.get("/", validarJWT, getColoresSettings);
+router.use(validarJWT);
 
-router.post("/", validarJWT, createColorSetting);
+router.get("/", getColoresSettings);
+router.get("/:id", getColorSettingById);
 
-router.put("/:id", validarJWT, updateColorSetting);
+router.post("/", [
+    check('colorNav', 'El color principal es obligatorio').not().isEmpty(),
+    validarCampos
+], createColorSetting);
 
-router.delete("/:id", validarJWT, deleteColorSetting);
+router.put("/:id", [
+    validarCampos
+], updateColorSetting);
 
-router.get("/:id", validarJWT, getColorSettingById);
+router.delete("/:id", deleteColorSetting);
 
 module.exports = router;
